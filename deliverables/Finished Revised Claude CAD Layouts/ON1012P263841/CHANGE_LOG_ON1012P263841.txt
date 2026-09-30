@@ -1,0 +1,79 @@
+CHANGE LOG - Job ON1012P263841  (GMV North America EDGE, config GMV-5809)
+Source layout : LAYOUT EDGE_recover.dxf  (AutoCAD 2018 DXF, from Drive > Work)
+Updated file  : LAYOUT_EDGE_recover_UPDATED.dxf
+Customer proposal: pages 1-5 of 5 (photos supplied in chat)
+Method: direct text patches to the DXF. Nothing else in the file was rewritten; geometry, footers and title-block fields were NOT changed.
+
+=== A. TEXT FIELDS CHANGED (19) ===
+SHEET                  FIELD (entity handle)                        BEFORE                                         -> AFTER
+S1.1 Technical Data    CAPACITY lb [kg] [4268A8]                    2300 [1043]                                    -> 2500 [1134]
+S1.1 Technical Data    NO. OF FLOORS [4268AC]                       4                                              -> 2
+S1.1 Technical Data    NO. OF OPENINGS [4268AE]                     FRONT: 4 /  REAR: 0                            -> FRONT: 2 /  REAR: 0
+S1.1 Technical Data    CAB DIMENSIONS [426905]                      58.5 [1486] W x 68 [1727] D x 90 [2286] H      -> 81 [2057] W x 51 [1295] D x 90 [2286] H
+S1.1 Technical Data    SYSTEM [426948]                              TWIN 1:1 DIRECT ACTING HYDRAULIC               -> 1:1 DIRECT ACTING HYDRAULIC
+S1.1 Technical Data    CAB LIGHT [42690F]                           DIFFUSER  PANEL                                -> LED
+S1.2 Elevation View    Floor label, row 1 [24AC0]                   *G TO 1                                        -> *G TO 2
+S1.2 Elevation View    Floor-to-floor distance, row 1 [3A812A]      162"                                           -> 125"
+S1.2 Elevation View    Floor label, row 2 (unused with 2 stops) [4156C5] 1 TO 2                                         -> -
+S1.2 Elevation View    Floor label, row 3 (unused with 2 stops) [4156CF] 2 TO 3                                         -> -
+S1.2 Elevation View    Floor-to-floor distance, row 2 [4156D9]      126"                                           -> -
+S1.2 Elevation View    Floor-to-floor distance, row 3 [4156E3]      120"                                           -> -
+S1.5 Cab Detail        CAB REVEALS - Black Powder Coat mark [37723] -                                              -> X
+S1.5 Cab Detail        CAB REVEALS - Satin Stainless mark [37724]   X                                              -> -
+S1.5 Cab Detail        ENTRANCE size (layer 2500lbs F) [37738]      42" [1065] WIDE X 85" [2150] HIGH              -> 42" [1065] WIDE X 84 5/8" [2150] HIGH
+S1.7 COP Detail        OPENINGS [38AFF]                             4                                              -> 2
+S1.7 COP Detail        FLOOR MARKINGS [38F48]                       *G / 1 / 2 / 3                                 -> *G / 2
+S1.7 COP Detail        CAPACITY (layer 2500lbs F) [38B27]           2500lb / 1136kg                                -> 2500lb / 1134kg
+S1.8 Hall Fixture      Top floor label [3A85BB]                     FLOOR - 3                                      -> FLOOR - 2
+
+=== B. LAYER CHANGES ===
+1. Layer "2500lbs F" turned ON (was off). Reason: requested 2500 lb front-only variant; its cab sizes match the proposal.
+   It adds (all checked against proposal):
+   - S1.5 PLATFORM SIZE 83.5" [2121] WIDE X 60.6" [1539] DEEP  (not in proposal; left as template)
+   - S1.5 ENTRANCE 42" [1065] WIDE X 85" [2150] HIGH -> corrected to 84 5/8" per proposal (see A)
+   - S1.5 INSIDE CAB SIZE 81" [2057] WIDE X 51" [1295] DEEP  (matches proposal, left as is)
+   - S1.7 capacity 2500lb / 1136kg -> corrected to 1134kg per proposal (see A)
+   - S1.1 eight unlabeled reaction-force numbers (16100 [71.62], 19457 [86.55], 236 [1.05], 268 [1.19] / 16100 [71.62], 19457 [86.55], 14 [0.061], 192 [0.854]) now visible in the blank area above REACTION FORCES. NOT used; see open question 1.
+2. Layer "2500lbs F&R" left OFF (front-and-rear variant does not apply: proposal is Front Only).
+3. NEW layer "CLAUDE_HIDDEN_2300_ORIGINALS" created (OFF, handle 4B418D). No entity was deleted; four superseded old-2300lb texts were moved to it so they can be restored:
+   - [4286A2] S1.5 Cab Detail: PLATFORM SIZE: 61.75" (1568 mm) W X 77.5" (1969 mm) D (old 2300 lb text; replaced by layer 2500lbs F)
+   - [4252C5] S1.5 Cab Detail: ENTRANCE row: BRUSHED STAINLESS STEEL (typed text; replaced by layer 2500lbs F entrance size)
+   - [4252CF] S1.5 Cab Detail: INSIDE CAB SIZE: 58.5" (1486 mm) W X 68" (1727 MM) D (old 2300 lb text; replaced by layer 2500lbs F)
+   - [4286BB] S1.7 COP Detail: CAPACITY: 2300 [1043] (old text; replaced by layer 2500lbs F)
+   These sat at the same positions as the 2500lbs F layer texts and would have overprinted them. Original layer of all four was "Text".
+
+=== C. CHECKED AND LEFT UNCHANGED (already matched proposal) ===
+ - Code compliance ASME A17.1/CSA B44 2019
+ - Classification EDGE
+ - Nominal speed 100 FPM
+ - Power supply 208 V 3 PH 60 Hz
+ - Operation selective collective
+ - Hoistway and landing wall construction masonry
+ - Controller 360 controller
+ - Cab configuration front only
+ - Door operator / door type 2 speed side opening
+ - Door sill satin brushed aluminum
+ - COP finish satin stainless; hall station flat plate satin stainless
+ - Handrail flat brushed stainless
+ - Ceiling reveal stainless steel (ceiling frame satin stainless marked)
+ - Cab pads: NO (protection pads NO marked)
+ - Floor: unfinished plywood
+ - Laminate 6402 THERMO WALNUT (S1.6)
+ - Fire rating UL 1 1/2 hr
+ - Machine room location ADJACENT
+ - Door size on S1.1: 42" [1065] x 84 5/8" [2150]
+ - S1.1 machine heat output per 25 starts/hr
+ - COP: fire service phase II, key switch stop, independent service key switch, nudging
+
+=== D. LEFT ALONE PER INSTRUCTIONS ===
+ - S1.1 WALL PANELS "HANG ON LAMINATED WALL PANELS" (proposal: Applied Plastic Laminated Panels) - left as is
+ - S1.1 DOOR PANEL FINISH "BRUSHED STAINLESS STEEL" - kept
+ - S1.8 "FLOOR - 1/2" label - left for user to remove
+ - All footer / title-block fields (project name, number, location, company, dates, sheet numbers) - not touched
+ - Pit 60", clear overhead 150", under/over travel 11"/5": appear only as dimensions in the drawing views; drawing geometry not changed
+ - Proposal items with no matching field: warranty, door hand, cab lighting power 120 V, in-cab security cable, compliance text
+
+=== E. OPEN QUESTIONS ===
+1. S1.1: with layer 2500lbs F on, unlabeled reaction numbers appear (see B1). Should they replace PIT (R) / F1 / F2 in the REACTION FORCES table (currently 16100 [71.62] / 375 [1.67] / 180 [0.80]), and which number is which? Or should they be hidden?
+2. S1.7 TELEPHONE row says "INSIDE COMPARTMENT, CALL WITH PUSHBUTTON"; proposal says "push button with Braille tag and call acknowledge indicator". Change it?
+3. S1.1 still shows "HYDRAULIC JACK (2 JACK SYSTEM)" and the plunger/jack values from the previous job; the proposal gives no jack data. Leave?
