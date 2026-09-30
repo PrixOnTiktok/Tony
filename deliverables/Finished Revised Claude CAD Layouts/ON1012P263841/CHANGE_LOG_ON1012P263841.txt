@@ -4,7 +4,7 @@ Updated file  : LAYOUT_EDGE_recover_UPDATED.dxf
 Customer proposal: pages 1-5 of 5 (photos supplied in chat)
 Method: direct text patches to the DXF. Nothing else in the file was rewritten; geometry, footers and title-block fields were NOT changed.
 
-=== A. TEXT FIELDS CHANGED (19) ===
+=== A. TEXT FIELDS CHANGED (20) ===
 SHEET                  FIELD (entity handle)                        BEFORE                                         -> AFTER
 S1.1 Technical Data    CAPACITY lb [kg] [4268A8]                    2300 [1043]                                    -> 2500 [1134]
 S1.1 Technical Data    NO. OF FLOORS [4268AC]                       4                                              -> 2
@@ -24,6 +24,7 @@ S1.5 Cab Detail        ENTRANCE size (layer 2500lbs F) [37738]      42" [1065] W
 S1.7 COP Detail        OPENINGS [38AFF]                             4                                              -> 2
 S1.7 COP Detail        FLOOR MARKINGS [38F48]                       *G / 1 / 2 / 3                                 -> *G / 2
 S1.7 COP Detail        CAPACITY (layer 2500lbs F) [38B27]           2500lb / 1136kg                                -> 2500lb / 1134kg
+S1.7 COP Detail        TELEPHONE [38B26]                            INSIDE COMPARTMENT, CALL WITH PUSHBUTTON       -> PUSH BUTTON, BRAILLE TAG, CALL ACK. INDICATOR
 S1.8 Hall Fixture      Top floor label [3A85BB]                     FLOOR - 3                                      -> FLOOR - 2
 
 === B. LAYER CHANGES ===
@@ -73,7 +74,8 @@ S1.8 Hall Fixture      Top floor label [3A85BB]                     FLOOR - 3   
  - Pit 60", clear overhead 150", under/over travel 11"/5": appear only as dimensions in the drawing views; drawing geometry not changed
  - Proposal items with no matching field: warranty, door hand, cab lighting power 120 V, in-cab security cable, compliance text
 
-=== E. OPEN QUESTIONS ===
-1. S1.1: with layer 2500lbs F on, unlabeled reaction numbers appear (see B1). Should they replace PIT (R) / F1 / F2 in the REACTION FORCES table (currently 16100 [71.62] / 375 [1.67] / 180 [0.80]), and which number is which? Or should they be hidden?
-2. S1.7 TELEPHONE row says "INSIDE COMPARTMENT, CALL WITH PUSHBUTTON"; proposal says "push button with Braille tag and call acknowledge indicator". Change it?
-3. S1.1 still shows "HYDRAULIC JACK (2 JACK SYSTEM)" and the plunger/jack values from the previous job; the proposal gives no jack data. Leave?
+=== E. DECISIONS ON EARLIER QUESTIONS ===
+1. Unlabeled reaction numbers on S1.1 (layer 2500lbs F): user said leave them. Left visible, unchanged.
+2. S1.7 TELEPHONE row: changed per proposal (shortened to fit the cell on one line).
+3. S1.1 jack system / jack values: user will update them. Left unchanged.
+No open questions remain.
