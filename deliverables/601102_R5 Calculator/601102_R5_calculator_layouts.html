@@ -607,6 +607,35 @@ tr.spot td:first-child{box-shadow:inset 4px 0 0 var(--yellow),inset 0 2px 0 var(
 .spot-sec{background:color-mix(in srgb,var(--yellow) 6%,transparent)!important;box-shadow:inset 4px 0 0 var(--yellow)!important;transition:background .6s,box-shadow .6s}
 .rgrid .card.spot-sec,.tbl.spot-sec{box-shadow:0 0 0 2px color-mix(in srgb,var(--yellow) 55%,transparent)!important}
 @media (prefers-reduced-motion:reduce){ .spot{animation:none!important} }
+
+/* ============ several floors ============ */
+.floors{grid-column:1/-1;margin-top:6px}
+.floors:empty{display:none}
+.fl-sw{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:13.5px;padding:2px 0}
+.fl-sw input{appearance:none;-webkit-appearance:none;width:36px;height:21px;border-radius:99px;background:var(--line2);position:relative;cursor:pointer;flex:none;transition:background var(--d3)}
+.fl-sw input::after{content:"";position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--sh1);transition:transform var(--d3) var(--e-snap)}
+.fl-sw input:checked{background:var(--yellow-3)} .fl-sw input:checked::after{transform:translateX(15px)}
+.fl-sw input:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.fl-sw b{font-weight:650} .fl-sw small{display:block;color:var(--muted);font-size:12px}
+.fl-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px;counter-reset:none}
+.fl-list li{display:grid;grid-template-columns:minmax(0,1fr) auto 64px 30px;gap:8px;align-items:center;padding:4px 6px 4px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line);animation:fadeUp var(--d3) var(--e-in)}
+.fl-list li.err{border-color:var(--bad);background:var(--bad-soft)}
+.fl-n{font-size:13px;font-weight:600;color:var(--ink-2)}
+.fl-in{display:flex;align-items:center;gap:4px}
+.fl-in input{width:70px;text-align:right;font:650 15px var(--font);font-variant-numeric:tabular-nums;padding:5px 8px;border-radius:9px;border:1.5px solid var(--input-line);background:var(--input);color:var(--ink);min-height:34px}
+.fl-in input:focus{border-color:var(--link);box-shadow:0 0 0 3px color-mix(in srgb,var(--link) 25%,transparent);outline:none}
+.fl-list .ftin{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.fl-x{width:30px;height:30px;min-height:30px;padding:0} .fl-x .i{width:14px;height:14px}
+.fl-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.fl-ok{font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-soft);border-radius:999px;padding:3px 10px;cursor:help}
+input[data-k="E21"][readonly]{background:var(--calc);color:var(--ink-2);border-style:dashed;cursor:not-allowed}
+.step:disabled{opacity:.4;cursor:not-allowed}
+input[type=range]:disabled{opacity:.45;cursor:not-allowed}
+.sl .floors{margin:4px 0}
+.tbl .floors{max-width:420px}
+.fl-note{margin:6px 0 0;font-size:11.5px;color:var(--muted)}
+.rp-fl{font-size:12px;margin:6px 0 0;color:#333}
+@container (max-width:300px){ .fl-list li{grid-template-columns:minmax(0,1fr) auto 30px} .fl-list .ftin{display:none} }
 /* ============ responsive ============ */
 @media (max-width:1100px){ .tb{grid-template-columns:minmax(0,1fr)} .tb .stick{position:static} .db{grid-template-columns:minmax(0,260px) minmax(0,1fr)} .cf-steps .st small{display:none} }
 @media (max-width:860px){ .cf-hud{position:static;grid-template-columns:repeat(2,minmax(0,1fr));width:auto;margin-top:10px;max-height:none} .cf-steps{display:flex;overflow-x:auto;scrollbar-width:none} .cf-steps button{flex:none} .cf-steps .st{display:none} .cf-steps .st small{display:none} .cf-steps button[aria-selected="true"] .st{display:flex} }
@@ -834,6 +863,15 @@ body.v3max{overflow:hidden}
 @container (max-height:380px){ .v3-hint{display:none} }
 .v3-stage{container-type:size}
 
+/* compact windows: the 3D button bars wrap to a second row instead of hiding buttons off the edge */
+.v3-bar{flex-wrap:wrap;overflow:visible;row-gap:5px}
+/* "hide dimensions and labels" */
+.viewer.clean .hw :is(g.dim,text,.callout,.lead,.blk text){display:none}
+.v3{container-type:inline-size}
+@container (max-width:360px){ .v3-grp{flex-wrap:wrap} .v3-grp button{padding:4px 7px;font-size:11.5px;min-height:28px} .v3-bar{padding:4px 5px;gap:4px} }
+.v3{container-type:inline-size}
+@container (max-width:360px){ .v3-grp{flex-wrap:wrap} .v3-grp button{padding:4px 7px;font-size:11.5px;min-height:28px} .v3-bar{padding:4px 5px;gap:4px} }
+
 </style>
 </head>
 <body>
@@ -863,6 +901,8 @@ body.v3max{overflow:hidden}
     <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9.5h18M3 15h18M9 9.5V20"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h3l2.5-6 4 12 3-9 2 3h3.5"/></symbol>
     <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-tag-off" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/><path d="M2 2l20 20"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
   </defs>
 </svg>
@@ -2244,7 +2284,9 @@ function hoistGeo(c){
   const A=v("E17"),B=v("E18"),C=v("E19"),D=v("E20"),E=v("E21"),F=v("E22"),X=v("E23"),G=v("E24"),H=v("E25");
   const N=v("E43"),M=v("E41"),R=v("E63"),Q=v("E61"),S=v("E65"),L=v("E39");
   const fMin=D-A, fBot=D, fTop=D+E, fMax=D+E+B, full=M+R+Q;
-  return {A,B,C,D,E,F,X,G,H,N,M,R,Q,S,L,fMin,fBot,fTop,fMax,full, cyl:M+R, line:fMax-C+L,
+  // landings: bottom, any in-between floors (from the floor-to-floor heights), top
+  const lv=[fBot]; if (Array.isArray(c.FL) && c.FL.length>1){ let h=fBot; for (const gp of c.FL.slice(0,-1)){ h+=gp; lv.push(h); } } lv.push(fTop);
+  return {A,B,C,D,E,F,X,G,H,N,M,R,Q,S,L,fMin,fBot,fTop,fMax,full, cyl:M+R, line:fMax-C+L, lv, mids:lv.slice(1,-1),
     rail:v("E49"), O:v("E45"), P:v("E47"), nb:v("E51"), T:v("E31"), T2:v("E33"), ok: c.E21>0,
     // the upright always reaches the mounting bracket X, even where X is above L
     at(f){ return {f, plank:f-C, cabTop:f-C+F, frameTop:f-C+Math.max(L, X+2), uni:f-C+X, plunger:Math.max(M+R, full-(fMax-f)/2)}; }};
@@ -2255,7 +2297,9 @@ const POS = [
   {id:"top",    name:"Top floor",       f:g=>g.fTop},
   {id:"rung",   name:"Piston rung out", f:g=>g.fMax},
 ];
-const carF = (g,o) => o.f!=null ? o.f : (POS.find(p=>p.id===o.pos)||POS[1]).f(g);
+// car positions: the fixed ones, plus "f2", "f3"… for floors in between
+const carF = (g,o) => { if (o.f!=null) return o.f; const m=/^f(\d+)$/.exec(o.pos||""); if (m && g.lv[+m[1]-1]!=null) return g.lv[+m[1]-1]; return (POS.find(p=>p.id===o.pos)||POS[1]).f(g); };
+const posName = (g,id) => { const m=/^f(\d+)$/.exec(id||""); return m ? `floor ${m[1]}` : (POS.find(p=>p.id===id)||POS[1]).name.toLowerCase(); };
 const sh = v => num(v,2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
 const inch = v => sh(v)+"″";
 
@@ -2348,11 +2392,12 @@ function paintLine(c, o){
   s += conc(x.s0, Y(g.D), x.face-x.s0, Y(0)-Y(g.D), "pit");
   s += conc(x.w0, Y(g.N)-16, x.w1-x.w0, Y(0)-Y(g.N)+16);
   s += conc(x.face-16, Y(g.N)-16, x.w0-x.face+16, 16, "ceil");
-  s += conc(x.s0, Y(g.fTop), x.face-x.s0, 12, "floor");
+  for (const v of [...g.mids, g.fTop]) s += conc(x.s0, Y(v), x.face-x.s0, 12, "floor");
   // front wall between door openings (doors 84″ high, illustrative)
   const dh=84, fw = (a,b) => b>a ? conc(x.face-10, Y(b), 10, Y(a)-Y(b)) : "";
-  s += fw(g.D+dh, g.fTop) + fw(g.fTop+dh, g.N);
+  g.lv.forEach((v,i)=>{ s += fw(v+dh, i<g.lv.length-1 ? g.lv[i+1] : g.N); });
   s += `<text class="t xs mut" x="${x.s0+3}" y="${Y(g.D)-7}">BOTTOM FLOOR</text><text class="t xs mut" x="${x.s0+3}" y="${Y(g.fTop)+25}">TOP FLOOR</text>`;
+  g.mids.forEach((v,i)=>{ s += `<text class="t xs mut" x="${x.s0+3}" y="${Y(v)+25}">FLOOR ${i+2}</text><line class="lvl" x1="${x.face}" y1="${Y(v)}" x2="${x.w0}" y2="${Y(v)}"/>`; });
   s += `<line class="lvl" x1="${x.face}" y1="${Y(g.D)}" x2="${x.w0}" y2="${Y(g.D)}"/><line class="lvl" x1="${x.face}" y1="${Y(g.fTop)}" x2="${x.w0}" y2="${Y(g.fTop)}"/>`;
   // rail + brackets
   s += `<g class="part" data-part="rail"><rect class="rail" x="${x.rail-3}" y="${Y(g.rail)}" width="6" height="${sq(Y(0)-Y(g.rail))}"/>${tip("rail")}</g>`;
@@ -2426,14 +2471,14 @@ function paintIllus(c, o){
   </defs>`;
   s += `<rect width="${W}" height="${H}" fill="#eaf3fb"/><rect y="${Y(0)}" width="${W}" height="${H-Y(0)}" fill="url(#il-soil)"/>`;
   // rooms on each floor
-  const rooms = [[g.D, g.fTop], [g.fTop, g.N]];
+  const rooms = g.lv.map((v,i)=>[v, i<g.lv.length-1 ? g.lv[i+1] : g.N]);
   rooms.forEach(([a,b],i)=>{ if (b>a){ s += `<rect x="0" y="${Y(b)}" width="${x.face}" height="${Y(a)-Y(b)}" fill="url(#il-room)"/><rect x="0" y="${Y(a)-10}" width="${x.face}" height="10" fill="#c9a77c"/>`;
-    s += `<text class="t il-room" x="14" y="${Y(a)-18}">${i===0?"Bottom floor":"Top floor"}</text>`;
+    s += `<text class="t il-room" x="14" y="${Y(a)-18}">${i===0?"Bottom floor":i===rooms.length-1?"Top floor":`Floor ${i+1}`}</text>`;
     const dh=Math.min(84, b-a-4)*k; s += `<rect x="${x.face-12}" y="${Y(a)-dh}" width="12" height="${dh}" fill="#7a8794"/><rect x="${x.face-60}" y="${Y(a)-dh-8}" width="60" height="8" fill="#d8c3a5"/>`; }});
   s += `<rect x="0" y="${Y(g.N)-30}" width="${W}" height="30" fill="#c4ccd6"/><rect x="0" y="${Y(g.N)-30}" width="${W}" height="6" fill="#a9b3bf"/>`;
   s += `<g>${tip("pit")}<rect x="${x.face}" y="${Y(g.D)}" width="0" height="0"/><rect x="0" y="${Y(g.D)}" width="${x.face}" height="${Y(0)-Y(g.D)}" fill="#c3c9d1"/><rect x="${x.face-8}" y="${Y(0)}" width="${x.w1-x.face+8}" height="18" fill="#aeb6c0"/></g>`;
   s += `<g>${tip("wall")}<rect x="${x.face}" y="${Y(g.N)}" width="${x.w0-x.face}" height="${Y(0)-Y(g.N)}" fill="url(#il-shaft)"/><rect x="${x.w0}" y="${Y(g.N)-30}" width="${x.w1-x.w0}" height="${Y(0)-Y(g.N)+48}" fill="#c4ccd6"/></g>`;
-  s += `<rect x="0" y="${Y(g.fTop)}" width="${x.face}" height="12" fill="#b9c1cb"/>`;
+  for (const v of [...g.mids, g.fTop]) s += `<rect x="0" y="${Y(v)}" width="${x.face}" height="12" fill="#b9c1cb"/>`;
   // rail & brackets
   s += `<g>${tip("rail")}<rect x="${x.rail-3}" y="${Y(g.rail)}" width="6" height="${sq(Y(0)-Y(g.rail))}" fill="#7c8a99"/></g>`;
   const n=Math.max(0,Math.round(g.nb)); for (let i=0;i<n;i++){ const h=n>1?6+(g.rail-12)*i/(n-1):g.rail/2; s+=`<g>${tip("brk")}<rect x="${x.rail+3}" y="${Y(h)-2.5}" width="${x.w0-x.rail-3}" height="5" rx="1" fill="#93a0ad"/></g>`; }
@@ -2495,7 +2540,7 @@ function paintBlocks(c, o){
   cols.forEach(cl => s += `<text class="t hd" x="${cl.x+cl.w/2}" y="26" text-anchor="middle">${cl.t}</text>`);
   s += `<line class="lvl" x1="20" x2="${W-20}" y1="${Y(0)}" y2="${Y(0)}"/><text class="t xs mut" x="22" y="${Y(0)+14}">PIT FLOOR</text>`;
   // level lines now, their names last (on top, with a halo) so zones and the cab never hide them
-  const lv=[[g.D,"BOTTOM FLOOR"],[g.fTop,"TOP FLOOR"],[g.N,"CEILING"]];
+  const lv=[[g.D,"BOTTOM FLOOR"],...g.mids.map((v,i)=>[v,`FLOOR ${i+2}`]),[g.fTop,"TOP FLOOR"],[g.N,"CEILING"]];
   for (const [v] of lv) s += `<line class="lvl dash" x1="20" x2="${W-20}" y1="${Y(v)}" y2="${Y(v)}"/>`;
   const lvNames = lv.map(([v,l])=>`<text class="t xs mut flr" x="${cols[2].x+cols[2].w-4}" y="${Y(v)+(l==="CEILING"?-5:13)}" text-anchor="end">${l}</text>`).join("");
   const block = (cl, a, b, name, val, cell, tone, plain) => {
@@ -2522,7 +2567,7 @@ function paintBlocks(c, o){
   s += `<text class="t sm side" x="${b2.x+b2.w+6}" y="${(Y(g.fMax)+Y(g.fTop))/2+4}">B ${inch(c.E18)}</text><text class="t sm side" x="${b2.x+b2.w+6}" y="${(Y(g.fMin)+Y(g.D))/2+8}">A ${inch(c.E17)}</text>`;
   s += block(b2,cur.plank,cur.cabTop,"Cab (F)",inch(c.E22),"E22","k8");
   s += `<g class="blk k9" data-cell="E33"><title>${esc(DIMTIP.E33)}</title><text class="t sm ${clearOK(c,"E33")?"mut":"badt"}" x="${b2.x+4}" y="${Y(g.N)+16}">T2 ${inch(c.E33)} cab clearance</text></g>`;
-  const where = o.f!=null ? `riding · ${inch(r2(f-g.D))} up` : `at ${(POS.find(p=>p.id===o.pos)||POS[1]).name.toLowerCase()}`;
+  const where = o.f!=null ? `riding · ${inch(r2(f-g.D))} up` : `at ${posName(g,o.pos)}`;
   s += `<text class="t hd2" x="${b0.x+b0.w/2}" y="45" text-anchor="middle">= ${inch(c.E43)}</text><text class="t hd2" x="${b1.x+b1.w/2}" y="45" text-anchor="middle">= ${inch(g.M+g.R+g.Q+15+Math.max(0,T))}</text><text class="t hd2" x="${b2.x+b2.w/2}" y="45" text-anchor="middle">${where}</text>`;
   s += lvNames;
   return svgOpen(W,H,cls,"Simple block diagram of the hoistway heights") + s + `</svg>`;
@@ -2548,7 +2593,7 @@ function paintIso(c, o){
   s += `<g>${tip("wall")}${poly([P(0,0,0),P(0,SD,0),P(0,SD,g.N),P(0,0,g.N)],"wallL")}${poly([P(0,0,0),P(SW,0,0),P(SW,0,g.N),P(0,0,g.N)],"wallR")}</g>`;
   s += `<g>${tip("pit")}${poly([P(0,0,0),P(SW,0,0),P(SW,SD,0),P(0,SD,0)],"pitf")}</g>`;
   // landings: slabs in front (y beyond SD) at D and top floor
-  for (const [z,lab] of [[g.D,"Bottom floor"],[g.fTop,"Top floor"]]){
+  for (const [z,lab] of [[g.D,"Bottom floor"],...g.mids.map((v,i)=>[v,`Floor ${i+2}`]),[g.fTop,"Top floor"]]){
     s += `<g>${tip("floor")}${box(-4, SD, z-8, SW+8, 34, 8, "slab")}</g>`;
     const [lx,ly]=P(-4,SD+34,z); s += `<text class="t sm mut" x="${lx-6}" y="${ly+4}" text-anchor="end">${lab}</text>`;
   }
@@ -2809,8 +2854,9 @@ function build3D(c){
   wall(box(HW,0,0, HW+tw,N,HD, M.conc, {part:"wall"}), v3(1,0,0), v3(HW+tw,0,0));
   const front=new THREE.Group(); wall(front, v3(0,0,1), v3(0,0,HD+tw));
   const ox0=xc-19, ox1=xc+19, oh=82;           // rough opening 38 × 82
-  for (const [a,b] of [[0,g.D],[g.D+oh,g.fTop],[g.fTop+oh,N]]) if (b>a) front.add(box(-tw,a,HD, HW+tw,b,HD+tw, M.conc, {part:"wall"}));
-  for (const fl of [g.D, g.fTop]){ const top=Math.min(fl+oh,N); if (top<=fl) continue;
+  const LV=g.lv; // every landing gets a door opening and a slab
+  for (const [a,b] of [[0,g.D], ...LV.map((v,i)=>[v+oh, i<LV.length-1 ? LV[i+1] : N])]) if (b>a) front.add(box(-tw,a,HD, HW+tw,b,HD+tw, M.conc, {part:"wall"}));
+  for (const fl of LV){ const top=Math.min(fl+oh,N); if (top<=fl) continue;
     front.add(box(-tw,fl,HD, ox0,top,HD+tw, M.conc, {part:"wall"})); front.add(box(ox1,fl,HD, HW+tw,top,HD+tw, M.conc, {part:"wall"}));
     // door hardware belongs to the front wall, so it cuts away with the wall
     front.add(box(ox0,fl-1,HD, ox1,fl,HD+tw, M.steelLt, {part:"door", cast:false}));                          // sill
@@ -2821,7 +2867,7 @@ function build3D(c){
     front.add(box(ox1+6,fl+40,HD+tw, ox1+9.5,fl+46,HD+tw+.8, M.steel, {part:"hall"}));                        // hall station at 42″
     front.add(box(ox0,top-10,HD-2, ox0+2,top,HD, M.steel, {part:"door"}));                                    // interlock box (hoistway side)
   }
-  for (const [fl,cell] of [[g.D,"E20"],[g.fTop,"E21"]]){
+  for (const [fl,cell] of LV.map((v,i)=>[v, i===0?"E20":"E21"])){
     const sl=new THREE.Group(); wall(sl, v3(0,1,0), v3(0,fl,0), {slab:true, z:HD+tw});
     sl.add(box(-tw-landX,fl-10,HD+tw, HW+tw+landX,fl,HD+tw+landZ, M.slab, {part:"floor", cell, layer:"landings"}));
     sl.add(box(-tw-landX,fl-.01,HD+tw, HW+tw+landX,fl+.3,HD+tw+landZ, M.floorTop, {part:"floor", cell, layer:"landings", edges:false, cast:false}));
@@ -2949,7 +2995,7 @@ function renderLabelsDom(){
   V3.labelEls = [...box.children];
 }
 function update3D(c, f){
-  const key = IN_ORDER.map(k=>c[k]).join("|");
+  const key = IN_ORDER.map(k=>c[k]).join("|")+"|"+(c.FL||[]).join(",");
   if (key!==V3.key || !V3.stat){ V3.key=key; build3D(c);
     // the hoistway got taller or shorter: re-frame it from the same angle so nothing is cut off
     const h=V3.bounds.max.y-V3.bounds.min.y; if (V3.fitH && !V3.needFit && Math.abs(h-V3.fitH)>V3.fitH*.03) refit3D(); }
@@ -3091,7 +3137,7 @@ function overlay3D(){
 
 /* ============================ data ============================ */
 const FORMULAS = {"P1": "=J6","M4": "=IF(E22>0,I104,\"\")","J6": "=IF(E22>0,I105,\"\")","A9": "=IF(N77=0,\"PLEASE COMPLETE DATA INPUT\",\"\")","I12": "=TODAY()","A13": "=IF(K78>0,\"INCREASE OVERHEAD BY\",\"\")","L13": "=IF(K78>0,K78,\"\")","M13": "=IF(K78>0,\"inches\",\"\")","A14": "=IF(K78>0,\"MINIMUM OF 6.00 INCHES OVERHEAD CLEARANCE REQUIRED BY CODE\",\"\")","J20": "=IF(E20<C96,C96,\"\")","K20": "=IF(E20<C96,\"in.\",\"\")","L20": "=IF(E20<C96,\"MINIMUM PIT DEPTH REQUIRED BASED ON INPUT A,B,C\",\"\")","J24": "=IF(K80=0,\"\",\"<==== INVALID OVERHEAD HEIGHT SEE ABOVE COMMENT\")","I26": "=\"Capacity (Max \"&(950+(729-E27))& \"Lbs)\"","I27": "=\"Cab weight (Max \"&(729+(950-E26))& \"Lbs)\"","J27": "=IF(E26+E27>1679,\"<====TOTAL WEIGHT (W1 + W2) CAN'T EXCEED 1679 Lbs\",\"\")","E31": "=IF(E21>0,(E43-15-E59-E65-E63-E41),0)","E33": "=IF(E21>0,(E24-E22-E19),0)","E35": "=IF(E21>0,(E39+(E18-E19)),0)","E37": "=IF(E21>0,(E39-E19),0)","E39": "=IF(E21>0,C102,0)","E41": "=IF(E21>0,(C99+E20+E21+(E18-E19)+E39-E61-E63),0)","E43": "=E20+E24+E21","E45": "=IF(E41>0,(E41-3),0)","E47": "=IF(E41>0,(E41+E63-11),0)","E49": "=E41+E63+E65+E59+15+5","E51": "=IF(E21>0,(ROUNDUP(((E49)/60),0)+1),0)","E53": "=(E20+E21+E35+15)+107","A57": "=IF(E21>0,I106,\"\")","E59": "=IF(E17>0,((E17+E18+E21)/2),0)","L59": "=IF(E61<=174,((321+E27)*2)/5.967,((321+E27)*2)/7.791)","E61": "=E91","L61": "=IF(E61<=174,((321+E27+E26)*2)/5.967,((321+E27+E26)*2)/7.791)","E63": "=IF(E61>0,(E61+8),0)","L63": "=IF(E61<=174,((E61*4.88)/231)+((E65*4.333)/231),((E61*3.07)/231)+((E65*7.789)/231))","E65": "=IF(E61>0,(E61-(E21+E18+E17)/2),0)","L65": "=IF(E61<=174,((E59*4.333)/231),((E59*7.789)/231))","E67": "=IF(E61>0,(K101+K97),0)","N70": "=E43-E61-E63-E41-15","B71": "=IF(E21>0,(E21+E18+E17)/2,0)","N72": "=IF(K77>0,(N70-K77),N70)","E75": "=IF(AND($B$71<A75),A75,\"\")","K76": "=IF(E31<6,6-E31,0)","E77": "=IF(AND($B$71<=A77,$B$71>A75),A77,\"\")","K77": "=IF(E33<6,6-E33,0)","N77": "=IF(MIN(E17,E18,E19,E20,E21,E22,E24,E27)<=0,0,\"\")","K78": "=IF(K76>K77,K76,K77)","E79": "=IF(AND($B$71<=A79,$B$71>A77),A79,\"\")","E81": "=IF(AND($B$71<=A81,$B$71>A79),A81,\"\")","E83": "=IF(AND($B$71<=A83,$B$71>A81),A83,\"\")","E86": "=IF(AND($B$71<=A86,$B$71>A83),A86,\"\")","E88": "=IF(AND($B$71<=A88,$B$71>A86),A88,\"\")","E90": "=IF(AND($B$71<=A90,$B$71>A88),A90,\"\")","E91": "=SUM(E73:E90)","C96": "=IF(E17>0,(5+E17+E19),0)","C99": "=E25","K101": "=(7.3+9)*(E61/12)","C102": "=IF(E23>=90.5,79,70.5)","I104": "=IF(E23>=90.5,601001,601000)","I105": "=IF(E23>=90.5,\"RPB 8FT CAR FRAME\",\"RPA 7FT CAR FRAME\")","I106": "=IF(E61>174,\"80mm JACK: 32LPM=41FPM\",\"70mm JACK: 21LPM=36FPM/25LPM=44FPM\")"};
-const DEFAULTS = {E17:2,E18:3,E19:1,E20:8,E21:150,E22:80,E23:60,E24:96.5,E25:2,E26:950,E27:729,job:"Lux Home Elevators",jobno:""};
+const DEFAULTS = {E17:2,E18:3,E19:1,E20:8,E21:150,E22:80,E23:60,E24:96.5,E25:2,E26:950,E27:729,job:"Lux Home Elevators",jobno:"",floors:""}; // floors: "" = just bottom and top, else floor-to-floor heights "120,108"
 
 // Inputs. `sheet` = description exactly as written in column I of the workbook.
 const IN = {
@@ -3211,7 +3257,38 @@ let state={...DEFAULTS};
 try{ const s=JSON.parse(store.get(KEY)||"{}"); for (const k in s) if (k in DEFAULTS) state[k]=s[k]; }catch{}
 const save=()=>store.set(KEY,JSON.stringify(state));
 const bad={}; // cell -> raw text that could not be read
-function compute(over){ const inp={}; for (const k of IN_ORDER){ const v=over&&k in over?over[k]:state[k]; inp[k]=parseFloat(v)||0; } const c=calc(inp); c.K71=3; return c; }
+function compute(over){ const inp={}; for (const k of IN_ORDER){ const v=over&&k in over?over[k]:state[k]; inp[k]=parseFloat(v)||0; } const c=calc(inp); c.K71=3;
+  c.FL = state.floors && !(over && "E21" in over) ? gapsOf() : null; return c; } // floor heights only place the landings; the sheet uses their total, E
+
+/* ---------- several floors: E is the sum of the floor-to-floor heights, so every sheet formula is unchanged ---------- */
+// Floor notes are guidance, not sheet rules. Garaventa's planning guide gives cab height + 16″ between landings that open
+// on the same side (100″ for an 84″ cab); landings opening on different sides can be much closer. Savaria and Inclinator
+// cap residential units at 6 stops. Neither is in 601102_R5.xlsx, so both show as "calculator note" warnings.
+const floorMin = c => r2((c.E22>0?c.E22:80)+16), MAX_STOPS = 6, FLOOR_NEW = 120;
+const gapsOf = () => state.floors ? state.floors.split(",").map(Number).filter(v=>isFinite(v)) : [];
+const floorsOn = () => !!state.floors;
+function setGaps(a){ state.floors = a.map(v=>String(r2(v))).join(","); state.E21 = String(r2(a.reduce((s,v)=>s+v,0))); delete bad.E21; save(); update(); }
+function floorsInner(on, G){
+  if (!on) return `<label class="fl-sw"><input type="checkbox" data-floors-on role="switch"><span><b>Several floors</b><small>Enter each floor-to-floor height; E becomes their total</small></span></label>`;
+  return `<label class="fl-sw"><input type="checkbox" data-floors-on role="switch" checked><span><b>Several floors</b><small><span data-fcount></span></small></span></label>
+    <ol class="fl-list">${G.map((v,i)=>`<li data-gaprow="${i}"><span class="fl-n">Floor ${i+1} → ${i+2}${i===G.length-1?" (top)":""}</span><span class="fl-in"><input type="text" inputmode="decimal" autocomplete="off" data-gap="${i}" aria-label="Floor ${i+1} to floor ${i+2} height"><span class="u">in</span></span><span class="ftin" data-gapft="${i}"></span>${G.length>1?`<button class="ib fl-x" data-gapdel="${i}" aria-label="Remove floor ${i+2}" title="Remove this floor">${ico("x")}</button>`:`<span class="fl-x"></span>`}</li>`).join("")}</ol>
+    <div class="fl-foot"><button class="btn sm" data-gapadd>+ Add a floor</button><span class="fl-ok" title="The sheet only uses travel E (bottom floor to top floor). E is the sum of these heights, so every Excel result is unchanged. The floor positions are shown on the drawings.">✓ Excel-verified: E = sum of these</span></div>
+    <p class="fl-note">Floor positions are drawn for reference; spacing and stop-count tips are guidance, not from the sheet.</p>`;
+}
+function renderFloors(){
+  const on=floorsOn(), G=gapsOf();
+  for (const box of $$("[data-floors]")){
+    const sig = on ? "on"+G.length : "off";
+    if (box.dataset.sig!==sig){ box.dataset.sig=sig; box.innerHTML=floorsInner(on,G); }
+    for (const i of box.querySelectorAll("input[data-gap]")) if (i!==document.activeElement && !i.closest(".err")) i.value=G[+i.dataset.gap];
+    for (const f of box.querySelectorAll("[data-gapft]")) f.textContent = ftin(G[+f.dataset.gapft]);
+    const n=box.querySelector("[data-fcount]"); if (n) n.textContent = `${G.length+1} floors · travel E = ${inch(r2(G.reduce((s,v)=>s+v,0)))}`;
+  }
+  for (const el of $$('input[data-k="E21"]')){ el.readOnly=on; el.disabled = on && el.type==="range"; el.title = on ? "Set by the floor heights below (turn off Several floors to type it)" : ""; }
+  for (const b of $$('[data-k2="E21"]')) b.disabled=on;
+  for (const el of $$("[data-floorline]")) el.textContent = on ? G.map((v,i)=>`${i+1}→${i+2}: ${inch(v)}`).join(" · ") : "";
+  for (const el of $$("[data-floorrow]")) el.hidden = !on;
+}
 let C=compute();
 
 /* ============================ checks & fixes ============================ */
@@ -3244,6 +3321,9 @@ function problems(c){
     if (c.B71>252) P.push({t:`Required stroke ${inch(c.B71)} is longer than the biggest standard jack (252″), so no jack is selected.`, sheet:"(the sheet shows no warning)", src:"calculator note", warn:1, cells:["E21"]});
     else P.push({t:`Required stroke is exactly 67″. The sheet's 67″ test uses “<”, so no jack is selected. Change A, B or E slightly.`, sheet:"(the sheet shows no warning)", src:"calculator note", warn:1, fix:works([set("E18", (parseFloat(state.E18)||0)+1, `Raise top over-travel B to ${inch((parseFloat(state.E18)||0)+1)}`)], x=>x.E61>0), cells:["E18"]});
   }
+  if (floorsOn()){ const G=gapsOf(), mn=floorMin(c), short=G.map((v,i)=>[v,i]).filter(([v])=>v<mn);
+    if (short.length) P.push({t:`${short.map(([v,i])=>`Floor ${i+1} → ${i+2} is only ${inch(v)}`).join("; ")}. Landings that open on the same side usually need about cab height + 16″ (${inch(mn)}) between them; ones on different sides can be closer. Check with OLS.`, sheet:"(not in the sheet — a rule of thumb from manufacturer planning guides)", src:"calculator note", warn:1, cells:["E21"]});
+    if (G.length+1>MAX_STOPS) P.push({t:`${G.length+1} stops: most residential elevators are made for up to ${MAX_STOPS}. Check with OLS.`, sheet:"(not in the sheet — typical manufacturer limit)", src:"calculator note", warn:1, cells:["E21"]}); }
   if (c.E22>0 && c.E23>c.E22) P.push({t:`The mounting bracket X (${inch(c.E23)}) is higher than the cab height F (${inch(c.E22)}), so it would sit above the cab. Check both on the cab drawing.`, sheet:"(the sheet doesn't check this)", src:"calculator note", warn:1, cells:["E23","E22"]});
   for (const k of Object.keys(bad)) P.unshift({t:`${IN[k].tag} (${IN[k].t.toLowerCase()}): couldn't read “${bad[k]}”. Enter inches like 96, or feet and inches like 8'0".`, src:"entry", go:[k]});
   return P;
@@ -3263,6 +3343,7 @@ function chips(c){
   st.push({k:c.J27?"bad":"ok", l:"Load", v:`${numt(ld)} / 1,679 lb`, cell:"E26"});
   st.push({k:c.E61>0?"info":"bad", l:"Jack", v:c.E61>0?`${c.E61}″ · ${c.E61>174?"80":"70"}mm`:"none", cell:"E61"});
   st.push({k:c.J6?"info":"warn", l:"Frame", v:c.J6?(c.E23>=90.5?"8 ft":"7 ft")+` · ${c.M4}`:"—", cell:"E23"});
+  if (floorsOn()) st.push({k:"info", l:"Floors", v:`${gapsOf().length+1}`, cell:"E21"});
   const n=problems(c).length;
   if (!n) st.push({k:"ok all", l:"All checks pass", v:"", cell:""}); else st.push({k:"bad", l:`${n} problem${n>1?"s":""} to fix`, v:"↓", cell:""});
   return `<div class="chips">${st.map(s=>`<button class="chip ${s.k}" data-focus="${s.cell}" title="Show ${esc(s.l)}"><span class="ic">${s.k.startsWith("ok")?"✓":s.k==="bad"?"✕":s.k==="warn"?"!":"i"}</span>${esc(s.l)} <b>${esc(s.v)}</b></button>`).join("")}</div>`;
@@ -3277,6 +3358,7 @@ function fld(cell, o={}){
     ${o.nohint?"":`<div class="hint" title="${esc(m.hint)}">${m.dyn?`<span data-text="${m.dyn}"></span> · `:""}${esc(m.hint)}</div>`}
     <div class="ctl"><button class="step" data-step="-1" data-k2="${cell}" aria-label="Decrease ${esc(m.t)}" tabindex="-1">−</button><input id="${id}" type="text" inputmode="decimal" autocomplete="off" data-k="${cell}" aria-describedby="${id}-m"><span class="u">${unitOf(cell)}</span><button class="step" data-step="1" data-k2="${cell}" aria-label="Increase ${esc(m.t)}" tabindex="-1">+</button></div>
     ${o.picks&&PICKS[cell]?`<div class="picks" role="group" aria-label="Quick picks for ${esc(m.t)}"><span>Quick picks</span>${PICKS[cell].map(v=>`<button class="pick" data-apply="${cell}" data-val="${v}" data-pick="${cell}"${unitOf(cell)==="in"&&v>=12?` title="${ftin(v)}"`:""}>${unitOf(cell)==="in"?v+"″":v+" lb"}</button>`).join("")}</div>`:""}
+    ${cell==="E21"?`<div class="floors" data-floors></div>`:""}
     <div class="sub2" id="${id}-m"><span class="msg" data-msg="${cell}"></span>${m.rec!=null?`<button class="rec" data-recfor="${cell}" data-apply="${cell}" data-val="${m.rec}" hidden>Use recommended ${m.rec}″</button>`:""}</div>
   </div>`;
 }
@@ -3291,7 +3373,11 @@ const keyRes = () => `<div class="keyres">
   ${[["E31","Sheave clearance T"],["E33","Cab clearance T2"],["E61","Jack stroke Q"],["E41","Pillar height M"],["E49","Rail length"],["E53","Rope length ×2"]].map(([cell,l])=>`<div class="kr" data-cell="${cell}" data-kr="${cell}"><small>${l}</small><b data-out="${cell}"></b></div>`).join("")}
 </div>`;
 if (store.get(K_STYLE)==="iso") store.set(K_STYLE,"3d");
-let DV = {style: DSTYLES.some(d=>d.id===store.get(K_STYLE)) ? store.get(K_STYLE) : "technical", pos:"bottom", f:null, raf:0};
+const K_CLEAN="ols601102.clean";
+let DV = {style: DSTYLES.some(d=>d.id===store.get(K_STYLE)) ? store.get(K_STYLE) : "technical", pos:"bottom", f:null, raf:0, clean:store.get(K_CLEAN)==="1"};
+// car-position buttons: Bottom floor, 2, 3 … (floors in between), Top floor, Piston rung out
+const posButtons = () => { const n=floorsOn()?gapsOf().length+1:2, mids=[]; for (let i=2;i<n;i++) mids.push(`<button data-vpos="f${i}" title="Floor ${i}" aria-label="Floor ${i}">${i}</button>`);
+  return `<button data-vpos="bottom">Bottom floor</button>${mids.join("")}<button data-vpos="top">Top floor</button><button data-vpos="rung">Piston rung out</button>`; };
 const viewer = (o={}) => `<div class="viewer${o.bare?" bare":""}${o.stage?" stage":""}" data-viewer${o.force?` data-force="${o.force}"`:""}>
   ${o.bare?"":`<div class="vbar noprint">
     <div class="vstyle">
@@ -3301,7 +3387,8 @@ const viewer = (o={}) => `<div class="viewer${o.bare?" bare":""}${o.stage?" stag
       <button class="ib" data-vstep="1" aria-label="Next drawing style" title="Next style">${ico("chev-r")}</button>
     </div>
     <div class="vright">
-      <div class="seg sm" role="group" aria-label="Car position">${POS.filter(p=>p.id!=="buffer").map(p=>`<button data-vpos="${p.id}">${p.name}</button>`).join("")}</div>
+      <div class="seg sm" role="group" aria-label="Car position" data-vposbox>${posButtons()}</div>
+      <button class="ib" data-vclean aria-pressed="false" title="Hide or show the dimensions and labels (L)" aria-label="Hide dimensions and labels">${ico("tag")}</button>
       <button class="btn sm accent" data-vplay>${ico("play")}<span>Ride</span></button>
       <button class="ib" data-vmax aria-label="Full screen" title="Full screen">${ico("max")}</button>
     </div>
@@ -3313,7 +3400,7 @@ function paintViewers(){
   for (const v of $$("[data-viewer]")){
     const style = v.dataset.force || DV.style;
     const cv=v.querySelector("[data-vcanvas]"), VW=style==="illustrated"?820:760, sc=Math.min((cv.clientWidth||VW)/VW, (cv.clientHeight||1e9)/980), fs=Math.min(1.7, Math.max(1, 10.5/(14*(sc||1))));
-    if (style==="3d" && has3D() && !noJack(C)){ mount3D(cv); const g=hoistGeo(C); update3D(C, DV.f!=null ? DV.f : (POS.find(p=>p.id===DV.pos)||POS[1]).f(g)); }
+    if (style==="3d" && has3D() && !noJack(C)){ mount3D(cv); syncClean3D(); const g=hoistGeo(C); update3D(C, carF(g, {pos:DV.pos, f:DV.f})); }
     else { if (V3.host===cv || (V3.wrap && cv.contains(V3.wrap))) unmount3D();
       cv.innerHTML = (style==="3d" && !has3D() ? `<p class="vcap" style="margin:0 0 6px">This browser can't show the turnable 3D model (WebGL is off), so here is a fixed 3D view.</p>` : "") + drawHoistway(C, {style, pos:v.dataset.force?"bottom":DV.pos, f:v.dataset.force?null:DV.f, fs}); liftLabels(cv.querySelector("svg.hw")); }
     const nm=v.querySelector("[data-vname]"); if (nm) nm.textContent = DSTYLES.find(d=>d.id===style).name;
@@ -3321,8 +3408,11 @@ function paintViewers(){
     const list=v.querySelector("[data-vlist]"); if (list){ const def=store.get(K_STYLE)||"technical";
       list.innerHTML = DSTYLES.map(d=>`<button role="menuitemradio" aria-checked="${d.id===style}" data-vset="${d.id}"><span class="swt" style="background:${STYLE_INFO[d.id][1]}"></span><span class="ddt"><b>${d.name}</b><small>${STYLE_INFO[d.id][0]}</small></span>${d.id===def?`<em>${ico("star-f")} default</em>`:""}</button>`).join("")
         + (style!==def ? `<button class="ddfoot" data-vdef>${ico("star")} Always open “${DSTYLES.find(d=>d.id===style).name}”</button>` : `<p class="ddfoot is">${ico("star-f")} This is your default drawing</p>`); }
+    const pb=v.querySelector("[data-vposbox]"), sig=String(floorsOn()?gapsOf().length:0); if (pb && pb.dataset.sig!==sig){ pb.dataset.sig=sig; pb.querySelectorAll("button").forEach(b=>b.remove()); pb.insertAdjacentHTML("beforeend", posButtons()); }
     for (const b of v.querySelectorAll("[data-vpos]")) b.setAttribute("aria-pressed", DV.f==null && DV.pos===b.dataset.vpos);
     const pl=v.querySelector("[data-vplay]"); if (pl){ pl.innerHTML = DV.raf ? `${ico("stop")}<span>Stop</span>` : `${ico("play")}<span>Ride</span>`; pl.setAttribute("aria-pressed", !!DV.raf); }
+    v.classList.toggle("clean", DV.clean);
+    const cl=v.querySelector("[data-vclean]"); if (cl){ cl.setAttribute("aria-pressed", DV.clean); cl.innerHTML=ico(DV.clean?"tag-off":"tag"); cl.setAttribute("aria-label", DV.clean?"Show dimensions and labels":"Hide dimensions and labels"); }
     const mx=v.querySelector("[data-vmax]"); if (mx){ const on=v.classList.contains("max"); mx.innerHTML=ico(on?"min":"max"); mx.setAttribute("aria-label", on?"Exit full screen":"Full screen"); }
   }
   applyHL();
@@ -3371,6 +3461,7 @@ function update(){
   for (const el of $$("[data-status]")) el.innerHTML = probsHTML(c, el.dataset.status!=="nofix");
   for (const el of $$("[data-date]")) el.textContent = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
   for (const el of $$("[data-strokes]")) el.innerHTML = strokesRows(c);
+  renderFloors();
   for (const el of $$("[data-helpers]")) el.innerHTML = helperRows(c);
   CUR?.update?.(c);
   paintViewers();
@@ -3531,7 +3622,7 @@ V.dash = {
 };
 
 /* table */
-const tIn = k => `<tr data-cell="${k}" data-fld="${k}"><td><span class="badge">${IN[k].tag}</span> ${IN[k].t} <span class="xl">${k}</span><div class="muted" style="font-size:12.5px">${IN[k].dyn?`<span data-text="${IN[k].dyn}"></span>`:esc(IN[k].hint)}</div></td>
+const tIn = k => `<tr data-cell="${k}" data-fld="${k}"><td><span class="badge">${IN[k].tag}</span> ${IN[k].t} <span class="xl">${k}</span><div class="muted" style="font-size:12.5px">${IN[k].dyn?`<span data-text="${IN[k].dyn}"></span>`:esc(IN[k].hint)}</div>${k==="E21"?`<div class="floors" data-floors></div>`:""}</td>
   <td class="v"><div class="ctl"><input type="text" inputmode="decimal" autocomplete="off" data-k="${k}" aria-label="${esc(IN[k].t)}"><span class="u">${unitOf(k)}</span></div><div class="msg" data-msg="${k}" style="font-size:12px;color:var(--bad)"></div></td>
   <td class="rng">${esc(IN[k].rng||"")}</td><td class="st" data-tst="${k}"></td></tr>`;
 const tOut = k => `<tr data-cell="${k}"><td>${OUT[k].tag?`<span class="badge">${OUT[k].tag}</span> `:""}${OUT[k].t} <span class="xl">${k}</span></td><td class="out"><span data-out="${k}"></span> ${unitOf(k)==="in"?"":unitOf(k)}</td><td class="how">${esc(OUT[k].how||"")}<code class="xl" style="display:block">${esc(FORMULAS[k]||"")}</code></td><td class="st" data-tst="${k}"></td></tr>`;
@@ -3565,7 +3656,7 @@ function trackFor(k){
 V.whatif = {
   build:()=>{ SNAP={...state}; return `<div class="wi"><section class="card"><h2>Explore</h2><div class="legend"><span><i style="background:var(--ok)"></i>passes every check</span><span><i style="background:#e5484d"></i>would fail a check</span></div>
       ${IN_UI.map(k=>`<div class="sl" data-cell="${k}"><div class="top"><label class="lab" for="w-${k}"><span class="badge">${IN[k].tag}</span>${IN[k].t}</label><span class="delta" data-delta="${k}"></span><input id="w-${k}" type="text" inputmode="decimal" data-k="${k}"></div>
-        <input type="range" data-k="${k}" min="${IN[k].min}" max="${IN[k].max}" step="${IN[k].step}" aria-label="${esc(IN[k].t)} slider"><div class="ends"><span>${IN[k].min}</span><span>${unitOf(k)}</span><span>${IN[k].max}</span></div></div>`).join("")}
+        <input type="range" data-k="${k}" min="${IN[k].min}" max="${IN[k].max}" step="${IN[k].step}" aria-label="${esc(IN[k].t)} slider">${k==="E21"?`<div class="floors" data-floors></div>`:""}<div class="ends"><span>${IN[k].min}</span><span>${unitOf(k)}</span><span>${IN[k].max}</span></div></div>`).join("")}
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" data-snapreset>${ico("reset")}<span>Back to where I started</span></button><button class="btn sm" data-snapnew>Compare from here</button></div></section>
     <div class="stick">${viewer()}<div class="keyres">${["E31","E33","E61","E41","E49","E53","L61","E43"].map(k=>`<div class="kr" data-cell="${k}" data-kr="${k}"><small>${OUT[k].t}</small><b data-out="${k}"></b>${unitOf(k)==="in"?"":`<span class="u"> ${unitOf(k)}</span>`} <span class="dd" data-dd="${k}"></span></div>`).join("")}</div></div></div>`; },
   update(c){
@@ -3586,6 +3677,7 @@ V.report = {
     <div data-status="nofix"></div>
     <div class="rp-cols">
       <section><h3>Inputs</h3><table>${IN_UI.map(k=>`<tr data-cell="${k}"><td class="r">${IN[k].tag}</td><td>${IN[k].t}</td><td class="v"><input type="text" inputmode="decimal" data-k="${k}" aria-label="${esc(IN[k].t)}"></td><td class="u">${unitOf(k)}</td></tr>`).join("")}</table>
+        <p class="rp-fl" data-floorrow hidden><b>Floors</b> <span data-floorline></span></p>
         <h3 style="margin-top:14px">Jack · <span data-text="A57" style="text-transform:none;letter-spacing:0"></span></h3>
         <table>${["E59","E61","E63","E65","E67","L59","L61","L63","L65"].map(k=>`<tr data-cell="${k}"><td class="r">${OUT[k].tag}</td><td>${OUT[k].t}</td><td class="v" data-out="${k}"></td><td class="u">${unitOf(k)==="in"?"in":unitOf(k)}</td></tr>`).join("")}</table></section>
       <section><h3>Results</h3><table>${["E31","E33","E35","E37","E39","E41","E43","E45","E47","E49","E51","E53"].map(k=>`<tr data-cell="${k}"><td class="r">${OUT[k].tag}</td><td>${OUT[k].t}</td><td class="v" data-out="${k}"></td><td class="u">${unitOf(k)==="in"?"in":unitOf(k)}</td></tr>`).join("")}</table>
@@ -3734,7 +3826,7 @@ document.addEventListener("focusin",e=>{ const t=e.target; if (t.matches?.("inpu
   const el=e.target.closest?.("[data-k],[data-fld]"); if (el){ const k=el.dataset.k||el.dataset.fld; if (IN[k]) setHL(k); } });
 document.addEventListener("keydown",e=>{
   const el=e.target;
-  if (e.key==="Escape"){ closePop(); closeMenus(); if (!$("#settings").hidden) openSettings(false); const mx=$(".viewer.max"); if (mx) toggleMax(mx,false); }
+  if (e.key==="Escape"){ closePop(); closeMenus(); for (const p of $$(".v3-pop")) p.hidden=true; if (!$("#settings").hidden) openSettings(false); const mx=$(".viewer.max"); if (mx) toggleMax(mx,false); }
   if (el.matches?.("input[data-k]") && IN[el.dataset.k] && (e.key==="ArrowUp"||e.key==="ArrowDown")){ e.preventDefault(); bump(el.dataset.k, e.key==="ArrowUp"?1:-1, e.shiftKey); }
   // dashboard tiles and drawing dimensions work from the keyboard too
   if ((e.key==="Enter"||e.key===" ") && el.matches?.(".tile[data-cell],[data-vcanvas] [data-cell][tabindex]")){ e.preventDefault(); el.dispatchEvent(new MouseEvent("click",{bubbles:true, detail:0})); return; }
@@ -3774,6 +3866,7 @@ document.addEventListener("click",e=>{
   if (t.closest("[data-vdef]")){ store.set(K_STYLE, DV.style); $("#set-style").value=DV.style; closeMenus(); return paintViewers(); }
   const vp=t.closest("[data-vpos]"); if (vp){ if (DV.raf){ cancelAnimationFrame(DV.raf); DV.raf=0; } DV.f=null; DV.pos=vp.dataset.vpos; return paintViewers(); }
   if (t.closest("[data-vplay]")) return ride();
+  if (t.closest("[data-vclean]")) return setClean(!DV.clean);
   if (t.closest("[data-snapreset]")){ if (SNAP){ for (const k of IN_ORDER) state[k]=SNAP[k]; for (const k in bad) delete bad[k]; save(); update(); } return; }
   if (t.closest("[data-snapnew]")){ SNAP={...state}; update(); return; }
   const dc=t.closest("[data-vcanvas] [data-cell]");
@@ -3789,6 +3882,36 @@ document.addEventListener("mouseout",e=>{ if (!e.relatedTarget || !e.relatedTarg
 function measureTop(){ const s=$(".status"); const st=getComputedStyle(s).position==="sticky"; document.documentElement.style.setProperty("--stickTop", (st ? s.offsetHeight+8 : 8)+"px"); }
 let rsz; window.addEventListener("resize",()=>{ clearTimeout(rsz); rsz=setTimeout(()=>{ measureTop(); paintViewers(); },120); });
 window.addEventListener("hashchange",()=>{ const id=location.hash.slice(1); if (id!==current && V[id]) show(id); });
+// one button hides every dimension and label (2D and 3D) for a clean look at the hoistway
+function setClean(on){
+  DV.clean=on; store.set(K_CLEAN, on?"1":""); syncClean3D(); paintViewers();
+}
+function syncClean3D(){
+  if (!V3.wrap || !V3.r || V3.showDims===!DV.clean && V3.showLabels===!DV.clean) return;
+  V3.showDims=V3.showLabels=!DV.clean;
+  for (const k of ["dims","labels"]){ const c=V3.wrap.querySelector(`[data-v3layer="${k}"]`); if (c) c.checked=!DV.clean; }
+  applyLayers(); dirty3D();
+}
+// clicking anywhere else closes an open menu or the 3D layers panel
+document.addEventListener("pointerdown",e=>{
+  if (!e.target.closest?.(".vdd")) closeMenus();
+  if (!e.target.closest?.(".v3-pop,[data-v3layers]")) for (const p of $$(".v3-pop")) if (!p.hidden){ p.hidden=true; p.closest(".v3")?.querySelector("[data-v3layers]")?.setAttribute("aria-expanded","false"); }
+}, true);
+// several floors: switch, floor heights, add / remove
+document.addEventListener("change",e=>{ const t=e.target; if (!t.matches?.("[data-floors-on]")) return;
+  if (t.checked) setGaps([parseFloat(state.E21)||FLOOR_NEW]); else { state.floors=""; save(); update(); }
+  setTimeout(()=>{ const i=$$("#view input[data-gap]").find(x=>x.offsetParent); i?.focus(); i?.select(); }, 30); });
+document.addEventListener("input",e=>{ const t=e.target; if (!t.matches?.("input[data-gap]")) return;
+  const G=gapsOf(), i=+t.dataset.gap, v=parseLen(t.value), row=t.closest("li");
+  if (v===""||isNaN(v)||v<=0){ row.classList.add("err"); return; }
+  row.classList.remove("err"); G[i]=v; setGaps(G); });
+document.addEventListener("focusout",e=>{ const t=e.target; if (t.matches?.("input[data-gap]")){ t.closest("li")?.classList.remove("err"); setTimeout(renderFloors); } });
+document.addEventListener("click",e=>{
+  const add=e.target.closest("[data-gapadd]"); if (add){ const box=add.closest("[data-floors]"); setGaps([...gapsOf(), FLOOR_NEW]);
+    setTimeout(()=>{ const ins=box.querySelectorAll("input[data-gap]"), last=ins[ins.length-1]; last?.focus(); last?.select(); spotlight([last?.closest("li")], false); }, 30); return; }
+  const del=e.target.closest("[data-gapdel]"); if (del){ const before=state.floors, beforeE=state.E21, G=gapsOf(); G.splice(+del.dataset.gapdel,1); setGaps(G);
+    toast(`Floor removed — travel E is now ${inch(+state.E21)}`, ()=>{ state.floors=before; state.E21=beforeE; save(); update(); }); }
+});
 /* ============================ motion & quality of life ============================ */
 // a pill slides under the selected tab / pressed segment instead of jumping
 function syncInd(){
@@ -3836,6 +3959,7 @@ document.addEventListener("pointerdown",e=>{
 document.addEventListener("keydown",e=>{
   const typing=e.target.matches?.("input,select,textarea,[contenteditable],canvas");
   if (!typing && !e.altKey && !e.ctrlKey && !e.metaKey && /^[1-8]$/.test(e.key)){ const L=LAYOUTS[+e.key-1]; if (L){ show(L.id); e.preventDefault(); } }
+  if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase()==="l"){ setClean(!DV.clean); e.preventDefault(); }
   if (!typing && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z" && LASTUNDO){ e.preventDefault(); LASTUNDO(); }
 });
 show(location.hash.slice(1) || getDefault());
