@@ -2016,8 +2016,9 @@ function calc(i){
   c.J6 = E22>0 ? c.I105 : "";
   c.M4 = E22>0 ? c.I104 : "";
   c.P1 = c.J6;
-  c.I26 = "Capacity (Max "+(950+(729-E27))+"Lbs)";
-  c.I27 = "Cab weight (Max "+(729+(950-E26))+"Lbs)";
+  const xs = v => String(+v.toPrecision(15)); // Excel turns a number into text with 15 significant digits
+  c.I26 = "Capacity (Max "+xs(950+(729-E27))+"Lbs)";
+  c.I27 = "Cab weight (Max "+xs(729+(950-E26))+"Lbs)";
   c.A9 = c.N77===0 ? "PLEASE COMPLETE DATA INPUT" : "";
   c.A13 = fgt(c.K78,0) ? "INCREASE OVERHEAD BY" : ""; c.L13 = fgt(c.K78,0) ? c.K78 : ""; c.M13 = fgt(c.K78,0) ? "inches" : "";
   c.A14 = fgt(c.K78,0) ? "MINIMUM OF 6.00 INCHES OVERHEAD CLEARANCE REQUIRED BY CODE" : "";
@@ -2979,7 +2980,10 @@ const STYLE_INFO = {technical:["Clean CAD section with every dimension","#3A3838
   blueprint:["White-on-blue engineering print","#0f3460"], blocks:["Plain coloured bars — quickest to read","#2e8b57"], "3d":["Real 3D model you can turn","#FFCB05"], sketch:["Hand-drawn look on paper","#c0392b"]};
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
-const num=(v,dp=2)=>{ if (typeof v!=="number"||!isFinite(v)) return (v===""||v==null)?"—":String(v); if (Math.abs(v)<.5*Math.pow(10,-dp)) v=0; return v.toLocaleString("en-US",{minimumFractionDigits:dp,maximumFractionDigits:dp}); };
+// Round like Excel's display: take the value to 15 significant digits, then round half away from zero
+// in decimal (15.645 → 15.65, where plain binary rounding would give 15.64).
+const xround=(v,dp)=>{ const t=String(Math.abs(+v.toPrecision(15))); if (/e/i.test(t)) return Math.round(v*10**dp)/10**dp; return Math.sign(v)*Number(Math.round(Number(t+"e"+dp))+"e-"+dp); };
+const num=(v,dp=2)=>{ if (typeof v!=="number"||!isFinite(v)) return (v===""||v==null)?"—":String(v); v=xround(v,dp); if (Object.is(v,-0)) v=0; return v.toLocaleString("en-US",{minimumFractionDigits:dp,maximumFractionDigits:dp}); };
 const r2=v=>Math.round(v*100)/100;
 const up2=v=>Math.ceil(r2(v*100)-1e-6)/100, down2=v=>Math.floor(r2(v*100)+1e-6)/100; // round a fix toward the safe side
 const numt=v=>num(v, Number.isInteger(r2(v))?0:Number.isInteger(r2(v)*10)?1:2); // 1,679 · 1,679.5 · 728.25
