@@ -60,7 +60,7 @@ h1,h2,.q,.dr-h h2,.section-h h2,.rp-h h2{font-family:var(--display)}
 h1,h2,h3,h4{letter-spacing:-.01em}
 .mono{font-family:var(--mono)} .muted{color:var(--muted)}
 .xl{display:none!important} body.show-xl .xl{display:revert!important} body.show-xl span.xl,body.show-xl code.xl{display:inline!important}
-[hidden]{display:none!important}
+[hidden]:not(.ddmenu,#pop,.drawer,.scrim,.v3-pop){display:none!important}
 .i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 :focus-visible{outline:none;box-shadow:var(--ring)!important}
 
@@ -425,6 +425,176 @@ body.v3max{overflow:hidden}
 .rp-foot{margin:18px 40px 0;padding-top:8px;border-top:1px solid #dde1e6;font-size:11px;color:#5a6470;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .foot{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 
+
+/* ============ density: more on one screen without shrinking the type ============ */
+.tb-in{padding-top:8px;padding-bottom:8px}
+nav.layouts{margin-top:10px}
+.laydesc{display:none} /* each tab's tooltip carries its description */
+.status{padding:7px 0;margin-bottom:6px}
+/* input row: label + one-line hint on the left, the box on the right; feet-inches sits beside the label */
+.fld{padding:8px 0;gap:1px 12px}
+.fld .lab{font-size:14.5px;gap:8px;flex-wrap:wrap;row-gap:0}
+.fld .lab .ftin{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.fld .hint{font-size:12.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.fld .ctl input{min-height:38px;padding:6px 9px;width:76px}
+.fld .ctl{gap:3px}
+.step{height:38px;width:30px;min-width:30px}
+.fld .u{min-width:16px}
+.fld .sub2{margin-top:2px}
+.fld .picks{margin-top:4px}
+/* the inputs in one card, groups as header lines */
+.grps{padding:10px 16px 6px}
+.grp+.grp{margin-top:6px;padding-top:8px;border-top:2px solid var(--line)}
+.grp-h{gap:9px;margin:0 0 0;flex-wrap:wrap;row-gap:0}
+.grp-h .n{width:22px;height:22px;font-size:12px}
+.grp-h h2{font-size:15px;margin:0}
+.grp-h .gl{font-size:12.5px;color:var(--muted)}
+.grp .fld:first-of-type{border-top:0}
+/* results */
+.res{padding:6px 4px}
+.res .rl{font-size:13.5px}
+.res .rv{font-size:15px}
+.res .rv small{display:inline;margin-left:7px;font-size:11.5px} /* feet-inches on the same line */
+.rgrid{gap:12px}
+.rgrid .card{padding:12px 14px}
+.rgrid h3{margin-bottom:4px}
+.section-h{margin:18px 2px 10px}
+.section-h h2{font-size:17px}
+.keyres{gap:8px;margin-top:10px}
+.kr{padding:8px 11px}
+.kr b{font-size:17px}
+/* Side by side: inputs | drawing | all results on a wide screen */
+.split .sp-res{grid-column:1/-1}
+.split .sp-res .section-h{margin-top:4px}
+@media (min-width:1280px){
+  .split{grid-template-columns:minmax(0,clamp(330px,27%,430px)) minmax(0,1fr) minmax(0,clamp(300px,26%,420px))}
+  .split .sp-res{grid-column:auto}
+  .split .sp-res .section-h{margin:2px 2px 8px}
+  .split .sp-res .rgrid{grid-template-columns:minmax(0,1fr)}
+  .split .sp-res .rgrid .card+.card{margin-top:0}
+}
+/* Dashboard: inputs | tiles + results | drawing */
+.db{grid-template-columns:minmax(0,clamp(270px,22%,340px)) minmax(0,1fr)}
+.db .db-v{grid-column:1/-1}
+@media (min-width:1280px){
+  .db{grid-template-columns:minmax(0,clamp(270px,21%,330px)) minmax(0,1fr) minmax(0,clamp(320px,30%,480px))}
+  .db .db-v{grid-column:auto}
+}
+.db .inp{padding:12px 14px 6px}
+.db .inp .lead{margin-bottom:2px}
+.tiles{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.tile{padding:11px 14px}
+.tile .big{font-size:25px}
+.db .section-h{margin-top:16px}
+/* Drawing: the input list on the right */
+.elist .fld{padding:6px 0}
+/* Table: inputs and results side by side on a wide screen */
+.tb .tbl td{padding:6px 8px}
+.tb .tbl th{padding:8px}
+@media (min-width:1280px){
+  .tb{grid-template-columns:minmax(0,1fr) minmax(0,clamp(300px,27%,460px))}
+  .tb>.card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 18px;align-items:start}
+  .tb>.card>.tbl+.tbl{margin-top:0!important}
+}
+/* What if: name and box on one line, slider right under it */
+.sl{padding:6px 0}
+.sl input[type=range]{margin:2px 0 0;height:24px}
+.sl .top .lab{font-size:14px}
+.sl .ends{margin-top:-2px}
+/* Step by step / Configure */
+.gd h2.q{font-size:22px}
+.fld.opt{padding:10px 12px;gap:4px}
+
+/* Dashboard inputs: name left, box right, even in the narrow side panel (arrow keys still step) */
+.db .inp .fld{grid-template-columns:minmax(0,1fr) auto}
+.db .inp .fld .ctl{grid-column:2;grid-row:1/3;margin-top:0}
+.db .inp .step{display:none}
+.db .inp .fld .ctl input{width:84px;flex:none}
+/* Table: on a wide screen the input notes become tooltips so both tables stay one line a row */
+@media (min-width:1280px){
+  .tb{grid-template-columns:minmax(0,1fr) minmax(0,clamp(280px,22%,400px))}
+  .tb>.card{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}
+  .tb .tbl td .muted{display:none}
+  .tb .tbl td.how{font-size:12px;line-height:1.35}
+  .tb .tbl td.v{width:auto}
+  .tb .tbl td.v input{width:76px}
+}
+/* Configure with the 3D model: keep the info cards below the 3D top bar, and give the stage a sensible minimum */
+.cf-stage:has(.v3) .cf-hud{top:108px;max-height:calc(100% - 160px)}
+.viewer.stage .vcanvas{height:clamp(min(440px,70dvh),calc(100dvh - var(--stickTop) - var(--dockH,360px) - 110px),min(720px,var(--dmax)))}
+
+/* ============ motion (Material 3 / Fluent 2 timings: 100–250 ms, ease-out in, faster out) ============ */
+:root{--d1:100ms;--d2:150ms;--d3:200ms;--d4:250ms;--e-out:cubic-bezier(.2,0,0,1);--e-in:cubic-bezier(.05,.7,.1,1);--e-exit:cubic-bezier(.3,0,.8,.15);--e-snap:cubic-bezier(.1,.9,.2,1)}
+/* sliding selection pill on the layout tabs and every segmented toggle */
+.has-ind{position:relative;isolation:isolate}
+.has-ind>.ind{position:absolute;left:0;top:0;pointer-events:none;z-index:-1;border-radius:10px;transition:transform var(--d4) var(--e-snap),width var(--d4) var(--e-snap),height var(--d4) var(--e-snap),opacity var(--d2)}
+.tabs.has-ind>.ind{background:var(--brand);box-shadow:inset 0 -3px 0 var(--yellow),0 4px 10px -6px rgba(0,0,0,.5)}
+.tabs.has-ind button[aria-selected="true"]{background:transparent;box-shadow:none}
+.seg.has-ind>.ind{background:var(--card);box-shadow:var(--sh1);border-radius:9px}
+.seg.has-ind button[aria-pressed="true"]{background:transparent;box-shadow:none}
+.tabs button,.seg button{transition:color var(--d3) var(--e-out),background var(--d2)}
+/* press feedback */
+.btn,.ib,.chip,.pick,.step,.tabs button,.seg button,.v3-grp button,.prob .fx button,.chk button,.cf-steps button,.steps button,.ddbtn{transition:transform var(--d1) var(--e-out),background var(--d2),box-shadow var(--d2),color var(--d2),border-color var(--d2)}
+.btn:active,.ib:active,.chip:active,.pick:active,.tabs button:active,.seg button:active,.v3-grp button:active,.prob .fx button:active,.chk button:active,.cf-steps button:active,.steps button:active,.ddbtn:active{transform:scale(.96)}
+@media (hover:none){ .tile:hover,.kr:hover,.chip:hover,.prob .fx button:hover{transform:none} }
+/* menus, popovers and the settings drawer animate out as well as in */
+.ddmenu,#pop,.v3-pop{transform-origin:top left;transition:opacity var(--d2) var(--e-in),transform var(--d2) var(--e-in),display var(--d2) allow-discrete,overlay var(--d2) allow-discrete}
+.v3-pop{transform-origin:top right}
+.ddmenu[hidden],#pop[hidden],.v3-pop[hidden]{display:none;opacity:0;transform:translateY(-4px) scale(.97);transition-duration:var(--d1);transition-timing-function:var(--e-exit)}
+@starting-style{ .ddmenu:not([hidden]),#pop:not([hidden]),.v3-pop:not([hidden]){opacity:0;transform:translateY(-4px) scale(.97)} }
+.ddmenu,#pop{animation:none}
+.drawer{animation:none;transition:transform var(--d4) var(--e-in),opacity var(--d3),display var(--d4) allow-discrete}
+.drawer[hidden]{display:none;transform:translateX(40px);opacity:0;transition-duration:var(--d3);transition-timing-function:var(--e-exit)}
+@starting-style{ .drawer:not([hidden]){transform:translateX(40px);opacity:0} }
+.scrim{animation:none;transition:opacity var(--d3),display var(--d3) allow-discrete}
+.scrim[hidden]{display:none;opacity:0}
+@starting-style{ .scrim:not([hidden]){opacity:0} }
+.ddbtn .i{transition:transform var(--d3) var(--e-out)} .ddbtn[aria-expanded="true"] .i{transform:rotate(180deg)}
+.ddmenu button{transition:background var(--d1)}
+/* the section you are working in lights up */
+.grp,.card,.tile,.kr,.prob,.sl,.fld.opt{transition:box-shadow var(--d3) var(--e-out),border-color var(--d3),background var(--d3),transform var(--d2) var(--e-out)}
+.grp{border-radius:12px;margin-left:-8px;margin-right:-8px;padding-left:8px;padding-right:8px}
+.grp:focus-within,.grp.picked{background:color-mix(in srgb,var(--yellow) 7%,transparent);box-shadow:inset 3px 0 0 var(--yellow)}
+#view .card:not(.grps):focus-within,#view .card.picked:not(.grps),#view .tile.picked,#view .kr.picked{border-color:var(--yellow-3);box-shadow:0 0 0 3px color-mix(in srgb,var(--yellow) 28%,transparent),var(--sh2)}
+.sl:focus-within,.sl.picked{background:color-mix(in srgb,var(--yellow) 7%,transparent);border-radius:10px;box-shadow:inset 3px 0 0 var(--yellow)}
+.fld:focus-within:not(.opt){background:color-mix(in srgb,var(--yellow) 9%,transparent)}
+.prob.picked{box-shadow:0 0 0 3px color-mix(in srgb,var(--yellow) 30%,transparent)}
+/* where you landed after a chip / problem / drawing click */
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--yellow) 70%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.pulse{animation:pulse .8s var(--e-out) 2;border-radius:10px}
+/* "how it's worked out" opens smoothly */
+.res .how{transition:opacity var(--d3) var(--e-out),transform var(--d3) var(--e-out),display var(--d3) allow-discrete;animation:none}
+@starting-style{ .res.open .how{opacity:0;transform:translateY(-4px)} }
+.res .q{transition:transform var(--d3) var(--e-out),color var(--d2)} .res.open .q{color:var(--link);transform:rotate(180deg)}
+/* cards rise in one after another when a layout opens */
+#view.enter{animation:none}
+#view.enter :is(.card,.tile,.kr,.prob,.fld.opt){animation:fadeUp var(--d4) var(--e-in) both}
+#view.enter :is(.tile,.kr):nth-child(2){animation-delay:25ms} #view.enter :is(.tile,.kr):nth-child(3){animation-delay:50ms} #view.enter :is(.tile,.kr):nth-child(4){animation-delay:75ms}
+#view.enter :is(.tile,.kr):nth-child(5){animation-delay:100ms} #view.enter :is(.tile,.kr):nth-child(n+6){animation-delay:125ms}
+/* layout switch and wizard steps (View Transitions; browsers without it just switch) */
+body.vt-view #view{view-transition-name:view}
+body.vt-step #gbody,body.vt-step #cfbody{view-transition-name:step}
+::view-transition-old(view){animation:vtOut var(--d2) var(--e-exit) both}
+::view-transition-new(view){animation:vtIn var(--d4) var(--e-in) both}
+::view-transition-old(step){animation:stOutF var(--d3) var(--e-exit) both}
+::view-transition-new(step){animation:stInF var(--d4) var(--e-in) both}
+[data-dir="back"]::view-transition-old(step){animation-name:stOutB} [data-dir="back"]::view-transition-new(step){animation-name:stInB}
+@keyframes vtOut{to{opacity:0;transform:translateY(-6px)}} @keyframes vtIn{from{opacity:0;transform:translateY(10px)}}
+@keyframes stOutF{to{opacity:0;transform:translateX(-24px)}} @keyframes stInF{from{opacity:0;transform:translateX(28px)}}
+@keyframes stOutB{to{opacity:0;transform:translateX(24px)}} @keyframes stInB{from{opacity:0;transform:translateX(-28px)}}
+::view-transition-group(root){animation:none}
+/* toasts */
+#toasts{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:120;display:grid;gap:8px;justify-items:center;pointer-events:none;width:min(560px,calc(100vw - 24px))}
+.toast{pointer-events:auto;display:flex;align-items:center;gap:10px;background:var(--head);color:#fff;border-radius:12px;padding:8px 8px 8px 16px;box-shadow:var(--sh3);font-size:14px;font-weight:600;border-left:4px solid var(--yellow);transition:opacity var(--d4) var(--e-in),transform var(--d4) var(--e-in)}
+@starting-style{ .toast{opacity:0;transform:translateY(16px)} }
+.toast.out{opacity:0;transform:translateY(10px);transition-duration:var(--d3);transition-timing-function:var(--e-exit)}
+.toast span{flex:1}
+.toast .btn{background:var(--yellow);color:var(--on-yellow);border-color:var(--yellow-3)}
+.toast .ib{color:#fff;background:transparent;border-color:transparent}
+/* tabs and chips scroll smoothly into view; nothing moves for people who ask for less motion */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important} .has-ind>.ind{transition:none} }
+
 /* ============ responsive ============ */
 @media (max-width:1100px){ .tb{grid-template-columns:minmax(0,1fr)} .tb .stick{position:static} .db{grid-template-columns:minmax(0,260px) minmax(0,1fr)} .cf-steps .st small{display:none} }
 @media (max-width:860px){ .cf-hud{position:static;grid-template-columns:repeat(2,minmax(0,1fr));width:auto;margin-top:10px;max-height:none} .cf-steps{display:flex;overflow-x:auto;scrollbar-width:none} .cf-steps button{flex:none} .cf-steps .st{display:none} .cf-steps .st small{display:none} .cf-steps button[aria-selected="true"] .st{display:flex} }
@@ -449,7 +619,7 @@ body.v3max{overflow:hidden}
   .cf-dock{position:static}
   .chip{font-size:12.5px}
 }
-@container (max-width:380px){ .fld{grid-template-columns:minmax(0,1fr)} .fld .ctl{grid-column:1;grid-row:auto;margin-top:6px} .fld .ctl input{flex:1;max-width:150px} }
+@container (max-width:290px){ .fld{grid-template-columns:minmax(0,1fr)} .fld .ctl{grid-column:1;grid-row:auto;margin-top:6px} .fld .ctl input{flex:1;max-width:150px} }
 @media (max-height:620px){ .laydesc{display:none} .status{position:static!important} :root{--stickTop:8px!important} .cf-dock{position:static} }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
 @media print{
@@ -604,11 +774,11 @@ body.v3max{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.hw *{transition:none!important}}
 
 /* ---------- real 3D view ---------- */
-[hidden]{display:none!important}
-.v3{position:relative;width:100%;height:100%;min-height:360px;border-radius:10px;overflow:hidden;background:radial-gradient(130% 90% at 50% 0%,#f8fafc 0%,#e3e9f0 62%,#d0d9e3 100%)}
+[hidden]:not(.ddmenu,#pop,.drawer,.scrim,.v3-pop){display:none!important} /* those five animate out first (see app.css) */
+.v3{position:relative;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;background:radial-gradient(130% 90% at 50% 0%,#f8fafc 0%,#e3e9f0 62%,#d0d9e3 100%)}
 @media screen and (prefers-color-scheme:dark){:root:not([data-theme="light"]) .v3{background:radial-gradient(130% 90% at 50% 0%,#2a323d 0%,#171c23 70%,#0f1318 100%)}}
 :root[data-theme="dark"] .v3{background:radial-gradient(130% 90% at 50% 0%,#2a323d 0%,#171c23 70%,#0f1318 100%)}
-.viewer:not(.fit) .v3{height:min(80vh,820px)}
+.v3-stage{position:relative;flex:1 1 auto;min-height:0} /* the model fills exactly the room its window has */
 .v3 canvas{display:block;width:100%!important;height:100%!important;outline:none;cursor:grab}
 .v3 canvas:active{cursor:grabbing}
 .v3 canvas:focus-visible{box-shadow:inset 0 0 0 3px var(--link)}
@@ -622,18 +792,18 @@ body.v3max{overflow:hidden}
 .l3.outer{background:#3A3838;color:#FFCB05;border-color:#3A3838}
 .l3.bad{background:#fde8e6;border-color:#e5484d;color:#a3201b}
 .l3.hl{background:var(--orange)!important;color:#fff!important;border-color:var(--orange)!important}
-.v3-bar{position:absolute;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;pointer-events:none;z-index:2}
-.v3-top{top:8px} .v3-bot{bottom:8px;align-items:flex-end}
+.v3-bar{position:relative;flex:none;padding:6px 8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;pointer-events:none;z-index:2}
+.v3-top{border-bottom:1px solid rgba(0,0,0,.07)} .v3-bot{border-top:1px solid rgba(0,0,0,.07);align-items:center}
 .v3-grp{display:flex;gap:2px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:2px;pointer-events:auto;flex-wrap:wrap}
 .v3-grp button{border:0;background:none;min-height:32px;padding:4px 10px;font-size:12.5px;font-weight:650;color:#26313d;border-radius:8px}
 .v3-grp button:hover{background:rgba(255,203,5,.25)}
 .v3-grp button[aria-pressed="true"],.v3-grp button[aria-expanded="true"]{background:#3A3838;color:#FFCB05}
-.v3-pop{position:absolute;top:50px;right:8px;z-index:4;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;gap:4px;font-size:13px;color:#1d2a38}
+.v3-pop{position:absolute;top:6px;right:8px;z-index:4;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;gap:4px;font-size:13px;color:#1d2a38}
 .v3-pop label{display:flex;gap:8px;align-items:center;cursor:pointer;min-height:28px}
 .v3-pop .v3-sel{border-top:1px solid #e3e7ec;margin-top:4px;padding-top:6px;justify-content:space-between}
 .v3-pop select{font:inherit;padding:2px 4px}
 .v3-pop small{color:#5b6672;max-width:220px}
-.v3-hint{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);font-size:12px;color:#33404e;background:rgba(255,255,255,.88);padding:5px 10px;border-radius:8px;pointer-events:none;z-index:2;transition:opacity .3s;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+.v3-hint{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:12px;color:#33404e;background:rgba(255,255,255,.88);padding:5px 10px;border-radius:8px;pointer-events:none;z-index:2;transition:opacity .3s;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
 .v3-hint.gone{opacity:0} .v3-hint.flash{opacity:1;background:#1f2933;color:#fff}
 .v3-tip{position:absolute;max-width:270px;background:#111827;color:#fff;font-size:12.5px;line-height:1.38;padding:8px 10px;border-radius:9px;pointer-events:none;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .v3-tip b{display:block;margin-bottom:2px} .v3-tip em{display:block;color:#9fd0ff;font-style:normal;margin-top:4px}
@@ -642,6 +812,15 @@ body.v3max{overflow:hidden}
 @media (max-width:640px){ .v3-hint{display:none} .l3{font-size:11px;padding:2px 7px} .v3-grp button{padding:4px 8px} .v3-bot .v3-grp:first-child button{padding:4px 6px;font-size:12px} }
 @media (prefers-reduced-motion:reduce){ .v3-hint{transition:none} }
 .hw [tabindex]:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:3px}
+/* one row per bar; in a narrow window it scrolls sideways instead of eating the model's height */
+.v3-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:5px 6px;gap:6px}
+.v3-bar::-webkit-scrollbar{display:none}
+.v3-grp{flex-wrap:nowrap;flex:none}
+.v3-grp button{min-height:30px;white-space:nowrap}
+.vcanvas:has(> .v3){aspect-ratio:2/3}
+.viewer.stage .vcanvas:has(> .v3){aspect-ratio:auto}
+@container (max-height:380px){ .v3-hint{display:none} }
+.v3-stage{container-type:size}
 
 </style>
 </head>
@@ -719,6 +898,7 @@ body.v3max{overflow:hidden}
   <p class="about">Formulas, warnings and limits match 601102_R5.xlsx exactly. Plan sizes in the 3D view are illustrative.</p>
 </aside>
 <div id="pop" hidden role="dialog" aria-label="Edit value"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
 <script id="three">
 /**
  * @license
@@ -2469,19 +2649,20 @@ function init3D(){
   V3.ortho = new THREE.OrthographicCamera(-100, 100, 100, -100, -20000, 20000);
   V3.cam = V3.persp;
   const wrap = V3.wrap = document.createElement("div"); wrap.className = "v3";
-  wrap.innerHTML = `<svg class="v3-dims" aria-hidden="true"></svg><div class="v3-labels"></div>
-    <div class="v3-bar v3-top noprint" role="toolbar" aria-label="3D view controls">
+  // the control bars sit above and below the model, so they never cover it or its labels
+  wrap.innerHTML = `<div class="v3-bar v3-top noprint" role="toolbar" aria-label="3D view controls">
       <div class="v3-grp" role="group" aria-label="View">${[["iso","3/4","4"],["front","Front","1"],["side","Side","2"],["back","Back",""],["top","Top","3"]].map(([k,l,key])=>`<button data-v3view="${k}" title="${l} view${key?` (key ${key})`:""}">${l}</button>`).join("")}<button data-v3view="fit" title="Fit everything (F)" aria-label="Fit everything">⤧</button></div>
       <div class="v3-grp"><button data-v3walls title="Walls: cut-away hides the walls between you and the shaft">Walls: <b>Cut-away</b></button><button data-v3layers aria-expanded="false">Layers ▾</button><button data-v3spin aria-pressed="false" title="Turn slowly">Spin</button></div>
     </div>
+    <div class="v3-stage"><svg class="v3-dims" aria-hidden="true"></svg><div class="v3-labels"></div>
     <div class="v3-pop" hidden role="group" aria-label="Layers">${[["landings","Floors & doors"],["car","Cab & platform"],["frame","Car frame (sling)"],["jack","Jack & sheave"],["rails","Rails & brackets"],["ropes","Ropes"],["dims","Dimensions"],["labels","Labels"]].map(([k,l])=>`<label><input type="checkbox" data-v3layer="${k}" checked> ${l}</label>`).join("")}<label class="v3-sel">Cab size (plan) <select data-v3cab>${Object.keys(CAB_SIZES).map(k=>`<option value="${k}">${k.replace("x"," × ")}″</option>`).join("")}</select></label><small>Plan sizes are illustrative — heights come from the calculator.</small></div>
+    <div class="v3-hint noprint">Drag to turn · right-drag or two fingers to pan · Ctrl + scroll or pinch to zoom · double-click a part to zoom to it</div>
+    <div class="v3-tip" hidden></div></div>
     <div class="v3-bar v3-bot noprint">
       <div class="v3-grp" role="group" aria-label="Zoom to">${[["pit","Pit"],["bottom","Bottom floor"],["top","Top floor"],["over","Overhead"]].map(([k,l])=>`<button data-v3zone="${k}">${l}</button>`).join("")}</div>
       <div class="v3-grp"><button data-v3zoom="-1" aria-label="Zoom out">−</button><button data-v3zoom="1" aria-label="Zoom in">+</button></div>
-    </div>
-    <div class="v3-hint noprint">Drag to turn · right-drag or two fingers to pan · Ctrl + scroll or pinch to zoom · double-click a part to zoom to it</div>
-    <div class="v3-tip" hidden></div>`;
-  const cv = r.domElement; wrap.prepend(cv);
+    </div>`;
+  const cv = r.domElement; V3.stage = wrap.querySelector(".v3-stage"); V3.stage.prepend(cv);
   cv.tabIndex = 0; cv.setAttribute("role","img");
   cv.setAttribute("aria-label","3D hoistway model. Arrow keys turn it, 1 front, 2 side, 3 top, 4 three-quarter, F fit, plus and minus zoom, space rides the car.");
   const ctl = V3.ctl = new THREE.OrbitControls(V3.cam, cv);
@@ -2535,7 +2716,7 @@ function max3D(on){
   setTimeout(()=>{ size3D(); if (typeof paintViewers==="function") paintViewers(); dirty3D(); }, 30);
 }
 function size3D(){
-  if (!V3.wrap||!V3.r) return; const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight; if (!w||!h) return;
+  if (!V3.wrap||!V3.r) return; const w=V3.stage.clientWidth, h=V3.stage.clientHeight; if (!w||!h) return;
   V3.r.setSize(w,h,false); V3.persp.aspect=w/h; V3.persp.updateProjectionMatrix(); setOrtho(V3.orthoH||200);
 }
 function setOrtho(halfH){ const o=V3.ortho, a=V3.persp.aspect||1; V3.orthoH=halfH; o.left=-halfH*a; o.right=halfH*a; o.top=halfH; o.bottom=-halfH; o.updateProjectionMatrix(); }
@@ -2816,7 +2997,7 @@ function pick3D(e){
 function hover3D(e){
   const h=pick3D(e), tip=$(".v3-tip", V3.wrap);
   if (!h || !GLOSS[h.part]){ tip.hidden=true; V3.r.domElement.style.cursor="grab"; if (V3.hover){ V3.hover=null; setHL?.(null); } return; }
-  const G=GLOSS[h.part], rc=V3.wrap.getBoundingClientRect();
+  const G=GLOSS[h.part], rc=V3.stage.getBoundingClientRect();
   tip.innerHTML = `<b>${esc(G[0])}</b>${esc(G[1])}${h.cell?`<em>Click to edit or explain</em>`:""}`; tip.hidden=false;
   const x=e.clientX-rc.left, y=e.clientY-rc.top; tip.style.left=Math.max(6,Math.min(x+14, rc.width-tip.offsetWidth-8))+"px"; tip.style.top=Math.max(6,Math.min(y+14, rc.height-tip.offsetHeight-8))+"px";
   V3.r.domElement.style.cursor = h.cell ? "pointer" : "grab";
@@ -2856,7 +3037,7 @@ function loop3D(t){
 }
 // dimension chains + labels as a screen overlay: always beside the shaft, always facing you
 function overlay3D(){
-  const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight, cam=V3.cam, svg=$(".v3-dims",V3.wrap);
+  const w=V3.stage.clientWidth, h=V3.stage.clientHeight, cam=V3.cam, svg=$(".v3-dims",V3.wrap);
   const P=(x,y,z)=>{ const p=v3(x,y,z).project(cam); return {x:(p.x+1)/2*w, y:(1-p.y)/2*h, z:p.z}; };
   const b=V3.shaft, mid=(b.min.y+b.max.y)/2, corners=[[b.min.x,b.min.z],[b.max.x,b.min.z],[b.max.x,b.max.z],[b.min.x,b.max.z]];
   const sc=corners.map(([x,z])=>({x,z,s:P(x,mid,z)}));
@@ -2877,7 +3058,7 @@ function overlay3D(){
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`); svg.innerHTML = out;
   if (typeof HL!=="undefined" && HL) for (const el of svg.querySelectorAll(`[data-cell="${HL}"]`)) el.classList.add("hl");
   if (!V3.showLabels || !V3.labelEls) return;
-  const top=55, bot=h-47, down=Math.abs(cam.getWorldDirection(v3(0,0,0)).y)>.85; // looking straight down: part callouts would float, so leave them out
+  const top=14, bot=h-14, down=Math.abs(cam.getWorldDirection(v3(0,0,0)).y)>.85; // looking straight down: part callouts would float, so leave them out
   V3.labels.forEach((Lb,i)=>{ if (Lb.chain) return; const el=V3.labelEls[i]; if (!el||Lb.hide) return; const p=Lb.at(); const s=P(p.x,p.y,p.z);
     if (down || s.z>1 || s.y<top-12 || s.y>bot+12 || s.x<-20 || s.x>w+20){ lab.push({i, hide:true}); return; } lab.push({i, x:s.x, y:s.y, side:Lb.side==="P"?"R":"C", pt:true}); });
   const groups={};
@@ -3077,11 +3258,11 @@ let UID=0;
 function fld(cell, o={}){
   const m=IN[cell], id=`f${++UID}-${cell}`;
   return `<div class="fld${o.card?" opt":""}" data-cell="${cell}" data-fld="${cell}">
-    <label class="lab" for="${id}"><span class="badge">${m.tag}</span><span>${m.t}</span><span class="xl">${cell}</span></label>
-    ${o.nohint?"":`<div class="hint">${m.dyn?`<span data-text="${m.dyn}"></span> · `:""}${esc(m.hint)}</div>`}
+    <label class="lab" for="${id}"><span class="badge">${m.tag}</span><span>${m.t}</span><span class="ftin" data-ftin="${cell}"></span><span class="xl">${cell}</span></label>
+    ${o.nohint?"":`<div class="hint" title="${esc(m.hint)}">${m.dyn?`<span data-text="${m.dyn}"></span> · `:""}${esc(m.hint)}</div>`}
     <div class="ctl"><button class="step" data-step="-1" data-k2="${cell}" aria-label="Decrease ${esc(m.t)}" tabindex="-1">−</button><input id="${id}" type="text" inputmode="decimal" autocomplete="off" data-k="${cell}" aria-describedby="${id}-m"><span class="u">${unitOf(cell)}</span><button class="step" data-step="1" data-k2="${cell}" aria-label="Increase ${esc(m.t)}" tabindex="-1">+</button></div>
     ${o.picks&&PICKS[cell]?`<div class="picks" role="group" aria-label="Quick picks for ${esc(m.t)}"><span>Quick picks</span>${PICKS[cell].map(v=>`<button class="pick" data-apply="${cell}" data-val="${v}" data-pick="${cell}"${unitOf(cell)==="in"&&v>=12?` title="${ftin(v)}"`:""}>${unitOf(cell)==="in"?v+"″":v+" lb"}</button>`).join("")}</div>`:""}
-    <div class="sub2" id="${id}-m"><span class="ftin" data-ftin="${cell}"></span><span class="msg" data-msg="${cell}"></span>${m.rec!=null?`<button class="rec" data-recfor="${cell}" data-apply="${cell}" data-val="${m.rec}" hidden>Use recommended ${m.rec}″</button>`:""}</div>
+    <div class="sub2" id="${id}-m"><span class="msg" data-msg="${cell}"></span>${m.rec!=null?`<button class="rec" data-recfor="${cell}" data-apply="${cell}" data-val="${m.rec}" hidden>Use recommended ${m.rec}″</button>`:""}</div>
   </div>`;
 }
 function resRow(cell){
@@ -3193,14 +3374,14 @@ const excelCard = () => `<div class="card xl" style="margin-top:14px"><h2>Excel 
 
 /* ============================ layouts ============================ */
 const V={};
-const groupsHTML = (o={}) => GROUPS.map((g,i)=>`<section class="card"><div class="grp-h"><span class="n">${i+1}</span><h2>${g.t}</h2></div><p class="lead">${g.lead}</p>${g.cells.map(k=>fld(k,o)).join("")}</section>`).join("");
+const groupsHTML = (o={}) => `<section class="card grps">${GROUPS.map((g,i)=>`<div class="grp"><div class="grp-h"><span class="n">${i+1}</span><h2>${g.t}</h2><span class="gl">${g.lead}</span></div>${g.cells.map(k=>fld(k,o)).join("")}</div>`).join("")}</section>`;
 
 V.split = { build:()=>`<div class="split">
-    <div>${groupsHTML()}</div>
-    <div class="stick">${viewer()}${keyRes()}</div>
-  </div>
-  <div class="section-h"><h2>All results</h2><span class="muted" style="font-size:13px">Tap ⓘ to see how a value is worked out.</span></div>
-  <div class="rgrid">${resGroups()}</div>${excelCard()}` };
+    <div class="sp-in">${groupsHTML()}</div>
+    <div class="stick sp-v">${viewer()}${keyRes()}</div>
+    <div class="sp-res"><div class="section-h"><h2>All results</h2><span class="muted" style="font-size:13px">Tap ⓘ to see how a value is worked out.</span></div>
+      <div class="rgrid">${resGroups()}</div></div>
+  </div>${excelCard()}` };
 
 /* guided */
 const GSTEPS = [
@@ -3236,7 +3417,7 @@ function renderG(){
   update();
   if (!last) $("#gbody input")?.focus({preventScroll:true});
 }
-function goG(i){ gstep=Math.min(GSTEPS.length-1,Math.max(0,i)); store.set(K_STEP,gstep); renderG(); window.scrollTo({top:0,behavior:"smooth"}); }
+function goG(i){ const n=Math.min(GSTEPS.length-1,Math.max(0,i)), d=n-gstep; gstep=n; store.set(K_STEP,gstep); stepTransition(d, renderG); window.scrollTo({top:0,behavior:REDUCE?"auto":"smooth"}); }
 
 /* configurator: stage on top, options docked at the bottom */
 const CSTEPS = [
@@ -3287,7 +3468,7 @@ function renderCF(){
   const dk=$(".cf-dock"); if (dk) document.documentElement.style.setProperty("--dockH", dk.offsetHeight+"px");
   update();
 }
-function goC(i){ cstep=Math.min(CSTEPS.length-1,Math.max(0,i)); store.set(K_CSTEP,cstep); renderCF(); }
+function goC(i){ const n=Math.min(CSTEPS.length-1,Math.max(0,i)), d=n-cstep; cstep=n; store.set(K_CSTEP,cstep); stepTransition(d, renderCF); }
 
 /* drawing-first */
 let SEL=null;
@@ -3310,7 +3491,7 @@ function renderSel(){
 const stTile = (cell, label) => `<div class="tile st" data-cell="${cell}" data-st="${cell}"><h3><span>${label}</span><span class="stt" data-stt="${cell}"></span></h3><div class="big"><span data-out="${cell}"></span></div><div class="meter"><i data-meter="${cell}"></i></div><div class="sm" data-stsub="${cell}"></div></div>`;
 V.dash = {
   build:()=>`<div class="db"><aside><section class="card inp"><h2>Inputs</h2><p class="lead">Feet-inches work too, e.g. 8'2".</p>${IN_UI.map(k=>fld(k,{nohint:1})).join("")}</section></aside>
-    <div><div class="tiles">
+    <div class="db-main"><div class="tiles">
       ${stTile("E31","Sheave clearance T")}${stTile("E33","Cab clearance T2")}
       <div class="tile st" data-cell="E20" data-pit><h3><span>Pit depth D</span><span class="stt" data-pitst></span></h3><div class="big"><span data-out="E20"></span></div><div class="sm">needs at least <b data-pitneed></b></div></div>
       <div class="tile st" data-cell="E26" data-load><h3><span>Load W1 + W2</span><span class="stt" data-loadst></span></h3><div class="big"><span data-loadv></span><span class="u">lb</span></div><div class="meter"><i data-loadm></i></div><div class="sm">limit 1679 lb</div></div>
@@ -3323,8 +3504,8 @@ V.dash = {
       <div class="tile" data-cell="L61"><h3>Pressure</h3><div class="big"><span data-out="L61"></span><span class="u">psi</span></div><div class="sm">full load · <b data-out="L59"></b> psi empty</div></div>
       <div class="tile" data-cell="L63"><h3>Oil</h3><div class="big"><span data-out="L63"></span><span class="u">gal</span></div><div class="sm">to fill · <b data-out="L65"></b> gal to extend</div></div>
     </div>
-    <div style="margin-top:14px">${viewer()}</div>
-    <div class="section-h"><h2>All results</h2></div><div class="rgrid">${resGroups()}</div>${excelCard()}</div></div>`,
+    <div class="section-h"><h2>All results</h2></div><div class="rgrid">${resGroups()}</div></div>
+    <div class="stick db-v">${viewer()}</div></div>${excelCard()}`,
   update(c){
     for (const cell of ["E31","E33"]){ const v=c[cell], ok=clearOK(c,cell), t=$(`[data-st="${cell}"]`); if (!t) continue;
       t.classList.toggle("ok",ok); t.classList.toggle("bad",!ok); $(`[data-stt="${cell}"]`).textContent = ok?"✓ OK":"✕ Too low";
@@ -3404,7 +3585,7 @@ const getDefault=()=>{ const d=store.get(K_LAY); return LAYOUTS.some(l=>l.id===d
 let current=null;
 function renderTabs(){
   const def=getDefault(), L=LAYOUTS.find(l=>l.id===current);
-  $("#tabs").innerHTML = LAYOUTS.map(l=>`<button role="tab" data-layout="${l.id}" aria-selected="${l.id===current}" aria-label="${esc(l.name)}" title="${esc(l.desc)}">${ico(l.icon)}<span>${l.name}</span>${l.id===def?`<span class="star" title="Opens at start-up">${ico("star-f")}</span>`:""}</button>`).join("");
+  $("#tabs").innerHTML = LAYOUTS.map(l=>`<button role="tab" data-layout="${l.id}" aria-selected="${l.id===current}" aria-label="${esc(l.name)}" title="${esc(l.desc)} (key ${LAYOUTS.indexOf(l)+1})">${ico(l.icon)}<span>${l.name}</span>${l.id===def?`<span class="star" title="Opens at start-up">${ico("star-f")}</span>`:""}</button>`).join("");
   const b=$("#mkdef"); const is=current===def;
   b.innerHTML = ico(is?"star-f":"star"); b.classList.toggle("is", is);
   b.title = is ? `“${L.name}” opens at start-up` : `Open “${L.name}” at start-up`; b.setAttribute("aria-label", b.title);
@@ -3416,7 +3597,15 @@ function applyTheme(t){ if (t==="light"||t==="dark") document.documentElement.da
   $$("#set-theme [data-theme]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.theme===(t||"auto"))); }
 function applySize(z){ document.documentElement.dataset.dsize = z||"std"; $$("#set-size [data-size]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.size===(z||"std"))); }
 function openSettings(on){ const p=$("#settings"), sc=$("#scrim"); p.hidden=!on; sc.hidden=!on; $("#setb").setAttribute("aria-expanded", on); if (on) p.querySelector("select,button")?.focus(); }
+// switching layouts crossfades the main area; the header, tabs and chips stay where they are
 function show(id){
+  if (!V[id]) id=getDefault();
+  if (current && id!==current && document.startViewTransition && !REDUCE){
+    document.body.classList.add("vt-view"); const vt=document.startViewTransition(()=>showNow(id));
+    vt.finished.finally(()=>document.body.classList.remove("vt-view")); return; }
+  showNow(id);
+}
+function showNow(id){
   if (!V[id]) id=getDefault();
   current=id; CUR=V[id]; SEL=null; HL=null;
   document.body.classList.toggle("report", id==="report");
@@ -3433,7 +3622,8 @@ function ptOf(e, el){ if (e.detail!==0 && (e.pageX||e.pageY)) return [e.pageX, e
 function cellClick(cell, e, el){ setHL(cell); if (current==="drawing"){ SEL=cell; renderSel(); return; } if (IN[cell] && focusCell(cell)){ closePop(); return; } openPop(cell, ...ptOf(e, el||e.target)); }
 function focusCell(cell){
   const inp = $$(`#view input[data-k="${cell}"]:not([type=range])`).find(i=>i.offsetParent);
-  if (inp){ inp.focus({preventScroll:true}); inp.scrollIntoView({block:"center",behavior:"smooth"}); inp.select?.(); return true; }
+  if (inp){ inp.focus({preventScroll:true}); inp.scrollIntoView({block:"center",behavior:REDUCE?"auto":"smooth"}); inp.select?.();
+    const f=inp.closest("[data-fld],.sl,tr"); if (f && !REDUCE){ f.classList.remove("pulse"); void f.offsetWidth; f.classList.add("pulse"); } return true; }
   return false;
 }
 function openPop(cell, x, y){
@@ -3449,7 +3639,7 @@ function openPop(cell, x, y){
   pop.style.left=sx+"px"; pop.style.top=sy+"px";
   pop.querySelector("input")?.focus({preventScroll:true});
 }
-const closePop=()=>{ const p=$("#pop"); if (!p.hidden){ p.hidden=true; p.innerHTML=""; } };
+const closePop=()=>{ const p=$("#pop"); if (!p.hidden){ p.hidden=true; setTimeout(()=>{ if (p.hidden) p.innerHTML=""; }, 160); } }; // clear after it has faded out
 
 $("#logo").src=LOGO_HEAD;
 $("#tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-layout]"); if (b) show(b.dataset.layout); });
@@ -3471,8 +3661,8 @@ $("#reset").onclick=()=>{ if (!confirm("Put every input back to the values saved
 $("#printb").onclick=()=>print();
 // Printing (button, menu or Ctrl+P) always gives the one-page job sheet, whichever layout is open.
 let printBack=null;
-addEventListener("beforeprint",()=>{ if (current!=="report"){ printBack=current; show("report"); } });
-addEventListener("afterprint",()=>{ if (printBack){ const b=printBack; printBack=null; show(b); } });
+addEventListener("beforeprint",()=>{ if (current!=="report"){ printBack=current; showNow("report"); } });
+addEventListener("afterprint",()=>{ if (printBack){ const b=printBack; printBack=null; showNow(b); } });
 
 document.addEventListener("input",e=>{
   const el=e.target.closest("[data-k]"); if (!el) return;
@@ -3510,7 +3700,9 @@ document.addEventListener("click",e=>{
   const pop=$("#pop"); if (!pop.hidden && !t.closest("#pop") && !t.closest("[data-vcanvas]")) closePop();
   if (t.closest("[data-popx]")) return closePop();
   const st=t.closest("[data-step]"); if (st) return bump(st.dataset.k2, +st.dataset.step, e.shiftKey);
-  const ap=t.closest("[data-apply]"); if (ap){ setVal(ap.dataset.apply, ap.dataset.val); setHL(ap.dataset.apply); return; }
+  const ap=t.closest("[data-apply]"); if (ap){ const k=ap.dataset.apply, before=state[k], isFix=!!ap.closest(".prob,.sub2");
+    setVal(k, ap.dataset.val); setHL(k);
+    if (isFix) toast(`${ap.textContent.trim()} — done`, ()=>{ setVal(k, before); setHL(k); }); return; }
   const go=t.closest("[data-go]"); if (go){ if (current==="config"){ const i=CSTEPS.findIndex(s=>s.cells.includes(go.dataset.go)); if (i>=0) goC(i); } if (current==="guided"){ const i=GSTEPS.findIndex(s=>s.cells.includes(go.dataset.go)); if (i>=0) goG(i); } if (!focusCell(go.dataset.go)) openPop(go.dataset.go, e.pageX, e.pageY); return; }
   const fc=t.closest("[data-focus]"); if (fc){ const cell=fc.dataset.focus; if (!cell){ $("[data-probs]")?.scrollIntoView({block:"start",behavior:"smooth"}); return; } setHL(cell); if (IN[cell]) { if (!focusCell(cell)) openPop(cell,e.pageX,e.pageY); } else { const r=$(`#view [data-res="${cell}"],#view [data-kr="${cell}"],#view [data-st="${cell}"]`); r?.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
   const how=t.closest("[data-how]"); if (how){ how.closest(".res").classList.toggle("open"); return; }
@@ -3544,7 +3736,57 @@ document.addEventListener("mouseout",e=>{ if (!e.relatedTarget || !e.relatedTarg
 function measureTop(){ const s=$(".status"); const st=getComputedStyle(s).position==="sticky"; document.documentElement.style.setProperty("--stickTop", (st ? s.offsetHeight+8 : 8)+"px"); }
 let rsz; window.addEventListener("resize",()=>{ clearTimeout(rsz); rsz=setTimeout(()=>{ measureTop(); paintViewers(); },120); });
 window.addEventListener("hashchange",()=>{ const id=location.hash.slice(1); if (id!==current && V[id]) show(id); });
+/* ============================ motion & quality of life ============================ */
+// a pill slides under the selected tab / pressed segment instead of jumping
+function syncInd(){
+  for (const box of $$(".tabs, .seg")){
+    const on=box.querySelector(':scope > [aria-selected="true"], :scope > [aria-pressed="true"]');
+    let ind=box.querySelector(":scope > .ind");
+    if (!on){ if (ind) ind.style.opacity="0"; continue; }
+    const fresh=!ind; if (fresh){ ind=document.createElement("i"); ind.className="ind"; ind.setAttribute("aria-hidden","true"); box.prepend(ind); box.classList.add("has-ind"); }
+    const pos=`${on.offsetLeft}|${on.offsetTop}|${on.offsetWidth}|${on.offsetHeight}`;
+    if (pos===ind.dataset.pos && !fresh) continue;
+    if (fresh && box.dataset.prev){ const [x,y,w,h]=box.dataset.prev.split("|"); Object.assign(ind.style,{transition:"none",transform:`translate(${x}px,${y}px)`,width:w+"px",height:h+"px"}); void ind.offsetWidth; ind.style.transition=""; }
+    else if (fresh){ ind.style.transition="none"; requestAnimationFrame(()=>ind.style.transition=""); }
+    const [x,y,w,h]=pos.split("|"); Object.assign(ind.style,{opacity:"1",transform:`translate(${x}px,${y}px)`,width:w+"px",height:h+"px"});
+    ind.dataset.pos=box.dataset.prev=pos;
+  }
+}
+new MutationObserver(ms=>{ if (ms.some(m=>m.attributeName==="aria-selected"||m.attributeName==="aria-pressed"||m.type==="childList")) requestAnimationFrame(syncInd); })
+  .observe(document.body,{subtree:true,attributes:true,attributeFilter:["aria-selected","aria-pressed"],childList:true});
+addEventListener("resize",()=>requestAnimationFrame(syncInd));
+// wizard steps slide in the direction you are going
+function stepTransition(dir, render){
+  if (!dir || !document.startViewTransition || REDUCE) return render();
+  document.documentElement.dataset.dir = dir>0 ? "fwd" : "back"; document.body.classList.add("vt-step");
+  document.startViewTransition(render).finished.finally(()=>document.body.classList.remove("vt-step"));
+}
+// small notices with an Undo button
+function toast(msg, undo){
+  const box=$("#toasts"); while (box.children.length>=3) box.firstChild.remove();
+  const el=document.createElement("div"); el.className="toast";
+  el.innerHTML=`<span>${esc(msg)}</span>${undo?`<button class="btn sm">Undo</button>`:""}<button class="ib" aria-label="Dismiss">${ico("x")}</button>`;
+  const close=()=>{ el.classList.add("out"); setTimeout(()=>el.remove(), 220); if (LASTUNDO===undo) LASTUNDO=null; };
+  if (undo){ el.querySelector(".btn").onclick=()=>{ undo(); close(); }; LASTUNDO=()=>{ undo(); close(); }; }
+  el.querySelector(".ib").onclick=close;
+  let t=setTimeout(close, 6000); el.onmouseenter=()=>clearTimeout(t); el.onmouseleave=()=>{ t=setTimeout(close, 2500); };
+  box.append(el);
+}
+let LASTUNDO=null;
+// the section you click or work in is highlighted
+document.addEventListener("pointerdown",e=>{
+  const sec=e.target.closest?.("#view .grp, #view .card:not(.grps), #view .tile, #view .kr, #view .prob, #view .fld.opt, #view .sl, .probwrap .prob");
+  for (const el of $$(".picked")) if (el!==sec) el.classList.remove("picked");
+  sec?.classList.add("picked");
+});
+// keyboard: 1–8 switch layouts, Ctrl/⌘+Z undoes the last one-click fix (when you aren't typing in a box)
+document.addEventListener("keydown",e=>{
+  const typing=e.target.matches?.("input,select,textarea,[contenteditable],canvas");
+  if (!typing && !e.altKey && !e.ctrlKey && !e.metaKey && /^[1-8]$/.test(e.key)){ const L=LAYOUTS[+e.key-1]; if (L){ show(L.id); e.preventDefault(); } }
+  if (!typing && (e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z" && LASTUNDO){ e.preventDefault(); LASTUNDO(); }
+});
 show(location.hash.slice(1) || getDefault());
+syncInd();
 
 </script>
 </body>
