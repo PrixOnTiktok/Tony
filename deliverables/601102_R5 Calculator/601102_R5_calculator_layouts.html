@@ -429,28 +429,43 @@ nav.layouts{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;margin:1
 @media (prefers-reduced-motion:reduce){.hw *{transition:none!important}}
 
 /* ---------- real 3D view ---------- */
-.v3{position:relative;width:100%;height:100%;min-height:360px;border-radius:10px;overflow:hidden;touch-action:none;background:radial-gradient(130% 90% at 50% 0%,#fbfcfe 0%,#e6ebf2 62%,#d2dae5 100%)}
+[hidden]{display:none!important}
+.v3{position:relative;width:100%;height:100%;min-height:360px;border-radius:10px;overflow:hidden;background:radial-gradient(130% 90% at 50% 0%,#f8fafc 0%,#e3e9f0 62%,#d0d9e3 100%)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .v3{background:radial-gradient(130% 90% at 50% 0%,#2a323d 0%,#171c23 70%,#0f1318 100%)}}
 :root[data-theme="dark"] .v3{background:radial-gradient(130% 90% at 50% 0%,#2a323d 0%,#171c23 70%,#0f1318 100%)}
 .viewer:not(.fit) .v3{height:min(80vh,820px)}
 .v3 canvas{display:block;width:100%!important;height:100%!important;outline:none;cursor:grab}
 .v3 canvas:active{cursor:grabbing}
 .v3 canvas:focus-visible{box-shadow:inset 0 0 0 3px var(--accent)}
+.v3-dims{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.v3-dims line,.v3-dims path{stroke:#1f5fbf;stroke-width:1.3;fill:none}
+.v3-dims .ext{stroke-dasharray:3 3;stroke-width:.9;opacity:.6}
+.v3-dims .bad line,.v3-dims .bad path{stroke:#d6453d}
+.v3-dims .hl line,.v3-dims .hl path{stroke:#ff6a00;stroke-width:2.6}
 .v3-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.l3{position:absolute;left:0;top:0;pointer-events:auto;font:700 12.5px var(--mono);padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.93);border:1px solid #c9d3df;color:#1d2a38;min-height:0;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.14);line-height:1.4;will-change:transform}
+.l3{position:absolute;left:0;top:0;pointer-events:auto;font:700 12.5px var(--mono);padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.94);border:1px solid #c9d3df;color:#1d2a38;min-height:0;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.14);line-height:1.4;will-change:transform}
 .l3.outer{background:#1f5fbf;color:#fff;border-color:#1f5fbf}
 .l3.bad{background:#fde8e6;border-color:#e5484d;color:#a3201b}
 .l3.hl{background:var(--orange)!important;color:#fff!important;border-color:var(--orange)!important}
 .v3-bar{position:absolute;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;pointer-events:none;z-index:2}
 .v3-top{top:8px} .v3-bot{bottom:8px;align-items:flex-end}
-.v3-grp{display:flex;gap:2px;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:2px;pointer-events:auto;flex-wrap:wrap}
+.v3-grp{display:flex;gap:2px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:2px;pointer-events:auto;flex-wrap:wrap}
 .v3-grp button{border:0;background:none;min-height:32px;padding:4px 10px;font-size:12.5px;font-weight:650;color:#26313d;border-radius:8px}
 .v3-grp button:hover{background:rgba(31,95,191,.12)}
-.v3-grp button[aria-pressed="true"]{background:#1f5fbf;color:#fff}
-.v3-hint{font-size:11.5px;color:#43505e;background:rgba(255,255,255,.8);padding:4px 9px;border-radius:8px}
+.v3-grp button[aria-pressed="true"],.v3-grp button[aria-expanded="true"]{background:#1f5fbf;color:#fff}
+.v3-pop{position:absolute;top:50px;right:8px;z-index:4;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;gap:4px;font-size:13px;color:#1d2a38}
+.v3-pop label{display:flex;gap:8px;align-items:center;cursor:pointer;min-height:28px}
+.v3-pop .v3-sel{border-top:1px solid #e3e7ec;margin-top:4px;padding-top:6px;justify-content:space-between}
+.v3-pop select{font:inherit;padding:2px 4px}
+.v3-pop small{color:#5b6672;max-width:220px}
+.v3-hint{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);font-size:12px;color:#33404e;background:rgba(255,255,255,.88);padding:5px 10px;border-radius:8px;pointer-events:none;z-index:2;transition:opacity .3s;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+.v3-hint.gone{opacity:0} .v3-hint.flash{opacity:1;background:#1f2933;color:#fff}
 .v3-tip{position:absolute;max-width:270px;background:#111827;color:#fff;font-size:12.5px;line-height:1.38;padding:8px 10px;border-radius:9px;pointer-events:none;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .v3-tip b{display:block;margin-bottom:2px} .v3-tip em{display:block;color:#9fd0ff;font-style:normal;margin-top:4px}
-@media (max-width:640px){ .v3-hint{display:none} .v3-grp button{padding:4px 8px} }
+.viewer.max{position:fixed!important;inset:8px;z-index:200;height:auto!important;max-height:none!important;box-shadow:0 0 0 100vmax rgba(10,14,20,.55)}
+body.v3max{overflow:hidden}
+@media (max-width:640px){ .v3-hint{display:none} .l3{font-size:11px;padding:2px 7px} .v3-grp button{padding:4px 8px} .v3-bot .v3-grp:first-child button{padding:4px 6px;font-size:12px} }
+@media (prefers-reduced-motion:reduce){ .v3-hint{transition:none} }
 
 </style>
 </head>
@@ -2145,350 +2160,478 @@ const DSTYLES = [
 function drawHoistway(c, o){ FS = o.fs||1; const st = DSTYLES.find(d=>d.id===o.style) || DSTYLES[0]; return st.paint(c, {...o, style:st.id}); }
 
 /* =====================================================================
-   REAL 3D VIEW — three.js r147 (inlined). Heights come from the calculator
-   (same model as the 2D drawings); plan sizes come from SPEC below.
-   Model axes: x = across the hoistway (left→right seen from the landing),
-   y = up from the pit floor, z = depth (back/rail wall at z=0 → door wall).
+   REAL 3D VIEW — three.js r147 (inlined, works offline).
+   Heights come from the calculator (same model as the 2D drawings); plan
+   sizes follow the OLS T601 data sheets (see plan3D). Model axes: x = across the hoistway (left→right
+   seen from the landing), y = up from the pit floor, z = depth (rail wall
+   at z=0 → landing/door wall at z=HD).
+   Viewer conventions follow CAD/product viewers: perspective for free orbit
+   and 3/4, orthographic for Front/Side/Back/Top, render on demand, walls
+   that face you are cut away, dimensions drawn as a screen overlay.
    ===================================================================== */
-const SPEC = {"W": 60, "D": 68, "wall": 5, "back": 8, "slab": 8, "landX": 30, "landZ": 54, "dimOff": 16, "door": {"x0": 12, "x1": 48, "h": 80}, "rail": {"foot": 3.5, "footT": 0.4, "blade": 2.44, "bladeT": 0.63}, "railX": [16.22, 43.78], "railZ": 0.0, "jack": {"x": 36, "z": 10, "cyl70": 3.6, "cyl80": 4.1, "pl70": 1.38, "pl80": 1.57}, "sheave": {"r": 6, "w": 8, "d": 16}, "deh": {"x": 36, "z": 3.5}, "hitchZ": 15.5, "frame": {"stileW": 3, "stileD": 4, "gap": 2.6, "below": 4.43, "above": 12.45}, "cab": {"x0": 12, "x1": 48, "z0": 16, "z1": 64, "wall": 1}};
 
-const V3 = {ok:null, r:null, scene:null, cam:null, ctl:null, stat:null, mov:null, key:"", host:null, wrap:null, labels:[], dims:[],
-  walls:[], parts:[], raf:0, mode:"cut", showLabels:true, tween:null, hover:null, mats:null, f:null, g:null};
+const V3 = {ok:null, r:null, scene:null, cam:null, persp:null, ortho:null, ctl:null, stat:null, mov:null, key:"", host:null, wrap:null,
+  labels:[], chains:[], walls:[], parts:[], raf:0, mode:"cut", showLabels:true, showDims:true, tween:null, hover:null, mats:null,
+  g:null, dirty:true, active:false, cabSize:"36x48", layers:{landings:true, car:true, frame:true, jack:true, rails:true, ropes:true}};
 function has3D(){
   if (V3.ok!==null) return V3.ok;
   try { const cv=document.createElement("canvas"); V3.ok = !!(window.THREE && THREE.OrbitControls && (cv.getContext("webgl2")||cv.getContext("webgl"))); } catch { V3.ok=false; }
   return V3.ok;
 }
+const dirty3D = () => { V3.dirty = true; };
 function m3mats(){
   if (V3.mats) return V3.mats;
-  if (THREE.ColorManagement) THREE.ColorManagement.legacyMode = false; // treat hex colours as sRGB
-  const M=(o)=>new THREE.MeshStandardMaterial(o);
+  if (THREE.ColorManagement) THREE.ColorManagement.legacyMode = false; // hex colours are sRGB
+  const P = {polygonOffset:true, polygonOffsetFactor:1, polygonOffsetUnits:1};
+  const M=(o)=>new THREE.MeshStandardMaterial({...P, ...o});
   V3.mats = {
-    conc:M({color:0xc9ced6, roughness:.95, metalness:0}), concDk:M({color:0xa9b1bc, roughness:.95}),
-    slab:M({color:0xd5d0c6, roughness:.9}), floorTop:M({color:0xb99a74, roughness:.75}),
-    steel:M({color:0x56616e, roughness:.55, metalness:.45}), steelLt:M({color:0x8994a1, roughness:.45, metalness:.55}),
-    rail:M({color:0x6f7a86, roughness:.35, metalness:.75}), jack:M({color:0x2f6fd6, roughness:.35, metalness:.3}),
-    chrome:M({color:0xf2f5f8, roughness:.12, metalness:1}), brass:M({color:0xc58b3c, roughness:.45, metalness:.35}),
-    frame:M({color:0x2e3a48, roughness:.45, metalness:.55}), cab:M({color:0xd9b98c, roughness:.55}), cabIn:M({color:0xf6ead6, roughness:.7}),
-    cabFloor:M({color:0x8a6a45, roughness:.7}), gate:M({color:0x9fb3c8, roughness:.3, metalness:.2, transparent:true, opacity:.35, depthWrite:false}),
-    rope:M({color:0x222831, roughness:.6, metalness:.6}), orange:M({color:0xf08a24, roughness:.5, metalness:.2}),
-    door:M({color:0x7a8794, roughness:.5, metalness:.4}), glass:M({color:0xc9d6e6, roughness:.2, transparent:true, opacity:.10, depthWrite:false}),
-    hide:M({visible:false}),
+    conc:M({color:0xc4c9d0, roughness:.95}), concDk:M({color:0xa3a8ae, roughness:.95}), pit:M({color:0x9aa0a8, roughness:.95}),
+    slab:M({color:0xd3cec4, roughness:.9}), floorTop:M({color:0xb99a74, roughness:.7}),
+    steel:M({color:0x4a5563, roughness:.55, metalness:.45}), steelLt:M({color:0x8994a1, roughness:.45, metalness:.6}),
+    rail:M({color:0x6b7480, roughness:.42, metalness:.7}), jack:M({color:0x2f5f9f, roughness:.4, metalness:.25}),
+    chrome:M({color:0xf2f4f6, roughness:.08, metalness:1, envMapIntensity:1.2}), sheave:M({color:0xd9a400, roughness:.5, metalness:.3}),
+    frame:M({color:0xd9a400, roughness:.5, metalness:.3}), cab:M({color:0xc89c6b, roughness:.6}), cabIn:M({color:0xf3e7d3, roughness:.75}),
+    cabFloor:M({color:0x7a5a38, roughness:.7}), gate:M({color:0x8fa6bf, roughness:.3, metalness:.3, transparent:true, opacity:.32, depthWrite:false, side:THREE.DoubleSide}),
+    rope:M({color:0x1f242b, roughness:.55, metalness:.6}), orange:M({color:0xf07a1a, roughness:.5, metalness:.2}),
+    door:M({color:0x6f7c89, roughness:.45, metalness:.45}), glass:M({color:0xc9d1d9, roughness:.2, transparent:true, opacity:.16, depthWrite:false, side:THREE.DoubleSide}),
+    hide:new THREE.MeshBasicMaterial({visible:false}),
     hl:M({color:0xff7a1a, roughness:.4, emissive:0xff5a00, emissiveIntensity:.35}),
-    bad:M({color:0xe5484d, roughness:.5, transparent:true, opacity:.55, depthWrite:false}),
-    edge:new THREE.LineBasicMaterial({color:0x1d2630, transparent:true, opacity:.28}),
-    edgeGhost:new THREE.LineBasicMaterial({color:0x4b5b6e, transparent:true, opacity:.45}),
-    dim:new THREE.LineBasicMaterial({color:0x1f5fbf}), dimBad:new THREE.LineBasicMaterial({color:0xd6453d}), dimHl:new THREE.LineBasicMaterial({color:0xff6a00}),
+    bad:M({color:0xe5484d, roughness:.5, transparent:true, opacity:.5, depthWrite:false}),
+    edge:new THREE.LineBasicMaterial({color:0x1f2933, transparent:true, opacity:.5}),
+    edgeGhost:new THREE.LineBasicMaterial({color:0x3e4c5c, transparent:true, opacity:.4}),
   };
   return V3.mats;
 }
 function init3D(){
   const r = V3.r = new THREE.WebGLRenderer({antialias:true, alpha:true, preserveDrawingBuffer:true});
-  r.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  r.setPixelRatio(Math.min(window.devicePixelRatio||1, matchMedia("(pointer:coarse)").matches ? 1.5 : 2));
   r.outputEncoding = THREE.sRGBEncoding; r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0;
-  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap; r.shadowMap.autoUpdate = false;
   r.setClearColor(0x000000, 0);
   const sc = V3.scene = new THREE.Scene();
-  try { const pm = new THREE.PMREMGenerator(r); sc.environment = pm.fromScene(new THREE.RoomEnvironment(), .04).texture; } catch {}
-  sc.add(new THREE.HemisphereLight(0xffffff, 0x9aa4b0, .45));
-  const sun = V3.sun = new THREE.DirectionalLight(0xfff6ea, 1.35); sun.castShadow = true; sun.shadow.mapSize.set(2048,2048); sun.shadow.bias=-.0004; sun.shadow.normalBias=.6;
-  sc.add(sun, sun.target);
-  const fill = new THREE.DirectionalLight(0xdfe8ff, .35); fill.position.set(-200, 150, 260); sc.add(fill);
-  V3.cam = new THREE.PerspectiveCamera(32, 1, 2, 8000);
+  try { const pm = new THREE.PMREMGenerator(r); sc.environment = pm.fromScene(new THREE.RoomEnvironment(), .04).texture; pm.dispose(); } catch {}
+  sc.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, .55));
+  const sun = V3.sun = new THREE.DirectionalLight(0xffffff, 1.25); sun.castShadow = true; sun.shadow.mapSize.set(1024, 2048);
+  sun.shadow.bias = -.0005; sun.shadow.normalBias = .8; sc.add(sun, sun.target);
+  const fill = new THREE.DirectionalLight(0xe6eeff, .3); fill.position.set(-300, 200, 400); sc.add(fill);
+  V3.persp = new THREE.PerspectiveCamera(30, 1, 2, 20000);
+  V3.ortho = new THREE.OrthographicCamera(-100, 100, 100, -100, -20000, 20000);
+  V3.cam = V3.persp;
   const wrap = V3.wrap = document.createElement("div"); wrap.className = "v3";
-  wrap.innerHTML = `<div class="v3-labels" aria-hidden="false"></div>
-    <div class="v3-bar v3-top noprint" role="toolbar" aria-label="3D view">
-      <div class="v3-grp">${[["iso","3/4"],["front","Front"],["side","Side"],["back","Back"],["top","Top"]].map(([k,l])=>`<button data-v3view="${k}">${l}</button>`).join("")}<button data-v3view="fit" title="Reset the view">⟲</button></div>
-      <div class="v3-grp"><button data-v3walls title="Walls: cut-away hides the walls that face you">Walls: <b>Cut-away</b></button><button data-v3labels aria-pressed="true">Labels</button><button data-v3spin aria-pressed="false">Spin</button></div>
+  wrap.innerHTML = `<svg class="v3-dims" aria-hidden="true"></svg><div class="v3-labels"></div>
+    <div class="v3-bar v3-top noprint" role="toolbar" aria-label="3D view controls">
+      <div class="v3-grp" role="group" aria-label="View">${[["iso","3/4","4"],["front","Front","1"],["side","Side","2"],["back","Back",""],["top","Top","3"]].map(([k,l,key])=>`<button data-v3view="${k}" title="${l} view${key?` (key ${key})`:""}">${l}</button>`).join("")}<button data-v3view="fit" title="Fit everything (F)" aria-label="Fit everything">⤧</button></div>
+      <div class="v3-grp"><button data-v3walls title="Walls: cut-away hides the walls between you and the shaft">Walls: <b>Cut-away</b></button><button data-v3layers aria-expanded="false">Layers ▾</button><button data-v3spin aria-pressed="false" title="Turn slowly">Spin</button><button data-v3max aria-pressed="false" title="Full screen">⤢</button></div>
     </div>
-    <div class="v3-bar v3-bot noprint"><span class="v3-hint">Drag to turn · scroll or pinch to zoom · right-drag or two fingers to pan · double-click a part to zoom to it</span>
-      <div class="v3-grp"><button data-v3zoom="-1" aria-label="Zoom out">−</button><button data-v3zoom="1" aria-label="Zoom in">+</button></div></div>
+    <div class="v3-pop" hidden role="group" aria-label="Layers">${[["landings","Floors & doors"],["car","Cab & platform"],["frame","Car frame (sling)"],["jack","Jack & sheave"],["rails","Rails & brackets"],["ropes","Ropes"],["dims","Dimensions"],["labels","Labels"]].map(([k,l])=>`<label><input type="checkbox" data-v3layer="${k}" checked> ${l}</label>`).join("")}<label class="v3-sel">Cab size (plan) <select data-v3cab>${Object.keys(CAB_SIZES).map(k=>`<option value="${k}">${k.replace("x"," × ")}″</option>`).join("")}</select></label><small>Plan sizes are illustrative — heights come from the calculator.</small></div>
+    <div class="v3-bar v3-bot noprint">
+      <div class="v3-grp" role="group" aria-label="Zoom to">${[["pit","Pit"],["bottom","Bottom floor"],["top","Top floor"],["over","Overhead"]].map(([k,l])=>`<button data-v3zone="${k}">${l}</button>`).join("")}</div>
+      <div class="v3-grp"><button data-v3zoom="-1" aria-label="Zoom out">−</button><button data-v3zoom="1" aria-label="Zoom in">+</button></div>
+    </div>
+    <div class="v3-hint noprint">Drag to turn · right-drag or two fingers to pan · Ctrl + scroll or pinch to zoom · double-click a part to zoom to it</div>
     <div class="v3-tip" hidden></div>`;
-  wrap.prepend(r.domElement); r.domElement.tabIndex = 0; r.domElement.setAttribute("aria-label","3D hoistway model. Arrow keys turn it, plus and minus zoom.");
-  const ctl = V3.ctl = new THREE.OrbitControls(V3.cam, r.domElement);
+  const cv = r.domElement; wrap.prepend(cv);
+  cv.tabIndex = 0; cv.setAttribute("role","img");
+  cv.setAttribute("aria-label","3D hoistway model. Arrow keys turn it, 1 front, 2 side, 3 top, 4 three-quarter, F fit, plus and minus zoom, space rides the car.");
+  const ctl = V3.ctl = new THREE.OrbitControls(V3.cam, cv);
   ctl.enableDamping = true; ctl.dampingFactor = .09; ctl.screenSpacePanning = true; ctl.rotateSpeed = .8; ctl.zoomSpeed = .9;
-  ctl.minDistance = 30; ctl.maxDistance = 4000; ctl.minPolarAngle = .02; ctl.maxPolarAngle = Math.PI*.98; ctl.autoRotateSpeed = 1.4;
-  ctl.addEventListener("start", ()=>{ V3.tween=null; });
-  new ResizeObserver(()=>size3D()).observe(wrap);
-  // pointer: hover tooltips, click to edit, double-click to focus
+  ctl.minDistance = 24; ctl.maxDistance = 6000; ctl.minPolarAngle = .02; ctl.maxPolarAngle = Math.PI*100/180; ctl.autoRotateSpeed = 1.2;
+  ctl.addEventListener("start", ()=>{ V3.tween=null; hideHint(); });
+  ctl.addEventListener("change", dirty3D);
+  cv.style.touchAction = "pan-y";   // vertical swipes scroll the page, sideways swipes turn the model, pinch zooms
+  new ResizeObserver(()=>{ size3D(); dirty3D(); }).observe(wrap);
+  // wheel only zooms after the user engages with the model (or with Ctrl/⌘), so the page still scrolls
+  wrap.addEventListener("wheel", e=>{ if (!(e.ctrlKey||e.metaKey||V3.active||V3.max)) { e.stopPropagation(); flashHint(); } }, {capture:true});
   let down=null;
-  r.domElement.addEventListener("pointerdown", e=>{ down=[e.clientX,e.clientY]; });
-  r.domElement.addEventListener("pointermove", e=>{ if (e.buttons) return; hover3D(e); });
-  r.domElement.addEventListener("pointerleave", ()=>{ $(".v3-tip",wrap).hidden=true; V3.hover=null; if (typeof setHL==="function") setHL(null); });
-  r.domElement.addEventListener("click", e=>{ if (!down || Math.hypot(e.clientX-down[0], e.clientY-down[1])>5) return; const hit=pick3D(e); if (hit?.cell && typeof cellClick==="function") cellClick(hit.cell, e); });
-  r.domElement.addEventListener("dblclick", e=>{ const hit=pick3D(e); if (hit) focus3D(hit.obj); });
-  r.domElement.addEventListener("keydown", e=>{
-    const k=e.key, sph=new THREE.Spherical().setFromVector3(V3.cam.position.clone().sub(ctl.target));
-    if (k==="ArrowLeft"||k==="ArrowRight"){ sph.theta += (k==="ArrowLeft"?-1:1)*Math.PI/18; }
-    else if (k==="ArrowUp"||k==="ArrowDown"){ sph.phi = Math.min(ctl.maxPolarAngle, Math.max(ctl.minPolarAngle, sph.phi+(k==="ArrowUp"?-1:1)*Math.PI/24)); }
-    else if (k==="+"||k==="="||k==="-"){ sph.radius *= k==="-"?1.15:1/1.15; }
+  cv.addEventListener("pointerdown", e=>{ down=[e.clientX,e.clientY]; V3.active=true; });
+  wrap.addEventListener("pointerleave", ()=>{ V3.active=false; $(".v3-tip",wrap).hidden=true; if (V3.hover){ V3.hover=null; setHL?.(null); } });
+  cv.addEventListener("blur", ()=>{ V3.active=false; });
+  cv.addEventListener("pointermove", e=>{ if (!e.buttons) hover3D(e); });
+  cv.addEventListener("click", e=>{ if (!down || Math.hypot(e.clientX-down[0], e.clientY-down[1])>5) return; const hit=pick3D(e); if (hit?.cell && typeof cellClick==="function") cellClick(hit.cell, e); });
+  cv.addEventListener("dblclick", e=>{ const hit=pick3D(e); if (hit) focus3D(hit.obj); else view3D("fit"); });
+  cv.addEventListener("keydown", e=>{
+    const k=e.key, ctr=V3.ctl.target, sph=new THREE.Spherical().setFromVector3(V3.cam.position.clone().sub(ctr)), step=(e.shiftKey?Math.PI/2:e.ctrlKey?Math.PI/36:Math.PI/12);
+    if (k==="ArrowLeft"||k==="ArrowRight") sph.theta += (k==="ArrowLeft"?-1:1)*step;
+    else if (k==="ArrowUp"||k==="ArrowDown") sph.phi = Math.min(ctl.maxPolarAngle, Math.max(ctl.minPolarAngle, sph.phi+(k==="ArrowUp"?-1:1)*step/2));
+    else if (k==="+"||k==="="||k==="-"){ zoomBy(k==="-"?-1:1); e.preventDefault(); return; }
+    else if ("1234".includes(k) && k){ view3D({1:"front",2:"side",3:"top",4:"iso"}[k]); e.preventDefault(); return; }
+    else if (k==="f"||k==="F"||k==="Home"){ view3D("fit"); e.preventDefault(); return; }
+    else if (k===" "){ if (typeof ride==="function") ride(); e.preventDefault(); return; }
     else return;
-    e.preventDefault(); V3.cam.position.copy(ctl.target).add(new THREE.Vector3().setFromSpherical(sph));
+    e.preventDefault(); V3.cam.position.copy(ctr).add(new THREE.Vector3().setFromSpherical(sph)); V3.cam.lookAt(ctr); dirty3D();
   });
   wrap.addEventListener("click", e=>{
-    const b=e.target.closest("button"); if (!b) return;
+    const b=e.target.closest("button"); if (!b || !b.closest(".v3-bar")) return;
     if (b.dataset.v3view) view3D(b.dataset.v3view);
-    else if (b.hasAttribute("data-v3walls")){ V3.mode = {cut:"glass",glass:"off",off:"cut"}[V3.mode]; b.innerHTML = `Walls: <b>${{cut:"Cut-away",glass:"Glass",off:"Hidden"}[V3.mode]}</b>`; }
-    else if (b.hasAttribute("data-v3labels")){ V3.showLabels=!V3.showLabels; b.setAttribute("aria-pressed",V3.showLabels); $(".v3-labels",wrap).hidden=!V3.showLabels; }
-    else if (b.hasAttribute("data-v3spin")){ ctl.autoRotate=!ctl.autoRotate; b.setAttribute("aria-pressed",ctl.autoRotate); }
-    else if (b.dataset.v3zoom){ const d=V3.cam.position.clone().sub(ctl.target); d.multiplyScalar(+b.dataset.v3zoom>0?1/1.25:1.25); V3.cam.position.copy(ctl.target).add(d); }
+    else if (b.dataset.v3zone) zone3D(b.dataset.v3zone);
+    else if (b.hasAttribute("data-v3walls")){ V3.mode = {cut:"glass",glass:"off",off:"cut"}[V3.mode]; b.innerHTML = `Walls: <b>${{cut:"Cut-away",glass:"Glass",off:"Hidden"}[V3.mode]}</b>`; V3.r.shadowMap.needsUpdate=true; dirty3D(); }
+    else if (b.hasAttribute("data-v3layers")){ const p=$(".v3-pop",wrap); p.hidden=!p.hidden; b.setAttribute("aria-expanded", !p.hidden); }
+    else if (b.hasAttribute("data-v3spin")){ ctl.autoRotate=!ctl.autoRotate; b.setAttribute("aria-pressed",ctl.autoRotate); dirty3D(); }
+    else if (b.hasAttribute("data-v3max")) max3D(!V3.max);
+    else if (b.dataset.v3zoom) zoomBy(+b.dataset.v3zoom);
   });
-  r.domElement.addEventListener("webglcontextlost", e=>{ e.preventDefault(); V3.ok=false; cancelAnimationFrame(V3.raf); V3.raf=0; if (typeof paintViewers==="function") paintViewers(); });
+  wrap.addEventListener("change", e=>{ const t=e.target; if (t.dataset.v3cab!==undefined){ V3.cabSize=t.value; V3.key=""; if (typeof paintViewers==="function") paintViewers(); view3D("iso"); return; } if (!t.dataset.v3layer) return; const k=t.dataset.v3layer;
+    if (k==="labels") V3.showLabels=t.checked; else if (k==="dims") V3.showDims=t.checked; else V3.layers[k]=t.checked;
+    applyLayers(); dirty3D(); });
+  document.addEventListener("keydown", e=>{ if (e.key==="Escape" && V3.max) max3D(false); });
+  cv.addEventListener("webglcontextlost", e=>{ e.preventDefault(); V3.ok=false; cancelAnimationFrame(V3.raf); V3.raf=0; if (typeof paintViewers==="function") paintViewers(); });
 }
-function size3D(){ if (!V3.wrap||!V3.r) return; const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight; if (!w||!h) return; V3.r.setSize(w,h,false); V3.cam.aspect=w/h; V3.cam.updateProjectionMatrix(); }
+let hintT=0;
+function hideHint(){ const h=V3.wrap && $(".v3-hint",V3.wrap); if (h) h.classList.add("gone"); }
+function flashHint(){ const h=$(".v3-hint",V3.wrap); h.textContent="Ctrl + scroll (⌘ on Mac) to zoom — or click the model first"; h.classList.remove("gone"); h.classList.add("flash"); clearTimeout(hintT); hintT=setTimeout(()=>h.classList.remove("flash"),1600); }
+function max3D(on){
+  V3.max=on; const v=V3.wrap.closest(".viewer"); if (!v) return;
+  v.classList.toggle("max", on); document.body.classList.toggle("v3max", on);
+  $("[data-v3max]",V3.wrap).setAttribute("aria-pressed", on); V3.r.domElement.style.touchAction = on ? "none" : "pan-y";
+  setTimeout(()=>{ size3D(); if (typeof paintViewers==="function") paintViewers(); dirty3D(); }, 30);
+}
+function size3D(){
+  if (!V3.wrap||!V3.r) return; const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight; if (!w||!h) return;
+  V3.r.setSize(w,h,false); V3.persp.aspect=w/h; V3.persp.updateProjectionMatrix(); setOrtho(V3.orthoH||200);
+}
+function setOrtho(halfH){ const o=V3.ortho, a=V3.persp.aspect||1; V3.orthoH=halfH; o.left=-halfH*a; o.right=halfH*a; o.top=halfH; o.bottom=-halfH; o.updateProjectionMatrix(); }
 function mount3D(cv){
   if (!V3.r) init3D();
-  if (V3.wrap.parentNode!==cv){ cv.innerHTML=""; cv.appendChild(V3.wrap); V3.host=cv; size3D(); if (!V3.framed){ V3.framed=true; V3.needFit=true; } }
+  if (V3.wrap.parentNode!==cv){ cv.innerHTML=""; cv.appendChild(V3.wrap); V3.host=cv; size3D(); if (!V3.framed){ V3.framed=true; V3.needFit=true; } dirty3D(); }
   if (!V3.raf) V3.raf = requestAnimationFrame(loop3D);
+  if (!V3.hintT) V3.hintT = setTimeout(hideHint, 7000);
 }
-function unmount3D(){ if (V3.wrap && V3.wrap.parentNode) V3.wrap.remove(); V3.host=null; if (V3.raf){ cancelAnimationFrame(V3.raf); V3.raf=0; } }
+function unmount3D(){ if (V3.max) max3D(false); if (V3.wrap && V3.wrap.parentNode) V3.wrap.remove(); V3.host=null; if (V3.raf){ cancelAnimationFrame(V3.raf); V3.raf=0; } }
 
-/* ---------- building the model ---------- */
+/* ---------- building blocks ---------- */
 const v3 = (x,y,z)=>new THREE.Vector3(x,y,z);
 function mesh(geo, mat, o={}){
   const m = new THREE.Mesh(geo, mat); m.castShadow = o.cast!==false; m.receiveShadow = true;
-  if (o.edges!==false){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo, 25), V3.mats.edge); e.raycast=()=>{}; m.add(e); }
-  m.userData = {part:o.part, cell:o.cell, base:mat};
+  if (o.edges!==false){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo, 28), V3.mats.edge); e.raycast=()=>{}; e.userData.edge=true; m.add(e); }
+  m.userData = {part:o.part, cell:o.cell, base:mat, layer:o.layer};
   if (o.part) V3.parts.push(m);
   return m;
 }
-// axis-aligned box from min/max corners (inches)
 function box(x0,y0,z0,x1,y1,z1, mat, o){ const w=Math.max(.05,x1-x0), h=Math.max(.05,y1-y0), d=Math.max(.05,z1-z0);
   const m=mesh(new THREE.BoxGeometry(w,h,d), mat, o); m.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2); return m; }
-function cylY(x,z,y0,y1,r,mat,o,seg=28){ const h=Math.max(.05,y1-y0); const m=mesh(new THREE.CylinderGeometry(r,r,h,seg), mat, o); m.position.set(x,(y0+y1)/2,z); return m; }
-function rod(a,b,r,mat){ // thin cylinder between two points (ropes)
-  const d=b.clone().sub(a), L=Math.max(.05,d.length()); const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,L,8), mat);
-  m.position.copy(a).add(b).multiplyScalar(.5); m.quaternion.setFromUnitVectors(v3(0,1,0), d.normalize()); m.castShadow=true; m.userData={part:"rope"}; V3.parts.push(m); return m; }
-function tRail(len){ // T-rail profile extruded up the hoistway; blade points toward +z (into the hoistway)
-  const R=SPEC.rail, s=new THREE.Shape(), fw=R.foot/2, ft=R.footT, bt=R.bladeT/2, bh=R.blade;
-  s.moveTo(-fw,0); s.lineTo(fw,0); s.lineTo(fw,-ft); s.lineTo(bt,-ft); s.lineTo(bt,-bh); s.lineTo(-bt,-bh); s.lineTo(-bt,-ft); s.lineTo(-fw,-ft); s.closePath();
-  const geo=new THREE.ExtrudeGeometry(s,{depth:Math.max(1,len),bevelEnabled:false}); geo.rotateX(-Math.PI/2); return geo; }
+function cylY(x,z,y0,y1,r,mat,o,seg=32){ const h=Math.max(.05,y1-y0); const m=mesh(new THREE.CylinderGeometry(r,r,h,seg), mat, o); m.position.set(x,(y0+y1)/2,z); return m; }
 function disposeGroup(g){ if (!g) return; g.traverse(o=>{ if (o.geometry) o.geometry.dispose(); }); V3.scene.remove(g); }
+function applyLayers(){
+  for (const m of V3.parts){ const L=m.userData.layer; if (L && L in V3.layers) m.visible = V3.layers[L]; }
+  if (V3.ropes) V3.ropes.visible = V3.layers.ropes;
+  $(".v3-labels",V3.wrap).hidden = !V3.showLabels; $(".v3-dims",V3.wrap).style.display = V3.showDims ? "" : "none";
+  V3.r.shadowMap.needsUpdate = true;
+}
 
+/* ---------- the model (plan layout from the OLS T601 data sheets & manual) ----------
+   Plan values follow the OLS 7 ft / 8 ft data sheets: two T89B rails on the rail wall
+   facing each other (noses 27.56″ apart), jack/pillar/sheave on the rail centre line
+   3.25″ right of centre, cantilever frame whose face is 5″ in front of the rail CL,
+   platform hung off plank arms (32–42″) toward the door on the opposite wall.
+   Cab plan size is not a calculator input, so it is a selectable illustrative value. */
+const CAB_SIZES = {"36x48":[48,36], "40x54":[54,40], "36x60":[60,36]};
+function plan3D(key){
+  const [Win, Din] = CAB_SIZES[key] || CAB_SIZES["36x48"];
+  const tcw=1, rc=1, gz=2, sc=2.5, tw=6;
+  const Wc=Win+2*tcw, HW=Wc+2*sc, xc=HW/2, yF=rc+gz+Din+tcw, yCL=yF+5, HD=yCL+4.5, xJ=xc+3.25;
+  const Larm=[32,34,36,38,40,42].find(a=>a>=yF-3)||42;
+  return {Win, Din, tcw, Wc, HW, HD, xc, yF, yCL, xJ, Larm, tw};
+}
+Object.assign(GLOSS, {
+  shoe:["Guide shoes & rollers", "Slide and roll on the rail blades so the car frame and sheave head stay on the rails."],
+  safety:["Safety (Type A)", "Instantaneous safety jaws in the plank that grip the rails if the ropes go slack."],
+  gate:["Car gate", "Accordion gate across the cab entrance."],
+  cop:["Car operating panel", "The buttons inside the cab."],
+  door:["Landing door", "Hoistway door at each landing (swings out to the landing). Size here is illustrative."],
+  hall:["Hall station", "Call button beside the landing door."],
+  clamp:["Pillar / jack clamp", "Bars behind the jack that clamp the pillar (O) and the cylinder (P) to the two rails."],
+  ext:["Plank arm extension", "Telescoping channels that carry the cantilevered platform; 32″ to 42″ in 2″ steps."],
+});
+function railGeo(sgn, len, P){ // T89B in plan: blade toward the centre, base plate perpendicular to the wall
+  const s=new THREE.Shape(), xn=P.xc+sgn*13.78, xb=P.xc+sgn*15.82, xo=P.xc+sgn*16.22, zc=P.HD-P.yCL, bt=.315, bw=1.75;
+  const pts=[[xn,zc-bt],[xb,zc-bt],[xb,zc-bw],[xo,zc-bw],[xo,zc+bw],[xb,zc+bw],[xb,zc+bt],[xn,zc+bt]];
+  s.moveTo(pts[0][0], -pts[0][1]); for (const [x,z] of pts.slice(1)) s.lineTo(x, -z); s.closePath();
+  const geo=new THREE.ExtrudeGeometry(s,{depth:Math.max(1,len),bevelEnabled:false}); geo.rotateX(-Math.PI/2); return geo;
+}
 function build3D(c){
-  const M = m3mats(), S = SPEC, g = hoistGeo(c); V3.g = g;
-  disposeGroup(V3.stat); disposeGroup(V3.mov); V3.parts=[]; V3.walls=[]; V3.labels=[]; V3.dims=[];
-  const st = V3.stat = new THREE.Group(), W=S.W, Dp=S.D, wt=S.wall, N=Math.max(g.N,1), slab=S.slab;
-  const doorX0=S.door.x0, doorX1=S.door.x1, dh=S.door.h;
-  // pit floor + pit walls
-  st.add(box(-wt, -slab, -S.back, W+wt, 0, Dp+wt, M.concDk, {part:"pit"}));
-  // walls (each knows its outward normal for automatic cut-away)
-  const wall = (m, n, p) => { m.userData.wall = {n, p}; V3.walls.push(m); st.add(m); return m; };
-  wall(box(-wt, 0, -S.back, W+wt, N, 0, M.conc, {part:"wall"}), v3(0,0,-1), v3(0,0,-S.back));
-  wall(box(-wt, 0, 0, 0, N, Dp, M.conc, {part:"wall"}), v3(-1,0,0), v3(-wt,0,0));
-  wall(box(W, 0, 0, W+wt, N, Dp, M.conc, {part:"wall"}), v3(1,0,0), v3(W+wt,0,0));
-  // front (landing) wall with the two door openings
-  const front = new THREE.Group(); front.userData.wall={n:v3(0,0,1), p:v3(0,0,Dp+wt)}; V3.walls.push(front); st.add(front);
-  const spans = [[0, g.D], [g.D+dh, g.fTop], [g.fTop+dh, N]];
-  for (const [a,b] of spans) if (b>a) front.add(box(-wt, a, Dp, W+wt, b, Dp+wt, M.conc, {part:"wall"}));
-  for (const fl of [g.D, g.fTop]){ const top=Math.min(fl+dh, N); if (top<=fl) continue;
-    front.add(box(-wt, fl, Dp, doorX0, top, Dp+wt, M.conc, {part:"wall"})); front.add(box(doorX1, fl, Dp, W+wt, top, Dp+wt, M.conc, {part:"wall"}));
-    st.add(box(doorX0-2, fl, Dp+wt, doorX0, top, Dp+wt+1.5, M.door, {part:"floor"})); st.add(box(doorX1, fl, Dp+wt, doorX1+2, top, Dp+wt+1.5, M.door, {part:"floor"}));
-    st.add(box(doorX0-2, top, Dp+wt, doorX1+2, top+2, Dp+wt+1.5, M.door, {part:"floor", cast:false}));
+  const M=m3mats(), g=hoistGeo(c); V3.g=g;
+  disposeGroup(V3.stat); disposeGroup(V3.mov); V3.parts=[]; V3.walls=[]; V3.labels=[]; V3.chains=[];
+  const P=V3.plan=plan3D(V3.cabSize), {HW,HD,xc,yF,yCL,xJ,tw,Wc,Win,Larm}=P, N=Math.max(g.N,1);
+  const Z=y=>HD-y, X=dx=>xc+dx;                    // data-sheet depth (from the door wall) → model z
+  const B=(x0,x1,ya0,ya1,z0,z1,mat,o)=>box(Math.min(x0,x1), Math.min(z0,z1), Z(Math.max(ya0,ya1)), Math.max(x0,x1), Math.max(z0,z1), Z(Math.min(ya0,ya1)), mat, o);
+  const sym=(f)=>{ f(1); f(-1); };
+  const st=V3.stat=new THREE.Group(), landX=30, landZ=48;
+  const wall=(o,n,p,extra={})=>{ o.userData.wall={n,p,...extra}; V3.walls.push(o); st.add(o); return o; };
+  // pit slab + hoistway walls (rail wall at z<0, door wall at z>HD)
+  st.add(box(-tw,-6,-tw, HW+tw,0,HD+tw, M.pit, {part:"pit", cell:"E20"}));
+  wall(box(-tw,0,-tw, HW+tw,N,0, M.conc, {part:"wall"}), v3(0,0,-1), v3(0,0,-tw));
+  wall(box(-tw,0,0, 0,N,HD, M.conc, {part:"wall"}), v3(-1,0,0), v3(-tw,0,0));
+  wall(box(HW,0,0, HW+tw,N,HD, M.conc, {part:"wall"}), v3(1,0,0), v3(HW+tw,0,0));
+  const front=new THREE.Group(); wall(front, v3(0,0,1), v3(0,0,HD+tw));
+  const ox0=xc-19, ox1=xc+19, oh=82;           // rough opening 38 × 82
+  for (const [a,b] of [[0,g.D],[g.D+oh,g.fTop],[g.fTop+oh,N]]) if (b>a) front.add(box(-tw,a,HD, HW+tw,b,HD+tw, M.conc, {part:"wall"}));
+  for (const fl of [g.D, g.fTop]){ const top=Math.min(fl+oh,N); if (top<=fl) continue;
+    front.add(box(-tw,fl,HD, ox0,top,HD+tw, M.conc, {part:"wall"})); front.add(box(ox1,fl,HD, HW+tw,top,HD+tw, M.conc, {part:"wall"}));
+    // door hardware belongs to the front wall, so it cuts away with the wall
+    front.add(box(ox0,fl-1,HD, ox1,fl,HD+tw, M.steelLt, {part:"door", cast:false}));                          // sill
+    front.add(box(ox0-2.5,fl,HD+tw, ox0,top+1,HD+tw+1, M.door, {part:"door"})); front.add(box(ox1,fl,HD+tw, ox1+2.5,top+1,HD+tw+1, M.door, {part:"door"}));
+    front.add(box(ox0-2.5,top,HD+tw, ox1+2.5,top+2.5,HD+tw+1, M.door, {part:"door", cast:false}));           // casing
+    front.add(box(xc-18,fl,HD+tw-1.75, xc+18,fl+80,HD+tw, M.door, {part:"door"}));                              // 36 × 80 landing door (closed)
+    front.add(box(xc+13,fl+38,HD+tw, xc+15.5,fl+40,HD+tw+1.2, M.steelLt, {part:"door", edges:false}));         // handle
+    front.add(box(ox1+6,fl+40,HD+tw, ox1+9.5,fl+46,HD+tw+.8, M.steel, {part:"hall"}));                        // hall station at 42″
+    front.add(box(ox0,top-10,HD-2, ox0+2,top,HD, M.steel, {part:"door"}));                                    // interlock box (hoistway side)
   }
-  // landings (floor slabs in front of the hoistway)
   for (const [fl,cell] of [[g.D,"E20"],[g.fTop,"E21"]]){
-    const sl = new THREE.Group(); sl.userData.wall = {n:v3(0,1,0), p:v3(0,fl,0), slab:true, z:Dp+wt};
-    sl.add(box(-wt-S.landX, fl-slab, Dp+wt, W+wt+S.landX, fl, Dp+wt+S.landZ, M.slab, {part:"floor", cell}));
-    sl.add(box(-wt-S.landX, fl-.01, Dp+wt, W+wt+S.landX, fl+.3, Dp+wt+S.landZ, M.floorTop, {part:"floor", cell, edges:false, cast:false}));
-    V3.walls.push(sl); st.add(sl);
+    const sl=new THREE.Group(); wall(sl, v3(0,1,0), v3(0,fl,0), {slab:true, z:HD+tw});
+    sl.add(box(-tw-landX,fl-10,HD+tw, HW+tw+landX,fl,HD+tw+landZ, M.slab, {part:"floor", cell, layer:"landings"}));
+    sl.add(box(-tw-landX,fl-.01,HD+tw, HW+tw+landX,fl+.3,HD+tw+landZ, M.floorTop, {part:"floor", cell, layer:"landings", edges:false, cast:false}));
   }
-  // ceiling / overhead slab
-  const ceil = box(-wt, N, -S.back, W+wt, N+slab, Dp+wt+S.landZ*.5, M.conc, {part:"ceil", cell:"E24"}); ceil.userData.wall={n:v3(0,1,0), p:v3(0,N+slab,0), ceil:true}; V3.walls.push(ceil); st.add(ceil);
-  // guide rails + brackets
-  const railLen = Math.max(1,g.rail);
-  for (const rx of S.railX){
-    const r = mesh(tRail(railLen), M.rail, {part:"rail", cell:"E49"}); r.position.set(rx, 0, S.railZ); st.add(r);
-    const n=Math.max(0,Math.round(g.nb));
-    for (let i=0;i<n;i++){ const h = n>1 ? 6+(railLen-12)*i/(n-1) : railLen/2;
-      st.add(box(rx-S.rail.foot/2-.6, h-1.5, -1, rx+S.rail.foot/2+.6, h+1.5, S.railZ+.2, M.steelLt, {part:"brk", cell:"E51"})); }
+  wall(box(-tw,N,-tw, HW+tw,N+8,HD+tw+landZ*.5, M.conc, {part:"ceil", cell:"E24"}), v3(0,1,0), v3(0,N+8,0), {ceil:true});
+  // guide rails (T89B) and wall brackets (≤ 60″ apart; even spacing is illustrative)
+  const railLen=Math.max(1,g.rail), nb=Math.max(0,Math.round(g.nb)), Rl={layer:"rails"};
+  sym(s=>{ st.add(mesh(railGeo(s,railLen,P), M.rail, {part:"rail", cell:"E49", ...Rl}));
+    for (let i=0;i<nb;i++){ const h = nb>1 ? 12+(railLen-18)*i/(nb-1) : railLen/2;
+      st.add(B(X(s*16.22),X(s*19.5), HD-.25,HD, h,h+4, M.steelLt, {part:"brk", cell:"E51", ...Rl}));
+      st.add(B(X(s*16.22),X(s*16.47), HD-7.75,HD, h,h+4, M.steelLt, {part:"brk", cell:"E51", ...Rl}));
+      for (const dy of [-2.1,2.1]) st.add(B(X(s*16.47),X(s*17.7), yCL+dy-.5,yCL+dy+.5, h+1.5,h+2.5, M.steel, {part:"brk", cell:"E51", ...Rl, edges:false})); }
+  });
+  // dead-end hitch, pillar, cup, cylinder, clamps
+  const Jl={layer:"jack"}, dxJ=xJ-xc, big=g.Q>174, pr=big?1.575:1.38;
+  st.add(B(X(-15.5),X(15.5), yCL-2.25,yCL+2.25, 0,.375, M.steel, {part:"deh", layer:"ropes"}));
+  st.add(B(X(1.33),X(6.81), yCL-2.25,yCL+2.25, 0,8.2, M.steel, {part:"deh", layer:"ropes"}));
+  st.add(B(X(6.81),X(9.17), yCL-.6,yCL+.6, 5.38,8.2, M.steel, {part:"deh", layer:"ropes"}));
+  for (const dy of [-.92,.92]){ st.add(cylY(X(8.08), Z(yCL+dy), 8.2, 14, .3, M.steelLt, {part:"deh", layer:"ropes", edges:false}, 10)); st.add(cylY(X(8.08), Z(yCL+dy), 14, 19.5, .55, M.steelLt, {part:"deh", layer:"ropes"}, 12)); }
+  st.add(B(xJ-1.25,xJ+1.25, yCL-1.25,yCL+1.25, .4,Math.max(.5,g.M-2), M.steel, {part:"pillar", cell:"E41", ...Jl}));
+  st.add(cylY(xJ, Z(yCL), Math.max(0,g.M-2), g.M, 2.03, M.steel, {part:"pillar", cell:"E41", ...Jl}, 8));
+  st.add(B(xJ-2.25,xJ+2.25, yCL-2.25,yCL+2.25, g.M,g.M+3, M.steelLt, {part:"cyl", cell:"E63", ...Jl}));
+  st.add(B(xJ-1,xJ+1, yCL+2.25,yCL+4.45, g.M+.3,g.M+2.8, M.steel, {part:"cyl", cell:"E63", ...Jl}));       // rupture valve
+  st.add(cylY(xJ, Z(yCL), g.M+3, g.cyl, 2, M.jack, {part:"cyl", cell:"E63", ...Jl}, 40));
+  st.add(cylY(xJ, Z(yCL), g.cyl-4, g.cyl, 2.5, M.steelLt, {part:"cyl", cell:"E63", ...Jl}, 40));
+  for (const [h,cell] of [[g.O,"E45"],[g.P,"E47"]]) if (h>0){
+    st.add(B(X(-15.5),X(15.5), yCL+3.63,yCL+4.43, h-.75,h+.75, M.orange, {part:"clamp", cell, ...Jl}));
+    for (const dx of [-1.75,1.75]) st.add(B(xJ+dx-.3,xJ+dx+.3, yCL+1.2,yCL+3.63, h-.6,h+.6, M.orange, {part:"clamp", cell, ...Jl, edges:false}));
+    sym(s=>st.add(B(X(s*15),X(s*16.5), yCL+1.75,yCL+3.63, h-.75,h+.75, M.orange, {part:"clamp", cell, ...Jl})));
   }
-  // jack: pillar, cup, cylinder, head, brackets, dead-end hitch
-  const J = S.jack, big = g.Q>174, cr = big?J.cyl80:J.cyl70, pr = big?J.pl80:J.pl70;
-  st.add(box(J.x-1.25, 0, J.z-1.25, J.x+1.25, Math.max(.1,g.M-1), J.z+1.25, M.steel, {part:"pillar", cell:"E41"}));
-  st.add(cylY(J.x, J.z, Math.max(0,g.M-1.5), g.M, cr+.4, M.steel, {part:"pillar", cell:"E41"}));
-  st.add(cylY(J.x, J.z, g.M, g.cyl, cr, M.jack, {part:"cyl", cell:"E63"}));
-  st.add(cylY(J.x, J.z, g.cyl-2.5, g.cyl, cr+.35, M.steelLt, {part:"cyl", cell:"E63"}));
-  const nearRail = S.railX.reduce((a,b)=>Math.abs(b-J.x)<Math.abs(a-J.x)?b:a);
-  for (const [h,id,cell] of [[g.O,"O","E45"],[g.P,"P","E47"]]) if (h>0){
-    st.add(box(Math.min(nearRail,J.x)-1, h-1.6, S.railZ-S.rail.blade-.2, Math.max(nearRail,J.x)+cr*.6, h+1.6, J.z+cr*.7, M.orange, {part:id, cell}));
-  }
-  st.add(box(S.deh.x-2.5, 0, S.deh.z-2, S.deh.x+2.5, 8, S.deh.z+2, M.steel, {part:"deh"}));
-  // dimension lines (3D) along two outside edges
-  const dimL = v3(-wt-S.dimOff, 0, Dp+wt+2), dimR = v3(W+wt+S.dimOff, 0, J.z);
-  addDim(dimL, 0, g.D, "D", c.E20, "E20", "L");
-  addDim(dimL, g.D, g.fTop, "E", c.E21, "E21", "L");
-  addDim(dimL, g.fTop, N, "G", c.E24, "E24", "L");
-  addDim(v3(dimL.x-S.dimOff*.9, 0, dimL.z), 0, N, "N", c.E43, "E43", "L", true);
-  addDim(dimR, 0, g.M, "M", c.E41, "E41", "R");
-  addDim(dimR, g.M, g.cyl, "R", c.E63, "E63", "R");
-  addDim(dimR, g.cyl, g.full, "Q", c.E61, "E61", "R");
-  addDim(dimR, g.full, g.full+15, "", 15, "", "R", false, "sheave 15″");
-  if (c.E31>=0) addDim(dimR, g.full+15, N, "T", c.E31, "E31", "R", false, null, c.E31<6);
-  else { addDim(dimR, N, g.full+15, "T", c.E31, "E31", "R", false, null, true); st.add(box(J.x-8, N, J.z-8, J.x+8, g.full+15, J.z+8, M.bad, {edges:false, cast:false})); }
-  for (const d of V3.dims) st.add(d.obj);
+  if (c.E31<0) st.add(B(xJ-9,xJ+9, yCL-9,yCL+5, N,g.full+15, M.bad, {edges:false, cast:false}));
   V3.scene.add(st);
-  // moving parts
-  const mv = V3.mov = new THREE.Group();
-  V3.plunger = cylY(J.x, J.z, 0, 1, pr, M.chrome, {part:"plunger", cell:"E61"}, 32); mv.add(V3.plunger);
-  const sh = V3.sheave = new THREE.Group(); sh.userData.part="sheave";
-  const SH=S.sheave;
-  sh.add(box(J.x-SH.w/2, 0, J.z-SH.d/2, J.x+SH.w/2, 2, J.z+SH.d/2, M.brass, {part:"sheave"}));           // base plate on the plunger
-  sh.add(box(J.x-SH.w/2, 2, J.z-SH.d/2, J.x-SH.w/2+1, 15, J.z+SH.d/2, M.brass, {part:"sheave"}));       // side cheeks
-  sh.add(box(J.x+SH.w/2-1, 2, J.z-SH.d/2, J.x+SH.w/2, 15, J.z+SH.d/2, M.brass, {part:"sheave"}));
-  const wheel = mesh(new THREE.CylinderGeometry(SH.r, SH.r, SH.w-3, 40), M.steelLt, {part:"sheave"}); wheel.rotation.z = Math.PI/2; wheel.position.set(J.x, 2+SH.r, J.z); sh.add(wheel); V3.wheel = wheel;
-  for (const sx of S.railX) sh.add(box(Math.min(sx,J.x)+(sx<J.x?0:-0), 9, S.railZ-1, Math.max(sx,J.x), 11, S.railZ+1.2, M.brass, {part:"sheave"}));
-  mv.add(sh);
-  // car (origin at plank top)
-  const car = V3.car = new THREE.Group(), CB=S.cab, F=Math.max(10,g.F), L=g.L, C=Math.max(.5,g.C), FR=S.frame;
-  car.add(box(CB.x0, 0, CB.z0, CB.x1, C, CB.z1, M.cabFloor, {part:"plat", cell:"E19"}));
-  const cw=CB.wall, cabM = M.cab;
-  car.add(box(CB.x0, C, CB.z0, CB.x1, F, CB.z0+cw, cabM, {part:"cab", cell:"E22"}));                 // back wall
-  car.add(box(CB.x0, C, CB.z0, CB.x0+cw, F, CB.z1, cabM, {part:"cab", cell:"E22"}));                 // left wall
-  car.add(box(CB.x1-cw, C, CB.z0, CB.x1, F, CB.z1, cabM, {part:"cab", cell:"E22"}));                 // right wall
-  car.add(box(CB.x0, F-1, CB.z0, CB.x1, F, CB.z1, M.cabIn, {part:"cab", cell:"E22"}));                // ceiling
-  car.add(box(CB.x0+cw, C+34, CB.z0+cw, CB.x1-cw, C+35.2, CB.z0+cw+1.4, M.steelLt, {part:"cab", cell:"E22", edges:false})); // handrail
-  car.add(box(CB.x0+cw, C, CB.z1-.6, CB.x1-cw, Math.min(F-1, C+80), CB.z1, M.gate, {part:"cab", cell:"E22", edges:false, cast:false})); // gate (see-through)
-  const sTop = L + FR.above, sBot = -FR.below;
-  for (const sx of S.railX){
-    car.add(box(sx-FR.stileW/2, sBot, S.railZ+FR.gap, sx+FR.stileW/2, sTop, S.railZ+FR.gap+FR.stileD, M.frame, {part:"frame"}));
-    car.add(box(sx-FR.stileW/2, sBot, S.railZ+FR.gap+FR.stileD, sx+FR.stileW/2, 0, CB.z1, M.frame, {part:"frame"}));          // plank arm under the platform
-    car.add(box(sx-1.6, sTop-6, S.railZ-.4, sx+1.6, sTop-2, S.railZ+FR.gap, M.steelLt, {part:"frame"}));                       // roller guide
-    car.add(box(sx-1.6, sBot+1, S.railZ-.4, sx+1.6, sBot+5, S.railZ+FR.gap, M.steelLt, {part:"frame"}));
-  }
-  car.add(box(S.railX[0]-FR.stileW/2, sBot, S.railZ+FR.gap, S.railX[1]+FR.stileW/2, 0, S.railZ+FR.gap+FR.stileD, M.frame, {part:"frame"}));     // plank
-  car.add(box(S.railX[0]-FR.stileW/2, sTop-4, S.railZ+FR.gap, S.railX[1]+FR.stileW/2, sTop, S.railZ+FR.gap+FR.stileD, M.frame, {part:"frame"})); // crosshead
-  if (g.X>0) car.add(box(CB.x0+4, g.X-1.5, S.railZ+FR.gap+FR.stileD, CB.x1-4, g.X+1.5, CB.z0, M.steelLt, {part:"uni", cell:"E23"}));
-  car.add(box(J.x-3, 0, S.hitchZ-2, J.x+3, 6, S.hitchZ+2, M.steelLt, {part:"rope"}));                // rope shackles on the plank
+  // ---------- moving parts ----------
+  const mv=V3.mov=new THREE.Group();
+  V3.plunger=cylY(xJ, Z(yCL), 0, 1, pr, M.chrome, {part:"plunger", cell:"E61", ...Jl}, 40); mv.add(V3.plunger);
+  // sheave head (origin = plunger top): 12″ two-groove sheave turning parallel to the rail wall
+  const sh=V3.sheave=new THREE.Group();
+  sh.add(B(xJ-3,xJ+3, yCL-2,yCL+2, 0,.5, M.sheave, {part:"sheave", ...Jl}));
+  for (const dy of [-1.75,1.25]) sh.add(B(xJ-6.12,xJ+6.12, yCL+dy,yCL+dy+.5, .5,14, M.sheave, {part:"sheave", ...Jl}));
+  sh.add(B(X(-13.6),X(13.6), yCL-1.75,yCL+1.75, 14,15, M.sheave, {part:"sheave", ...Jl}));
+  sym(s=>sh.add(B(X(s*13.85),X(s*15.85), yCL-1.75,yCL+1.75, 13.5,15.5, M.steelLt, {part:"shoe", ...Jl})));
+  const piv=V3.wheel=new THREE.Group(); piv.position.set(xJ, 7.75, Z(yCL));
+  const wh=mesh(new THREE.CylinderGeometry(6.12,6.12,2.2,56), M.steelLt, {part:"sheave", ...Jl}); wh.rotation.x=Math.PI/2; piv.add(wh);
+  for (let i=0;i<3;i++){ const sp=mesh(new THREE.BoxGeometry(10.5,.9,2.4), M.steel, {part:"sheave", ...Jl, edges:false}); sp.rotation.z=i*Math.PI/3; piv.add(sp); }
+  piv.add(mesh(new THREE.CylinderGeometry(.9,.9,3.6,16), M.steel, {part:"sheave", ...Jl, edges:false})); piv.children[piv.children.length-1].rotation.x=Math.PI/2;
+  sh.add(piv); mv.add(sh);
+  // car: frame + platform + cab (origin = top of the plank arms, zA)
+  const car=V3.car=new THREE.Group(), Ff={layer:"frame"}, Cf={layer:"car"}, eight=c.E23>=90.5, zB=-4.43, zT=zB+(eight?95.88:87.38);
+  const F=Math.max(10,g.F), C=Math.max(.5,g.C), Xb=g.X;
+  sym(s=>{
+    car.add(B(X(s*9.9),X(s*12.4), yCL-3.35,yCL+3.05, zB,zT, M.frame, {part:"frame", ...Ff}));                   // stile
+    car.add(B(X(s*9.9),X(s*12.4), yCL-5,yCL+2.4, -3.35,8.6, M.frame, {part:"frame", ...Ff}));                     // plank / safety plate
+    car.add(B(X(s*13.4),X(s*16), yF-Larm,yF, -3.35,0, M.frame, {part:"frame", ...Ff}));                           // plank arm
+    car.add(B(X(s*9.35),X(s*12.9), yF-Larm,yF-12.3, -3.2,-.2, M.steelLt, {part:"ext", ...Ff}));                   // arm extension
+    car.add(B(X(s*12.4),X(s*14.4), yCL-.55,yCL+.55, zT-7.15,zT-4.35, M.steelLt, {part:"shoe", ...Ff}));          // guide shoes
+    car.add(B(X(s*12.4),X(s*14.4), yCL-.55,yCL+.55, zT-7.15-(eight?73.88:65.38),zT-4.35-(eight?73.88:65.38), M.steelLt, {part:"shoe", ...Ff}));
+    for (const [r,yy,zz] of [[1.18,yCL+1.5,zT-2.8],[1.57,yCL-1.89,zB+2.2]]){ const rl=mesh(new THREE.CylinderGeometry(r,r,1,20), M.steel, {part:"shoe", ...Ff}); rl.rotation.z=Math.PI/2; rl.position.set(X(s*14.33), zz, Z(yy)); car.add(rl); }
+    car.add(B(X(s*13),X(s*14.9), yCL-1.1,yCL+1.1, .5,5.5, M.steel, {part:"safety", ...Ff}));                     // safety jaws
+    car.add(B(X(s*5.8),X(s*9.2), yF,yCL-4.2, Xb-8.8,Xb+1.2, M.steelLt, {part:"uni", cell:"E23", ...Ff}));        // cab bracket leg
+    car.add(B(X(s*5.8),X(s*9.2), yF-7,yCL-4.2, Xb,Xb+1.2, M.steelLt, {part:"uni", cell:"E23", ...Ff}));          // cab bracket arm
+  });
+  car.add(B(X(-12.4),X(12.4), yCL-4.2,yCL-3.35, zT-5.1,zT, M.frame, {part:"frame", ...Ff}));                      // crosshead
+  car.add(B(X(-12.4),X(12.4), yCL-5,yCL-3.35, -3.35,3, M.frame, {part:"frame", ...Ff}));                          // plank cross member
+  car.add(B(X(-12.4),X(12.4), yCL-5,yCL-4.2, 6.5,7.5, M.steel, {part:"safety", ...Ff}));                          // safety arm
+  car.add(B(X(-12.9),X(12.9), yF-Larm,yF-Larm+1.3, -3.2,-.2, M.steelLt, {part:"ext", ...Ff}));                   // extension tie bar
+  car.add(B(X(-Win/2),X(Win/2), yF-4.6,yF-3, Xb-1.625,Xb, M.steelLt, {part:"uni", cell:"E23", ...Ff}));          // unistrut (top at X)
+  car.add(B(X(-4.25),X(-1.25), yCL-5,yCL+1.5, 3,8, M.steelLt, {part:"rope", layer:"ropes"}));                     // rope pick-up bracket
+  for (const dy of [-.75,.75]) car.add(cylY(X(-2.75), Z(yCL+dy), 8, 19.5, .5, M.steelLt, {part:"rope", layer:"ropes"}, 12));
+  // platform + cab (inside Win × Din; the platform cantilevers off the arms toward the door)
+  car.add(B(X(-Wc/2),X(Wc/2), 1,yF, 0,C, M.cabFloor, {part:"plat", cell:"E19", ...Cf}));
+  car.add(B(X(-Wc/2),X(Wc/2), 1,4, C-.3,C, M.steelLt, {part:"plat", cell:"E19", ...Cf, edges:false}));             // car sill
+  car.add(B(X(-Wc/2),X(Wc/2), yF-1,yF, C,F-1.5, M.cab, {part:"cab", cell:"E22", ...Cf}));                         // rear wall
+  sym(s=>{ car.add(B(X(s*Win/2),X(s*(Win/2+1)), 3,yF-1, C,F-1.5, M.cab, {part:"cab", cell:"E22", ...Cf}));        // side walls
+           car.add(B(X(s*18),X(s*(Win/2+1)), 1,3, C,F-1.5, M.cab, {part:"cab", cell:"E22", ...Cf})); });            // front returns
+  car.add(B(X(-Wc/2),X(Wc/2), 1,yF, F-1.5,F, M.cabIn, {part:"cab", cell:"E22", ...Cf}));                          // canopy
+  car.add(B(X(-Win/2+1),X(Win/2-1), yF-2.6,yF-1, C+34,C+35.4, M.steelLt, {part:"cab", cell:"E22", ...Cf, edges:false})); // handrail
+  car.add(B(X(Win/2-.6),X(Win/2), 6,10.5, C+36,C+54, M.steel, {part:"cop", ...Cf}));                              // operating panel
+  car.add(B(X(-18),X(18), 1.25,2.75, C,Math.min(F-1.5,C+80), M.gate, {part:"gate", ...Cf, edges:false, cast:false}));
+  car.add(B(X(13),X(18), 1.1,2.9, C,Math.min(F-1.5,C+80), M.steelLt, {part:"gate", ...Cf}));                      // gate stack
   mv.add(car);
-  V3.ropes = new THREE.Group(); mv.add(V3.ropes);
-  V3.scene.add(mv);
-  // labels that are not dimension lines
-  V3.labels.push({cell:"E33", t:()=>`T2 ${inch(c.E33)} cab clearance`, at:()=>v3((CB.x0+CB.x1)/2, (V3.carY||0)+F+3, CB.z1), bad:c.E33<6, side:"C"});
-  V3.labels.push({cell:"E45", t:()=>`O ${inch(c.E45)}`, at:()=>v3(J.x, g.O, J.z), side:"R", hide:!(g.O>0)});
-  V3.labels.push({cell:"E47", t:()=>`P ${inch(c.E47)}`, at:()=>v3(J.x, g.P, J.z), side:"R", hide:!(g.P>0)});
-  V3.labels.push({cell:"E22", t:()=>`F cab ${inch(c.E22)}`, at:()=>v3(CB.x0, (V3.carY||0)+F*.55, CB.z1), side:"L"});
+  V3.ropes=new THREE.Group(); V3.ropeLines=[];
+  for (let i=0;i<2;i++){ const geo=new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(3*26),3));
+    const ln=new THREE.Line(geo, new THREE.LineBasicMaterial({color:0x111418})); ln.frustumCulled=false; V3.ropes.add(ln); V3.ropeLines.push(ln); }
+  mv.add(V3.ropes); V3.scene.add(mv);
+  // dimension chains + labels
+  V3.chains=[
+    {side:"L", segs:[[0,g.D,"D","E20",c.E20],[g.D,g.fTop,"E","E21",c.E21],[g.fTop,N,"G","E24",c.E24]]},
+    {side:"L", outer:true, segs:[[0,N,"N","E43",c.E43]]},
+    {side:"R", segs:[[0,g.M,"M","E41",c.E41],[g.M,g.cyl,"R","E63",c.E63],[g.cyl,g.full,"Q","E61",c.E61],[g.full,g.full+15,"","",15,"sheave 15″"],
+      c.E31>=0 ? [g.full+15,N,"T","E31",c.E31,null,c.E31<6] : [N,g.full+15,"T","E31",c.E31,null,true]]},
+  ];
+  V3.labels=[
+    {cell:"E33", t:`T2 ${inch(c.E33)} cab clearance`, at:()=>v3(xc, (V3.carY||0)+F+1, Z(yF/2)), bad:c.E33<6, side:"C"},
+    {cell:"E45", t:`O ${inch(c.E45)}`, at:()=>v3(X(15.5), g.O, Z(yCL+4)), side:"P", hide:!(g.O>0)},
+    {cell:"E47", t:`P ${inch(c.E47)}`, at:()=>v3(X(15.5), g.P, Z(yCL+4)), side:"P", hide:!(g.P>0)},
+    {cell:"E22", t:`F cab ${inch(c.E22)}`, at:()=>v3(X(-Wc/2), (V3.carY||0)+F*.55, Z(2)), side:"C"},
+  ];
+  for (const ch of V3.chains) for (const s of ch.segs) V3.labels.push({cell:s[3], t:s[5]||`${s[2]} ${inch(s[4])}${ch.outer?" total":""}`, chain:ch, seg:s, bad:s[6], outer:ch.outer});
   renderLabelsDom();
-  // light + shadow box sized to the scene
-  const sun=V3.sun; sun.position.set(W+260, N*0.75+260, Dp+320); sun.target.position.set(W/2, N/2, Dp/2);
-  const sc=sun.shadow.camera, ext=Math.max(N, 200)*.75; sc.left=-ext; sc.right=ext; sc.top=ext; sc.bottom=-ext; sc.near=10; sc.far=N*3+1200; sc.updateProjectionMatrix();
-  V3.bounds = new THREE.Box3(v3(-wt-S.landX, -slab, -S.back), v3(W+wt+S.landX, N+slab, Dp+wt+S.landZ));
-}
-function addDim(base, a, b, l, v, cell, side, outer, text, bad){
-  if (!(b>a)) return;
-  const pts=[v3(base.x,a,base.z), v3(base.x,b,base.z)], t=4;
-  for (const y of [a,b]) pts.push(v3(base.x-t,y,base.z), v3(base.x+t,y,base.z), v3(base.x, y, base.z-t), v3(base.x, y, base.z+t));
-  const geo=new THREE.BufferGeometry().setFromPoints(pts); geo.setIndex([0,1,2,3,4,5,6,7,8,9]);
-  const obj=new THREE.LineSegments(geo, bad?V3.mats.dimBad:V3.mats.dim); obj.userData={cell}; obj.raycast=()=>{};
-  V3.dims.push({obj, cell, bad});
-  V3.labels.push({cell, t:()=>text || `${l} ${inch(v)}${outer?" total":""}`, at:()=>v3(base.x, (a+b)/2, base.z), side, bad, outer});
-}
-function renderLabelsDom(){
-  const box=$(".v3-labels", V3.wrap);
-  box.innerHTML = V3.labels.map((L,i)=>`<button class="l3${L.bad?" bad":""}${L.outer?" outer":""}" data-i="${i}" ${L.cell?`data-cell="${L.cell}"`:""} ${L.hide?"hidden":""} title="${esc(DIMTIP[L.cell]||"")}">${esc(L.t())}</button>`).join("");
-  V3.labelEls = [...box.children];
+  const sun=V3.sun; sun.position.set(HW/2-180, N+420, HD/2+260); sun.target.position.set(HW/2, N/2, HD/2);
+  const scm=sun.shadow.camera, ext=Math.max(N,240)*.62; scm.left=-ext*.6; scm.right=ext*.6; scm.top=ext; scm.bottom=-ext; scm.near=10; scm.far=N*2+1500; scm.updateProjectionMatrix();
+  V3.bounds=new THREE.Box3(v3(-tw-landX,-6,-tw), v3(HW+tw+landX,N+8,HD+tw+landZ));
+  V3.shaft=new THREE.Box3(v3(-tw,0,-tw), v3(HW+tw,N,HD+tw));
+  applyLayers();
 }
 function placeCar(f){
-  const g=V3.g, S=SPEC, J=S.jack; if (!g) return;
-  const cur=g.at(f); V3.carY = cur.plank;
-  V3.car.position.y = cur.plank;
-  const top = cur.plunger; V3.plunger.scale.y = Math.max(.01, top-g.cyl); V3.plunger.position.y = (g.cyl+top)/2;
-  V3.sheave.position.y = top;
-  V3.wheel.rotation.x = -((top-g.cyl)/S.sheave.r);
-  // ropes: dead-end hitch (pit) → over the sheave → down to the plank shackles (2 ropes, 3/8")
-  const R=V3.ropes; R.children.forEach(o=>o.geometry.dispose()); R.clear();
-  const wy = top+2+S.sheave.r, rr=S.sheave.r;
-  for (const dx of [-1.2, 1.2]){
-    const x=J.x+dx;
-    R.add(rod(v3(x, 8, S.deh.z), v3(x, wy, J.z-rr), .19, V3.mats.rope));
-    R.add(rod(v3(x, wy, J.z-rr), v3(x, wy+rr*.72, J.z-rr*.7), .19, V3.mats.rope));
-    R.add(rod(v3(x, wy+rr*.72, J.z-rr*.7), v3(x, wy+rr, J.z), .19, V3.mats.rope));
-    R.add(rod(v3(x, wy+rr, J.z), v3(x, wy+rr*.72, J.z+rr*.7), .19, V3.mats.rope));
-    R.add(rod(v3(x, wy+rr*.72, J.z+rr*.7), v3(x, wy, J.z+rr), .19, V3.mats.rope));
-    R.add(rod(v3(x, wy, J.z+rr), v3(x, cur.plank+6, S.hitchZ), .19, V3.mats.rope));
-  }
+  const g=V3.g, P=V3.plan; if (!g) return;
+  const {xc,xJ,yCL,HD}=P, Z=y=>HD-y, cur=g.at(f); V3.carY=cur.plank; V3.car.position.y=cur.plank;
+  const top=cur.plunger; V3.plunger.scale.y=Math.max(.01, top-g.cyl); V3.plunger.position.y=(g.cyl+top)/2;
+  V3.sheave.position.y=top; V3.wheel.rotation.z = -(top-g.cyl)/6;     // 12″ sheave: Δθ = Δp / 6
+  // 2 ropes: dead-end hitch (pit) → up to the sheave → over the top → straight down to the plank socket
+  const cy=top+7.75;
+  V3.ropeLines.forEach((ln,i)=>{ const dy=i?.75:-.75, z=Z(yCL+dy), a=ln.geometry.attributes.position.array; let k=0;
+    const put=(x,y)=>{ a[k++]=x; a[k++]=y; a[k++]=z; };
+    put(xc+8.08, 19.5);
+    for (let s=0;s<=22;s++){ const t=Math.PI*s/22; put(xJ+6*Math.cos(t), cy+6*Math.sin(t)); }
+    put(xJ-6, cur.plank+19.5); put(xJ-6, cur.plank+19.5);
+    ln.geometry.attributes.position.needsUpdate=true; ln.geometry.computeBoundingSphere(); });
+  V3.r.shadowMap.needsUpdate=true; dirty3D();
+}
+
+function renderLabelsDom(){
+  const box=$(".v3-labels", V3.wrap);
+  box.innerHTML = V3.labels.map((L,i)=>`<button class="l3${L.bad?" bad":""}${L.outer?" outer":""}" data-i="${i}" ${L.cell?`data-cell="${L.cell}"`:""} ${L.hide?"hidden":""} title="${esc(DIMTIP[L.cell]||"")}">${esc(L.t)}</button>`).join("");
+  V3.labelEls = [...box.children];
 }
 function update3D(c, f){
   const key = IN_ORDER.map(k=>c[k]).join("|");
   if (key!==V3.key || !V3.stat){ V3.key=key; build3D(c); }
-  const g=V3.g; placeCar(f==null ? g.fBot : f);
+  placeCar(f==null ? V3.g.fBot : f);
   if (V3.needFit){ V3.needFit=false; view3D("iso", true); }
   highlight3D(typeof HL!=="undefined"?HL:null);
 }
 
 /* ---------- camera ---------- */
+const VIEWS = {iso:[.7, 1.2, "p"], fit:[.7, 1.2, "p"], front:[0, Math.PI/2, "o"], side:[Math.PI/2, Math.PI/2, "o"], back:[Math.PI, Math.PI/2, "o"], top:[0, .0005, "o"]};
+function useCam(kind){
+  const want = kind==="o" ? V3.ortho : V3.persp; if (V3.cam===want) return;
+  want.position.copy(V3.cam.position); want.quaternion.copy(V3.cam.quaternion); V3.cam=want; V3.ctl.object=want;
+}
 function view3D(kind, instant){
   const b=V3.bounds; if (!b) return;
-  const ctr=b.getCenter(new THREE.Vector3()), sz=b.getSize(new THREE.Vector3());
-  const ang = {iso:[.72, 1.18], front:[0, Math.PI/2], side:[Math.PI/2, Math.PI/2], back:[Math.PI, Math.PI/2], top:[.0001, .02], fit:[.72,1.18]}[kind] || [.72,1.18];
-  const fov=V3.cam.fov*Math.PI/180, asp=V3.cam.aspect||1;
-  const hNeed = kind==="top" ? Math.max(sz.z, sz.x/asp)*1.15 : Math.max(sz.y, Math.max(sz.x,sz.z)*1.1/asp);
-  const dist = kind==="top" ? sz.y/2 + (hNeed/2)/Math.tan(fov/2) : (hNeed/2)/Math.tan(fov/2)*1.08 + Math.max(sz.x,sz.z)/2;
-  const pos = ctr.clone().add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(dist, ang[1], ang[0])));
-  tween3D(pos, ctr, instant);
+  const [az,pol,proj]=VIEWS[kind]||VIEWS.iso, ctr=b.getCenter(new THREE.Vector3());
+  const dir=new THREE.Vector3().setFromSpherical(new THREE.Spherical(1, pol, az));
+  // fit: project the box corners onto the camera's right/up axes
+  const up = Math.abs(dir.y)>.99 ? v3(0,0,-1) : v3(0,1,0), right=new THREE.Vector3().crossVectors(up, dir).normalize(), up2=new THREE.Vector3().crossVectors(dir, right).normalize();
+  let mx=0, my=0, md=0; for (const x of [b.min.x,b.max.x]) for (const y of [b.min.y,b.max.y]) for (const z of [b.min.z,b.max.z]){ const p=v3(x,y,z).sub(ctr); mx=Math.max(mx,Math.abs(p.dot(right))); my=Math.max(my,Math.abs(p.dot(up2))); md=Math.max(md,Math.abs(p.dot(dir))); }
+  const asp=V3.persp.aspect||1, t=Math.tan(V3.persp.fov*Math.PI/360);
+  if (proj==="o"){ useCam("o"); V3.cam.up.copy(up); setOrtho(Math.max(my, mx/asp)*1.2); V3.cam.zoom=1; V3.cam.updateProjectionMatrix(); tween3D(ctr.clone().add(dir.clone().multiplyScalar(3000)), ctr, true); }
+  else { useCam("p"); V3.cam.up.set(0,1,0); const d=Math.max(my/t, mx/(t*asp))*1.1+md; tween3D(ctr.clone().add(dir.multiplyScalar(d)), ctr, instant); }
+  V3.ctl.maxDistance = Math.max(800, (my/t)*4);
+}
+function zone3D(z){
+  const g=V3.g; if (!g) return; const band = {pit:[-6, g.D+30], bottom:[g.D-24, g.D+g.F+30], top:[g.fTop-24, g.fTop+g.F+30], over:[g.fTop+g.F-30, g.N+24]}[z];
+  useCam("p"); V3.cam.up.set(0,1,0);
+  const PL=V3.plan, ctr=v3(PL.HW/2, (band[0]+band[1])/2, PL.HD/2), h=band[1]-band[0], t=Math.tan(V3.persp.fov*Math.PI/360);
+  const d=Math.max(h/2/t, (PL.HW+60)/2/(t*(V3.persp.aspect||1)))*1.15, dir=V3.cam.position.clone().sub(V3.ctl.target).setY(0);
+  if (dir.lengthSq()<1e-6) dir.set(.6,0,.8); dir.normalize(); dir.y=.35; dir.normalize();
+  tween3D(ctr.clone().add(dir.multiplyScalar(d+PL.HD/2)), ctr);
 }
 function focus3D(obj){
   const bb=new THREE.Box3().setFromObject(obj), ctr=bb.getCenter(new THREE.Vector3()), sz=bb.getSize(new THREE.Vector3());
-  const r=Math.max(sz.x,sz.y,sz.z, 24), dir=V3.cam.position.clone().sub(V3.ctl.target).normalize();
-  tween3D(ctr.clone().add(dir.multiplyScalar(r/Math.tan(V3.cam.fov*Math.PI/360)*.9)), ctr);
+  useCam("p"); V3.cam.up.set(0,1,0);
+  const r=Math.max(sz.x,sz.y,sz.z,24), dir=V3.cam.position.clone().sub(V3.ctl.target).normalize();
+  tween3D(ctr.clone().add(dir.multiplyScalar(r/Math.tan(V3.persp.fov*Math.PI/360)*.8)), ctr);
 }
+function zoomBy(sgn){ if (V3.cam.isOrthographicCamera){ V3.cam.zoom*= sgn>0?1.25:1/1.25; V3.cam.updateProjectionMatrix(); } else { const d=V3.cam.position.clone().sub(V3.ctl.target); d.multiplyScalar(sgn>0?1/1.25:1.25); V3.cam.position.copy(V3.ctl.target).add(d); } dirty3D(); }
 function tween3D(pos, tgt, instant){
-  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  if (instant || reduce){ V3.cam.position.copy(pos); V3.ctl.target.copy(tgt); V3.tween=null; return; }
-  V3.tween = {p0:V3.cam.position.clone(), t0:V3.ctl.target.clone(), p1:pos, t1:tgt, s:performance.now(), d:550};
+  if (instant || matchMedia("(prefers-reduced-motion: reduce)").matches){ V3.cam.position.copy(pos); V3.ctl.target.copy(tgt); V3.cam.lookAt(tgt); V3.tween=null; dirty3D(); return; }
+  V3.tween = {p0:V3.cam.position.clone(), t0:V3.ctl.target.clone(), p1:pos, t1:tgt, s:performance.now(), d:450};
 }
 
 /* ---------- picking, hover, highlight ---------- */
 const ray = window.THREE ? new THREE.Raycaster() : null;
+function shown(o){ for (let p=o; p; p=p.parent) if (!p.visible) return false; return true; }
 function pick3D(e){
   const rc=V3.r.domElement.getBoundingClientRect(), p=new THREE.Vector2(((e.clientX-rc.left)/rc.width)*2-1, -((e.clientY-rc.top)/rc.height)*2+1);
   ray.setFromCamera(p, V3.cam);
-  const hits = ray.intersectObjects(V3.parts.filter(m=>m.visible && m.parent?.visible!==false && !(m.userData.ghost)), false);
-  if (!hits.length) return null;
-  const o=hits[0].object; return {obj:o, part:o.userData.part, cell:o.userData.cell};
+  const hits = ray.intersectObjects(V3.parts.filter(m=>!m.userData.ghost && m.material!==V3.mats.hide && shown(m)), false);
+  if (!hits.length) return null; const o=hits[0].object; return {obj:o, part:o.userData.part, cell:o.userData.cell};
 }
 function hover3D(e){
   const h=pick3D(e), tip=$(".v3-tip", V3.wrap);
-  if (!h || !GLOSS[h.part]){ tip.hidden=true; if (V3.hover){ V3.hover=null; setHL?.(null); } return; }
+  if (!h || !GLOSS[h.part]){ tip.hidden=true; V3.r.domElement.style.cursor="grab"; if (V3.hover){ V3.hover=null; setHL?.(null); } return; }
   const G=GLOSS[h.part], rc=V3.wrap.getBoundingClientRect();
   tip.innerHTML = `<b>${esc(G[0])}</b>${esc(G[1])}${h.cell?`<em>Click to edit or explain</em>`:""}`; tip.hidden=false;
-  const x=e.clientX-rc.left, y=e.clientY-rc.top; tip.style.left=Math.min(x+14, rc.width-tip.offsetWidth-8)+"px"; tip.style.top=Math.min(y+14, rc.height-tip.offsetHeight-8)+"px";
+  const x=e.clientX-rc.left, y=e.clientY-rc.top; tip.style.left=Math.max(6,Math.min(x+14, rc.width-tip.offsetWidth-8))+"px"; tip.style.top=Math.max(6,Math.min(y+14, rc.height-tip.offsetHeight-8))+"px";
   V3.r.domElement.style.cursor = h.cell ? "pointer" : "grab";
-  if (V3.hover!==h.cell){ V3.hover=h.cell; if (h.cell) setHL?.(h.cell); }
+  if (V3.hover!==h.cell){ V3.hover=h.cell; setHL?.(h.cell||null); }
 }
 function highlight3D(cell){
   if (!V3.parts) return;
-  for (const m of V3.parts) if (m.userData.base) m.material = (cell && m.userData.cell===cell && m.userData.part!=="wall") ? V3.mats.hl : m.userData.base;
-  for (const d of V3.dims) d.obj.material = (cell && d.cell===cell) ? V3.mats.dimHl : (d.bad?V3.mats.dimBad:V3.mats.dim);
+  for (const m of V3.parts){ if (!m.userData.base || m.userData.part==="wall") continue; m.material = (cell && m.userData.cell===cell) ? V3.mats.hl : m.userData.base; }
+  dirty3D();
 }
 
-/* ---------- frame loop: cut-away walls, labels, camera tween ---------- */
-const _v=window.THREE?new THREE.Vector3():null;
+/* ---------- frame loop (renders only when something changed) ---------- */
+const _v=window.THREE?new THREE.Vector3():null, _d=window.THREE?new THREE.Vector3():null;
 function loop3D(t){
   V3.raf = requestAnimationFrame(loop3D);
   if (!V3.host || !V3.wrap.isConnected || document.hidden) return;
   const cam=V3.cam, ctl=V3.ctl;
-  if (V3.tween){ const k=Math.min(1,(t-V3.tween.s)/V3.tween.d), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
-    cam.position.lerpVectors(V3.tween.p0, V3.tween.p1, e); ctl.target.lerpVectors(V3.tween.t0, V3.tween.t1, e); if (k>=1) V3.tween=null; }
-  ctl.update();
+  if (V3.tween){ const k=Math.min(1,(t-V3.tween.s)/V3.tween.d), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    cam.position.lerpVectors(V3.tween.p0, V3.tween.p1, e); ctl.target.lerpVectors(V3.tween.t0, V3.tween.t1, e); if (k>=1) V3.tween=null; V3.dirty=true; }
+  if (ctl.update()) V3.dirty=true;
+  if (!V3.dirty) return;
+  V3.dirty=false;
+  // automatic cut-away: hide walls between the camera and the shaft (horizontal view direction), keep their outline
+  _d.copy(cam.position).sub(ctl.target); if (cam.isOrthographicCamera) _d.setLength(5000);
+  const camPos=_v.copy(ctl.target).add(_d);
   for (const w of V3.walls){
-    const {n,p,ceil,slab,z}=w.userData.wall; let out=_v.copy(cam.position).sub(p).dot(n)>0;
-    if (slab) out = out && cam.position.z > z && V3.mode!=="glass";
-    const ghost = V3.mode==="glass" || (V3.mode==="cut" && out), fill = V3.mode==="glass" ? V3.mats.glass : V3.mats.hide;
-    w.visible = slab ? true : V3.mode==="off" ? (ceil && !out) : !(ceil && out && V3.mode==="cut");
-    w.traverse(o=>{ if (o.isMesh && o.userData.base){ o.material = ghost ? fill : o.userData.base; o.userData.ghost = ghost; o.castShadow = !ghost; }
+    const {n,p,ceil,slab,z}=w.userData.wall; let out = camPos.clone().sub(p).dot(n) > 0;
+    if (!ceil && !slab){ const hd=_d.clone().setY(0); out = hd.lengthSq()>1e-6 && hd.normalize().dot(n) > .35; }
+    if (slab) out = out && V3.mode!=="glass";   // looking down past a floor: show it as glass
+    const ghost = V3.mode==="glass" || ((V3.mode==="cut" || slab) && out), fill = V3.mode==="glass" && !slab ? V3.mats.glass : V3.mats.hide;
+    w.visible = slab ? V3.layers.landings : V3.mode==="off" ? (ceil && !out) : !(ceil && out && V3.mode==="cut");
+    w.traverse(o=>{ if (o.isMesh && o.userData.base){ o.material = ghost ? (slab ? V3.mats.glass : fill) : o.userData.base; o.userData.ghost=ghost; o.castShadow=!ghost; }
       else if (o.isLineSegments) o.material = ghost ? V3.mats.edgeGhost : V3.mats.edge; });
   }
-  V3.r.render(V3.scene, cam);
-  // labels: project, keep constant screen size, spread to avoid overlaps
-  if (V3.showLabels && V3.labelEls){
-    const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight, groups={L:[],R:[],C:[]};
-    V3.labels.forEach((L,i)=>{ const el=V3.labelEls[i]; if (!el || L.hide) return; const p=L.at().project(cam);
-      if (p.z>1 || p.x<-1.2 || p.x>1.2){ el.style.visibility="hidden"; return; }
-      el.style.visibility="visible"; groups[L.side||"C"].push({el, x:(p.x+1)/2*w, y:(1-p.y)/2*h}); });
-    for (const k in groups){ const arr=groups[k].sort((a,b)=>a.y-b.y); for (let i=1;i<arr.length;i++) if (arr[i].y-arr[i-1].y<24) arr[i].y=arr[i-1].y+24;
-      for (const it of arr){ const ew=it.el.offsetWidth; let x = k==="L" ? it.x-ew-8 : k==="R" ? it.x+8 : it.x-ew/2; x=Math.max(4,Math.min(w-ew-4,x)); it.el.style.transform=`translate(${x}px,${Math.max(40,Math.min(h-56,it.y-11))}px)`; } }
+  V3.r.render(V3.scene, cam); V3.frames=(V3.frames||0)+1;
+  overlay3D();
+}
+// dimension chains + labels as a screen overlay: always beside the shaft, always facing you
+function overlay3D(){
+  const w=V3.wrap.clientWidth, h=V3.wrap.clientHeight, cam=V3.cam, svg=$(".v3-dims",V3.wrap);
+  const P=(x,y,z)=>{ const p=v3(x,y,z).project(cam); return {x:(p.x+1)/2*w, y:(1-p.y)/2*h, z:p.z}; };
+  const b=V3.shaft, mid=(b.min.y+b.max.y)/2, corners=[[b.min.x,b.min.z],[b.max.x,b.min.z],[b.max.x,b.max.z],[b.min.x,b.max.z]];
+  const sc=corners.map(([x,z])=>({x,z,s:P(x,mid,z)}));
+  const L=sc.reduce((a,c)=>c.s.x<a.s.x?c:a), R=sc.reduce((a,c)=>c.s.x>a.s.x?c:a);
+  let out=""; const lab=[];
+  for (const ch of V3.chains){
+    const cn = ch.side==="L"?L:R, off=(ch.side==="L"?-1:1)*(ch.outer?62:30);
+    const y0=P(cn.x, 0, cn.z), y1=P(cn.x, b.max.y, cn.z); const tall=Math.abs(y1.y-y0.y)>60 && y0.z<1 && y1.z<1;
+    for (const s of ch.segs){
+      const a=P(cn.x,s[0],cn.z), e=P(cn.x,s[1],cn.z), ax=a.x+off, ex=e.x+off, cls=`d3${s[6]?" bad":""}`;
+      const li = V3.labels.findIndex(l=>l.seg===s);
+      if (!tall){ if (li>=0) lab.push({i:li, hide:true}); continue; }
+      out += `<g class="${cls}" data-cell="${s[3]||""}"><line x1="${a.x}" y1="${a.y}" x2="${ax}" y2="${a.y}" class="ext"/><line x1="${e.x}" y1="${e.y}" x2="${ex}" y2="${e.y}" class="ext"/>
+        <line x1="${ax}" y1="${a.y}" x2="${ex}" y2="${e.y}"/><path d="M${ax-5} ${a.y+5}L${ax+5} ${a.y-5}M${ex-5} ${e.y+5}L${ex+5} ${e.y-5}" class="tk"/></g>`;
+      if (li>=0) lab.push({i:li, x:(ax+ex)/2, y:(a.y+e.y)/2, side:ch.side, outer:ch.outer});
+    }
   }
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`); svg.innerHTML = out;
+  if (typeof HL!=="undefined" && HL) for (const el of svg.querySelectorAll(`[data-cell="${HL}"]`)) el.classList.add("hl");
+  if (!V3.showLabels || !V3.labelEls) return;
+  V3.labels.forEach((Lb,i)=>{ if (Lb.chain) return; const el=V3.labelEls[i]; if (!el||Lb.hide) return; const p=Lb.at(); const s=P(p.x,p.y,p.z);
+    if (s.z>1){ lab.push({i, hide:true}); return; } lab.push({i, x:s.x, y:s.y, side:Lb.side==="P"?"R":"C", pt:true}); });
+  const groups={};
+  for (const it of lab){ const el=V3.labelEls[it.i]; if (!el) continue; if (it.hide){ el.style.visibility="hidden"; continue; } el.style.visibility="visible"; (groups[(it.side||"C")+(it.outer?"o":"")+(it.pt?"p":"")] ||= []).push({...it, el}); }
+  const top=55, bot=h-47;
+  for (const k in groups){ const arr=groups[k].sort((a,c)=>a.y-c.y); for (const it of arr) it.y=Math.max(top,Math.min(bot,it.y));
+    for (let i=1;i<arr.length;i++) if (arr[i].y-arr[i-1].y<26) arr[i].y=arr[i-1].y+26;
+    if (arr.length && arr[arr.length-1].y>bot){ arr[arr.length-1].y=bot; for (let i=arr.length-2;i>=0;i--) if (arr[i+1].y-arr[i].y<26) arr[i].y=arr[i+1].y-26; }
+    for (const it of arr){ const ew=it.el.offsetWidth; let x = k[0]==="L" ? it.x-ew-8 : k[0]==="R" ? it.x+(it.pt?14:8) : it.x-ew/2; x=Math.max(4,Math.min(w-ew-4,x));
+      it.el.style.transform=`translate(${x}px,${it.y-11}px)`; } }
 }
 
 /* ============================ data ============================ */
