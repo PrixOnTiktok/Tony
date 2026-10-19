@@ -595,6 +595,18 @@ body.vt-step #gbody,body.vt-step #cfbody{view-transition-name:step}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important} .has-ind>.ind{transition:none} }
 
+
+/* ============ spotlight: where a click took you ============ */
+@keyframes spotIn{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--yellow) 85%,transparent),var(--sh2)}45%{box-shadow:0 0 0 12px color-mix(in srgb,var(--yellow) 30%,transparent),var(--sh2)}100%{box-shadow:0 0 0 5px color-mix(in srgb,var(--yellow) 45%,transparent),var(--sh2)}}
+:is(.fld,.res,.kr,.tile,.sl,.card,.prob,.sum-grid>*,.st){transition:background .6s var(--e-out),box-shadow .6s var(--e-out),outline-color .6s var(--e-out)}
+.spot:not(tr){position:relative;z-index:3;outline:3px solid var(--yellow);outline-offset:2px;border-radius:12px;
+  background:color-mix(in srgb,var(--yellow) 18%,var(--card))!important;box-shadow:0 0 0 5px color-mix(in srgb,var(--yellow) 45%,transparent),var(--sh2)!important;animation:spotIn .7s var(--e-in)}
+.spot:not(tr) .lab,.spot:not(tr) .rl,.spot:not(tr) small{color:var(--ink)}
+tr.spot td{background:color-mix(in srgb,var(--yellow) 22%,var(--card))!important;box-shadow:inset 0 2px 0 var(--yellow),inset 0 -2px 0 var(--yellow);transition:background .6s}
+tr.spot td:first-child{box-shadow:inset 4px 0 0 var(--yellow),inset 0 2px 0 var(--yellow),inset 0 -2px 0 var(--yellow)}
+.spot-sec{background:color-mix(in srgb,var(--yellow) 6%,transparent)!important;box-shadow:inset 4px 0 0 var(--yellow)!important;transition:background .6s,box-shadow .6s}
+.rgrid .card.spot-sec,.tbl.spot-sec{box-shadow:0 0 0 2px color-mix(in srgb,var(--yellow) 55%,transparent)!important}
+@media (prefers-reduced-motion:reduce){ .spot{animation:none!important} }
 /* ============ responsive ============ */
 @media (max-width:1100px){ .tb{grid-template-columns:minmax(0,1fr)} .tb .stick{position:static} .db{grid-template-columns:minmax(0,260px) minmax(0,1fr)} .cf-steps .st small{display:none} }
 @media (max-width:860px){ .cf-hud{position:static;grid-template-columns:repeat(2,minmax(0,1fr));width:auto;margin-top:10px;max-height:none} .cf-steps{display:flex;overflow-x:auto;scrollbar-width:none} .cf-steps button{flex:none} .cf-steps .st{display:none} .cf-steps .st small{display:none} .cf-steps button[aria-selected="true"] .st{display:flex} }
@@ -863,6 +875,7 @@ body.v3max{overflow:hidden}
     </div>
     <div class="acts">
       <button class="btn on-dark" id="printb" title="Print the one-page job sheet, or save it as PDF"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-print"/></svg><span>Print</span></button>
+      <button class="btn on-dark" id="resetb" title="Put every input back to the sheet values (you can undo)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset</span></button>
       <button class="btn on-dark" id="setb" aria-expanded="false" aria-controls="settings" title="Settings"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></button>
     </div>
   </div>
@@ -893,7 +906,9 @@ body.v3max{overflow:hidden}
     <label class="srow sw"><span>Show Excel cells &amp; formulas<small>Cell references, formulas and the sheet's hidden working cells.</small></span><input type="checkbox" id="set-xl" role="switch"></label>
   </div>
   <div class="dr-sec"><h3>Inputs</h3>
-    <button class="btn danger wide" id="reset"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset every input to the sheet values</span></button>
+    <button class="btn wide" id="reset"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset every input to the sheet values</span></button>
+    <button class="btn danger wide" id="resetall" style="margin-top:8px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset everything (inputs and all settings)</span></button>
+    <p class="about" style="margin-top:6px">Both can be undone from the message that appears.</p>
   </div>
   <p class="about">Formulas, warnings and limits match 601102_R5.xlsx exactly. Plan sizes in the 3D view are illustrative.</p>
 </aside>
@@ -3619,12 +3634,34 @@ function showNow(id){
 }
 // where to open a popover: the pointer, or under the element when it was a keyboard press
 function ptOf(e, el){ if (e.detail!==0 && (e.pageX||e.pageY)) return [e.pageX, e.pageY]; const r=el.getBoundingClientRect(); return [r.left+r.width/2+scrollX, r.bottom+scrollY]; }
-function cellClick(cell, e, el){ setHL(cell); if (current==="drawing"){ SEL=cell; renderSel(); return; } if (IN[cell] && focusCell(cell)){ closePop(); return; } openPop(cell, ...ptOf(e, el||e.target)); }
+function cellClick(cell, e, el){ setHL(cell); if (current==="drawing"){ SEL=cell; renderSel(); return; } if (IN[cell] && cellTargets(cell).length){ closePop(); goToCell(cell, e); return; } openPop(cell, ...ptOf(e, el||e.target)); spotlight(cellTargets(cell), false); }
 function focusCell(cell){
   const inp = $$(`#view input[data-k="${cell}"]:not([type=range])`).find(i=>i.offsetParent);
-  if (inp){ inp.focus({preventScroll:true}); inp.scrollIntoView({block:"center",behavior:REDUCE?"auto":"smooth"}); inp.select?.();
-    const f=inp.closest("[data-fld],.sl,tr"); if (f && !REDUCE){ f.classList.remove("pulse"); void f.offsetWidth; f.classList.add("pulse"); } return true; }
+  if (inp){ spotlight([inp.closest("[data-fld],.sl,tr")||inp]); inp.focus({preventScroll:true}); inp.select?.(); return true; }
   return false;
+}
+/* ---------- go to & spotlight: every chip, problem, tile, dimension and 3D part takes you to its section and lights it up ---------- */
+const RELATED = {E26:["E27"], E27:["E26"], E31:["E43","E24"], E33:["E24","E22","E19"], E61:["E59","E63"], E23:["E22"]}; // what else to light up
+function cellTargets(cell){ return [...new Set($$(`#view [data-fld="${cell}"], #view [data-res="${cell}"], #view [data-kr="${cell}"], #view [data-st="${cell}"], #view .tile[data-cell="${cell}"], #view tr[data-cell="${cell}"], #view .sl[data-cell="${cell}"], #view .sum-grid [data-cell="${cell}"]`))].filter(e=>e.offsetParent); }
+function spotlight(els, scroll=true){
+  els=els.filter(Boolean); if (!els.length) return false;
+  if (scroll) els[0].scrollIntoView({block:"center", behavior:REDUCE?"auto":"smooth"});
+  for (const el of els){ el.classList.remove("spot"); void el.offsetWidth; el.classList.add("spot"); clearTimeout(el._spot); el._spot=setTimeout(()=>el.classList.remove("spot"), 2600);
+    const sec=el.closest(".grp, .rgrid .card, .tbl"); if (sec && sec!==el){ sec.classList.add("spot-sec"); clearTimeout(sec._spot); sec._spot=setTimeout(()=>sec.classList.remove("spot-sec"), 2600); } }
+  return true;
+}
+function goToCell(cell, e){
+  let wait=0; // a field on another wizard step: go to that step first
+  if (IN[cell] && current==="config"){ const i=CSTEPS.findIndex(s=>s.cells.includes(cell)); if (i>=0 && i!==cstep){ goC(i); wait=380; } }
+  if (IN[cell] && current==="guided"){ const i=GSTEPS.findIndex(s=>s.cells.includes(cell)); if (i>=0 && i!==gstep){ goG(i); wait=380; } }
+  const [px,py] = e ? ptOf(e, e.target) : [scrollX+innerWidth/2, scrollY+innerHeight/3];
+  setTimeout(()=>{
+    setHL(cell);
+    const main=cellTargets(cell), more=(RELATED[cell]||[]).flatMap(cellTargets);
+    if (!spotlight([...main, ...(IN[cell]?more.filter(x=>x.matches("[data-fld],tr,.sl")):more)])){ openPop(cell, px, py); return; }
+    const inp=main.map(m=>m.querySelector?.('input[data-k]:not([type=range])')||null).find(Boolean) || $$(`#view input[data-k="${cell}"]:not([type=range])`).find(i=>i.offsetParent);
+    if (IN[cell] && inp){ inp.focus({preventScroll:true}); inp.select?.(); }
+  }, wait);
 }
 function openPop(cell, x, y){
   const pop=$("#pop");
@@ -3657,7 +3694,23 @@ $("#scrim").onclick=()=>openSettings(false);
 $("#setx").onclick=()=>openSettings(false);
 applyTheme(store.get(K_THEME)); applySize(store.get(K_SIZE));
 if (store.get(K_XL)==="1"){ document.body.classList.add("show-xl"); $("#set-xl").checked=true; }
-$("#reset").onclick=()=>{ if (!confirm("Put every input back to the values saved in 601102_R5.xlsx?")) return; state={...DEFAULTS}; for (const k in bad) delete bad[k]; save(); update(); openSettings(false); };
+// Reset: inputs and job back to the sheet (top bar, or Settings); "everything" also clears every saved setting. Both can be undone.
+function resetInputs(){
+  const before={...state}, bk={...bad}, steps=[gstep,cstep];
+  state={...DEFAULTS}; for (const k in bad) delete bad[k]; save();
+  if (DV.raf){ cancelAnimationFrame(DV.raf); DV.raf=0; } DV.f=null; DV.pos="bottom"; gstep=0; cstep=0; store.set(K_STEP,0); store.set(K_CSTEP,0);
+  showNow(current); openSettings(false);
+  toast("Every input is back to the sheet values", ()=>{ state=before; Object.assign(bad,bk); save(); [gstep,cstep]=steps; store.set(K_STEP,gstep); store.set(K_CSTEP,cstep); showNow(current); });
+}
+function resetEverything(){
+  const saved={}; try{ for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if (k.startsWith("ols601102")) saved[k]=localStorage.getItem(k); } }catch{}
+  try{ for (const k in saved) localStorage.removeItem(k); }catch{}
+  applyTheme(""); applySize("std"); document.body.classList.remove("show-xl"); $("#set-xl").checked=false;
+  DV.style="technical"; $("#set-style").value="technical";
+  resetInputs(); $("#toasts").lastChild?.remove(); // replace the inputs-only message with this one
+  toast("Everything is back to how it started", ()=>{ try{ for (const [k,v] of Object.entries(saved)) localStorage.setItem(k,v); }catch{} location.reload(); });
+}
+$("#reset").onclick=resetInputs; $("#resetb").onclick=resetInputs; $("#resetall").onclick=resetEverything;
 $("#printb").onclick=()=>print();
 // Printing (button, menu or Ctrl+P) always gives the one-page job sheet, whichever layout is open.
 let printBack=null;
@@ -3703,8 +3756,8 @@ document.addEventListener("click",e=>{
   const ap=t.closest("[data-apply]"); if (ap){ const k=ap.dataset.apply, before=state[k], isFix=!!ap.closest(".prob,.sub2");
     setVal(k, ap.dataset.val); setHL(k);
     if (isFix) toast(`${ap.textContent.trim()} — done`, ()=>{ setVal(k, before); setHL(k); }); return; }
-  const go=t.closest("[data-go]"); if (go){ if (current==="config"){ const i=CSTEPS.findIndex(s=>s.cells.includes(go.dataset.go)); if (i>=0) goC(i); } if (current==="guided"){ const i=GSTEPS.findIndex(s=>s.cells.includes(go.dataset.go)); if (i>=0) goG(i); } if (!focusCell(go.dataset.go)) openPop(go.dataset.go, e.pageX, e.pageY); return; }
-  const fc=t.closest("[data-focus]"); if (fc){ const cell=fc.dataset.focus; if (!cell){ $("[data-probs]")?.scrollIntoView({block:"start",behavior:"smooth"}); return; } setHL(cell); if (IN[cell]) { if (!focusCell(cell)) openPop(cell,e.pageX,e.pageY); } else { const r=$(`#view [data-res="${cell}"],#view [data-kr="${cell}"],#view [data-st="${cell}"]`); r?.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
+  const go=t.closest("[data-go]"); if (go){ goToCell(go.dataset.go, e); return; }
+  const fc=t.closest("[data-focus]"); if (fc){ const cell=fc.dataset.focus; if (!cell){ spotlight($$(".probwrap .prob, #view [data-status] .prob")); return; } goToCell(cell, e); return; }
   const how=t.closest("[data-how]"); if (how){ how.closest(".res").classList.toggle("open"); return; }
   if (t.closest("[data-print]")) return print();
   const ch=t.closest("[data-change]"); if (ch){ const i=GSTEPS.findIndex(s=>s.cells.includes(ch.dataset.change)); goG(i); setTimeout(()=>focusCell(ch.dataset.change),50); return; }
@@ -3726,7 +3779,7 @@ document.addEventListener("click",e=>{
   const dc=t.closest("[data-vcanvas] [data-cell]");
   if (dc){ const cell=dc.dataset.cell; if (cell) cellClick(cell, e, dc); return; }
   const kr=t.closest("[data-kr],[data-st]"); if (kr){ const cell=kr.dataset.kr||kr.dataset.st; openPop(cell, ...ptOf(e, kr)); return; }
-  const tl=t.closest(".tile[data-cell]"); if (tl){ const cell=tl.dataset.cell; setHL(cell); if (IN[cell] && focusCell(cell)) return; openPop(cell, ...ptOf(e, tl)); return; }
+  const tl=t.closest(".tile[data-cell]"); if (tl){ const cell=tl.dataset.cell; setHL(cell); spotlight([tl], false); if (IN[cell] && focusCell(cell)) return; openPop(cell, ...ptOf(e, tl)); return; }
 });
 document.addEventListener("mouseover",e=>{
   const el=e.target.closest?.("[data-cell]"); if (!el) return;
