@@ -13,6 +13,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import ca.bancroft.trails.data.ThemeMode
 import ca.bancroft.trails.ui.MapScreen
 import ca.bancroft.trails.ui.MapViewModel
@@ -43,7 +44,9 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val themeMode by vm.theme.collectAsState()
-            val dark = when (themeMode) { ThemeMode.AUTO -> isSystemInDarkTheme(); ThemeMode.LIGHT -> false; ThemeMode.DARK -> true }
+            // Auto = dark when the phone is in dark mode OR it's after sunset / before sunrise where you are
+            val night by produceState(isNight(), themeMode) { while (true) { value = isNight(); kotlinx.coroutines.delay(60_000) } }
+            val dark = when (themeMode) { ThemeMode.AUTO -> isSystemInDarkTheme() || night; ThemeMode.LIGHT -> false; ThemeMode.DARK -> true }
             LaunchedEffect(dark) {
                 // Edge-to-edge (mandatory on Android 16+): the map draws under the status and navigation bars.
                 enableEdgeToEdge(
@@ -63,6 +66,14 @@ class MainActivity : ComponentActivity() {
                 MapScreen(vm, dark, speak = ::speak)
             }
         }
+    }
+
+    private fun isNight(): Boolean {
+        val lat = vm.settings.lastLat; val lon = vm.settings.lastLon
+        val now = System.currentTimeMillis()
+        val rise = ca.bancroft.trails.data.Sun.sunrise(lat, lon) ?: return false
+        val set = ca.bancroft.trails.data.Sun.sunset(lat, lon) ?: return false
+        return now < rise || now > set + 20 * 60_000
     }
 
     private fun speak(text: String) {

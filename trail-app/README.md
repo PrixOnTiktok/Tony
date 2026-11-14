@@ -12,6 +12,10 @@ every trail, gas/food/places and the router are all inside the app.
 |---|---|---|---|
 | ![](docs/screenshots/2_trail_details.png) | ![](docs/screenshots/4_route_plan.png) | ![](docs/screenshots/5_navigating.png) | ![](docs/screenshots/10_my_location.png) |
 
+| Stranded / SOS | Home |
+|---|---|
+| ![](docs/screenshots/11_stranded.png) | ![](docs/screenshots/12_home.png) |
+
 ## What it does
 - **Colour-coded trails**:
   - 🟢 free (Crown land trails / forest roads)
@@ -35,6 +39,15 @@ every trail, gas/food/places and the router are all inside the app.
   leave the loop it brings you back onto it.
 - **Record rides**: keeps recording with the screen off. Saved rides list with distance, time and max speed, and
   each ride can be shared as GPX.
+- **Home**: one tap routes you home (preset to 267 Bradshaw Rd, an estimate from the address; tap "I'm here" in the
+  driveway to make it exact).
+- **Your own trails**: ride somewhere no map has a trail and it's saved automatically (teal dashes). The router uses
+  it next time. Destinations off any trail get a dashed cross-country last stretch.
+- **Compass** always on screen, and an **SOS** button: stranded panel with coordinates, a hold-to-call 911 button
+  (2-second hold, no accidental calls), flashlight, 3-blast distress signal, nearest road and home with direction
+  arrows, daylight left, battery level and survival tips. All of it works with no signal.
+- **Personal tracking**: rides you navigate are recorded automatically. Stats (rides, km, hours, top speed),
+  "where I've ridden" layer, and a "head home by…" warning so you're back before dark.
 - **Your own pins**: parking, good trail, blocked (routes avoid it), food stop, notes. Saved on the phone.
 - **Safety & quality of life**:
   - "My location" card with coordinates, nearest trail or road, a one-tap share and a 911 button.

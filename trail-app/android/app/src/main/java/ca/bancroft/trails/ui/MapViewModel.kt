@@ -9,6 +9,9 @@ import ca.bancroft.trails.data.MapStyle
 import ca.bancroft.trails.data.Ride
 import ca.bancroft.trails.data.RideRecorder
 import ca.bancroft.trails.data.RideStore
+import ca.bancroft.trails.data.Sun
+import ca.bancroft.trails.data.UserTrail
+import ca.bancroft.trails.data.UserTrailStore
 import ca.bancroft.trails.location.RideService
 import ca.bancroft.trails.nav.Units
 import ca.bancroft.trails.data.Pin
@@ -62,6 +65,14 @@ sealed interface Target {
         override val title get() = label
     }
 
+    data class Home(override val lat: Double, override val lon: Double, val label: String, val exact: Boolean) : Target {
+        override val title get() = "Home"
+    }
+
+    data class YourTrail(val trail: UserTrail, override val lat: Double, override val lon: Double) : Target {
+        override val title get() = "Your trail"
+    }
+
     /** The rider's own position: coordinates, share, emergency call. */
     data class Me(override val lat: Double, override val lon: Double, val accuracyM: Float, val altitudeM: Double?, val speedKmh: Double) : Target {
         override val title get() = "My location"
@@ -77,6 +88,7 @@ sealed interface Mode {
     data class Navigating(val dest: Target, val route: Route, val state: NavState?) : Mode
     data class Loop(val km: Int, val mode: RouteMode, val route: Route?, val computing: Boolean, val noGps: Boolean = false) : Mode
     data object Rides : Mode
+    data object Sos : Mode
     data class RideView(val ride: Ride) : Mode
 }
 
@@ -85,6 +97,8 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     private val pinStore = PinStore(app)
     val locationRepo = LocationRepo.get(app)
     private val rideStore = RideStore(app)
+    private val userTrailStore = UserTrailStore(app)
+    private var autoStartedRecording = false
     val recording = RideRecorder.live
 
     private val _data = MutableStateFlow<AppData?>(null)
@@ -122,6 +136,25 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     private val _fuelRange = MutableStateFlow(settings.fuelRangeKm)
     val fuelRange: StateFlow<Int> = _fuelRange.asStateFlow()
 
+    private val _home = MutableStateFlow(Target.Home(settings.homeLat, settings.homeLon, settings.homeLabel, settings.homeExact))
+    val home: StateFlow<Target.Home> = _home.asStateFlow()
+
+    private val _userTrails = MutableStateFlow(userTrailStore.load())
+    val userTrails: StateFlow<List<UserTrail>> = _userTrails.asStateFlow()
+
+    /** All saved rides, thinned, for the "where I've ridden" layer. */
+    private val _ridden = MutableStateFlow<List<List<Pair<Double, Double>>>>(emptyList())
+    val ridden: StateFlow<List<List<Pair<Double, Double>>>> = _ridden.asStateFlow()
+    private val _showRidden = MutableStateFlow(settings.showRidden)
+    val showRidden: StateFlow<Boolean> = _showRidden.asStateFlow()
+    private val _autoRecord = MutableStateFlow(settings.autoRecord)
+    val autoRecord: StateFlow<Boolean> = _autoRecord.asStateFlow()
+
+    /** Latest time to leave to get home before sunset (null = not relevant / unknown). */
+    private val _leaveBy = MutableStateFlow<Long?>(null)
+    val leaveBy: StateFlow<Long?> = _leaveBy.asStateFlow()
+    private var leaveByCheckedAt = 0L
+
     private val _voice = MutableStateFlow(settings.voice)
     val voice: StateFlow<Boolean> = _voice.asStateFlow()
 
@@ -136,8 +169,9 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     init {
         viewModelScope.launch(Dispatchers.Default) {
             val d = AppData.load(app)
-            router = Router(d.graph)
+            router = Router(d.graph).also { it.setUserTrails(_userTrails.value.map { t -> t.pts }) }
             _data.value = d
+            refreshRidden()
         }
     }
 
@@ -175,6 +209,74 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     fun showMe() {
         val l = locationRepo.location.value ?: return
         select(Target.Me(l.latitude, l.longitude, l.accuracy, if (l.hasAltitude()) l.altitude else null, l.speed * 3.6))
+    }
+
+    // ---------- home
+    fun goHome() = planTo(_home.value)
+
+    fun setHome(lat: Double, lon: Double) {
+        settings.homeLat = lat; settings.homeLon = lon; settings.homeExact = true
+        _home.value = Target.Home(lat, lon, settings.homeLabel, true)
+        _mode.value = Mode.Details(_home.value)
+    }
+
+    // ---------- stranded / SOS
+    fun openSos() { _mode.value = Mode.Sos }
+
+    /** Nearest public road (any road, for walking out) to a point: (name, distance m, bearing deg, lat, lon). */
+    fun nearestRoad(lat: Double, lon: Double): Triple<String, Double, Pair<Double, Double>>? {
+        val g = _data.value?.graph ?: return null
+        val s = g.snap(lat, lon, 15000.0) { ca.bancroft.trails.data.Kind.isRoad(g.eKind[it].toInt()) && g.eKind[it].toInt() != ca.bancroft.trails.data.Kind.SERVICE } ?: return null
+        return Triple(g.name(s.edge) ?: "a road", s.distM, s.lat to s.lon)
+    }
+
+    // ---------- your own trails
+    fun deleteUserTrail(t: UserTrail) {
+        _userTrails.value = _userTrails.value.filterNot { it.id == t.id }
+        userTrailStore.save(_userTrails.value)
+        router?.setUserTrails(_userTrails.value.map { it.pts })
+        _mode.value = Mode.Browse
+    }
+
+    private fun learnTrails(live: RideRecorder.Live) {
+        val g = _data.value?.graph ?: return
+        val found = UserTrailStore.detect(live.points, g, _userTrails.value)
+        if (found.isEmpty()) return
+        _userTrails.value = _userTrails.value + found
+        userTrailStore.save(_userTrails.value)
+        router?.setUserTrails(_userTrails.value.map { it.pts })
+    }
+
+    private fun refreshRidden() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _ridden.value = rideStore.list().map { r -> rideStore.points(r).filterIndexed { i, _ -> i % 3 == 0 } }
+        }
+    }
+
+    fun setShowRidden(v: Boolean) { settings.showRidden = v; _showRidden.value = v }
+    fun setAutoRecord(v: Boolean) { settings.autoRecord = v; _autoRecord.value = v }
+
+    data class Stats(val rides: Int, val km: Double, val hours: Double, val maxKmh: Double, val yourTrailsKm: Double)
+    fun stats(): Stats {
+        val rs = _rides.value
+        return Stats(rs.size, rs.sumOf { it.distanceM } / 1000.0, rs.sumOf { it.durationMs } / 3_600_000.0,
+            rs.maxOfOrNull { it.maxKmh } ?: 0.0, _userTrails.value.sumOf { it.lengthM } / 1000.0)
+    }
+
+    /** "Leave by" for getting home before dark; recomputed at most every 5 min. */
+    private fun updateLeaveBy(loc: Location) {
+        val now = System.currentTimeMillis()
+        if (now - leaveByCheckedAt < 5 * 60_000) return
+        leaveByCheckedAt = now
+        val sunset = Sun.sunset(loc.latitude, loc.longitude) ?: return
+        if (sunset - now > 3 * 3600_000 || sunset < now) { _leaveBy.value = null; return }
+        val r = router ?: return
+        val h = _home.value
+        if (distM(loc.latitude, loc.longitude, h.lat, h.lon) < 300) { _leaveBy.value = null; return }
+        viewModelScope.launch {
+            val route = withContext(Dispatchers.Default) { r.route(loc.latitude, loc.longitude, h.lat, h.lon, settings.routeMode, false) }
+            _leaveBy.value = route?.let { sunset - (it.timeS * 1000).toLong() - 10 * 60_000 }
+        }
     }
 
     // ---------- loops
@@ -225,9 +327,13 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
 
     fun stopRecording(save: Boolean): Ride? {
         val live = RideRecorder.stop()
+        autoStartedRecording = false
         if (_mode.value !is Mode.Navigating) RideService.stop(getApplication())
         val ride = if (save && live != null) rideStore.save(live) else null
+        if (save && live != null) learnTrails(live)
         _rides.value = rideStore.list()
+        _shownTrack.value = emptyList()
+        refreshRidden()
         return ride
     }
 
@@ -337,6 +443,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
         navigator = Navigator(route)
         _mode.value = Mode.Navigating(dest, route, null)
         locationRepo.start(fastUpdates = true)
+        if (settings.autoRecord && recording.value == null) { RideRecorder.start(); autoStartedRecording = true }
         RideService.start(getApplication(), "Navigating to ${dest.title}")
         _camera.value = CameraRequest.FollowMe
     }
@@ -344,6 +451,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     fun stopNav() {
         navigator = null
         _mode.value = Mode.Browse
+        if (autoStartedRecording) stopRecording(save = true)
         if (recording.value == null) { RideService.stop(getApplication()); locationRepo.start(fastUpdates = false) }
     }
 
@@ -353,6 +461,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     /** Called for every GPS fix. */
     fun onLocation(loc: Location) {
         recording.value?.let { live -> _shownTrack.value = live.points.map { it.lat to it.lon } }
+        updateLeaveBy(loc)
         val m = _mode.value as? Mode.Navigating ?: return
         val nav = navigator ?: return
         val st = nav.update(loc.latitude, loc.longitude)

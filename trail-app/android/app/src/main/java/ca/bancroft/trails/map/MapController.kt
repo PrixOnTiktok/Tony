@@ -78,6 +78,9 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
     private var selection: Target? = null
     private var mapStyle = MapStyle.STANDARD
     private var track: List<Pair<Double, Double>> = emptyList()
+    private var userTrails: List<ca.bancroft.trails.data.UserTrail> = emptyList()
+    private var ridden: List<List<Pair<Double, Double>>> = emptyList()
+    private var home: Target.Home? = null
 
     fun loadStyle(dark: Boolean, onReady: () -> Unit) {
         if (style != null && this.dark == dark) { onReady(); return }
@@ -115,6 +118,7 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         s.addImage("ic-camp", dot(0xFF2E7D32.toInt(), "⛺"))
         s.addImage("ic-water", dot(0xFF0277BD.toInt(), "💧"))
         s.addImage("ic-dest", dot(0xFFD32F2F.toInt(), "⚑", 36f))
+        s.addImage("ic-home", dot(0xFF0B6E4F.toInt(), "🏠", 38f))
         for (t in PinType.entries) s.addImage("pin-${t.name}", dot(if (dark) 0xFF263238.toInt() else Color.WHITE, t.emoji, 34f,
             ring = if (dark) Color.WHITE else 0xFF263238.toInt()))
     }
@@ -131,11 +135,25 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         s.addSource(GeoJsonSource("dest"))
         s.addSource(GeoJsonSource("selection"))
         s.addSource(GeoJsonSource("track"))
+        s.addSource(GeoJsonSource("route-off"))
+        s.addSource(GeoJsonSource("usertrails"))
+        s.addSource(GeoJsonSource("ridden"))
+        s.addSource(GeoJsonSource("home"))
 
         addBelow(LineLayer("selection-line", "selection").withProperties(
             lineColor(if (dark) "#FFFFFF" else "#111111"), lineOpacity(0.35f),
             lineWidth(Expression.interpolate(Expression.exponential(1.5), Expression.zoom(), Expression.stop(10, 8), Expression.stop(16, 18))),
             lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
+        // where you've ridden before (faint), and trails you found that no map has (teal, dashed)
+        addBelow(LineLayer("ridden-line", "ridden").withProperties(
+            lineColor(if (dark) "#B388FF" else "#6A1B9A"), lineOpacity(0.35f), lineWidth(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(9, 1.5), Expression.stop(16, 5))),
+            lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
+        addBelow(LineLayer("usertrail-casing", "usertrails").withProperties(
+            lineColor(if (dark) "#000000" else "#FFFFFF"), lineWidth(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(9, 4), Expression.stop(16, 10))),
+            lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
+        addBelow(LineLayer("usertrail-line", "usertrails").withProperties(
+            lineColor(if (dark) "#64FFDA" else "#00897B"), lineWidth(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(9, 2.5), Expression.stop(16, 6))),
+            lineDasharray(arrayOf(2f, 1f)), lineCap(Property.LINE_CAP_BUTT), lineJoin(Property.LINE_JOIN_ROUND)))
         addBelow(LineLayer("route-alt-line", "route-alt").withProperties(
             lineColor(if (dark) "#8A939C" else "#7D868F"), lineOpacity(0.8f),
             lineWidth(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(8, 3), Expression.stop(16, 7))),
@@ -155,6 +173,9 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
             lineColor(if (dark) "#F5F5F5" else "#263238"), lineWidth(3.5f), lineDasharray(arrayOf(1.5f, 1.2f)),
             lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
 
+        addBelow(LineLayer("route-off-line", "route-off").withProperties(
+            lineColor("#00B3FF"), lineWidth(5f), lineDasharray(arrayOf(1f, 1.2f)), lineCap(Property.LINE_CAP_ROUND)))
+
         val labelColor = if (dark) "#E6E9EC" else "#2B2B2B"
         val halo = if (dark) "#111316" else "#FFFFFF"
         s.addLayer(SymbolLayer("poi-icons", "pois").withProperties(
@@ -167,12 +188,34 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
             iconImage(get("icon")), iconAllowOverlap(true), iconIgnorePlacement(true),
             textField(get("name")), textFont(arrayOf("Noto Sans Medium")), textSize(13f), textOffset(arrayOf(0f, 1.6f)),
             textAnchor(Property.TEXT_ANCHOR_TOP), textOptional(true), textColor(labelColor), textHaloColor(halo), textHaloWidth(2f)))
+        s.addLayer(SymbolLayer("home-icon", "home").withProperties(iconImage("ic-home"), iconAllowOverlap(true), iconIgnorePlacement(true),
+            iconSize(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(8, 0.7), Expression.stop(14, 1.0)))))
         s.addLayer(SymbolLayer("dest-icon", "dest").withProperties(iconImage("ic-dest"), iconAllowOverlap(true), iconIgnorePlacement(true)))
     }
 
     private fun applyAll() {
         setPois(pois, layers); setPins(pins); setRoutes(routes, selectedMode); setDest(dest); setSelection(selection)
-        setMapStyle(mapStyle); setTrack(track)
+        setMapStyle(mapStyle); setTrack(track); setUserTrails(userTrails); setRidden(ridden); setHome(home)
+    }
+
+    fun setUserTrails(list: List<ca.bancroft.trails.data.UserTrail>) {
+        userTrails = list
+        style?.getSourceAs<GeoJsonSource>("usertrails")?.setGeoJson(FeatureCollection.fromFeatures(list.filter { it.pts.size > 1 }.map { t ->
+            Feature.fromGeometry(LineString.fromLngLats(t.pts.map { Point.fromLngLat(it.second, it.first) })).apply { addNumberProperty("id", t.id) }
+        }))
+    }
+
+    fun setRidden(list: List<List<Pair<Double, Double>>>) {
+        ridden = list
+        style?.getSourceAs<GeoJsonSource>("ridden")?.setGeoJson(FeatureCollection.fromFeatures(list.filter { it.size > 1 }.map { pts ->
+            Feature.fromGeometry(LineString.fromLngLats(pts.map { Point.fromLngLat(it.second, it.first) }))
+        }))
+    }
+
+    fun setHome(h: Target.Home?) {
+        home = h
+        style?.getSourceAs<GeoJsonSource>("home")?.setGeoJson(FeatureCollection.fromFeatures(
+            listOfNotNull(h?.let { Feature.fromGeometry(Point.fromLngLat(it.lon, it.lat)) })))
     }
 
     /** Standard map, satellite photos (needs signal), or the simplified trail-network view. */
@@ -240,6 +283,13 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         fun line(route: Route) = Feature.fromGeometry(LineString.fromLngLats(route.lats.indices.map { Point.fromLngLat(route.lons[it], route.lats[it]) }))
         val sel = selected?.let { r[it] }
         s.getSourceAs<GeoJsonSource>("route")?.setGeoJson(FeatureCollection.fromFeatures(listOfNotNull(sel?.let { line(it) })))
+        s.getSourceAs<GeoJsonSource>("route-off")?.setGeoJson(FeatureCollection.fromFeatures(buildList {
+            if (sel != null && sel.lats.size > 1) {
+                if (sel.offStartM > 0) add(Feature.fromGeometry(LineString.fromLngLats(listOf(Point.fromLngLat(sel.lons[0], sel.lats[0]), Point.fromLngLat(sel.lons[1], sel.lats[1])))))
+                if (sel.offEndM > 0) { val n = sel.lats.size
+                    add(Feature.fromGeometry(LineString.fromLngLats(listOf(Point.fromLngLat(sel.lons[n - 2], sel.lats[n - 2]), Point.fromLngLat(sel.lons[n - 1], sel.lats[n - 1]))))) }
+            }
+        }))
         s.getSourceAs<GeoJsonSource>("route-alt")?.setGeoJson(FeatureCollection.fromFeatures(
             r.filterKeys { it != selected }.values.filterNotNull().filter { it.distanceM != sel?.distanceM }.map { line(it) }))
     }
@@ -262,6 +312,8 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         data class PoiHit(val f: Feature) : Hit
         data class PinHit(val id: Long) : Hit
         data class TrailHit(val f: Feature) : Hit
+        data class UserTrailHit(val id: Long) : Hit
+        data object HomeHit : Hit
     }
 
     fun hitTest(pt: PointF): Hit? {
@@ -270,7 +322,10 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         map.queryRenderedFeatures(box, "pin-icons").firstOrNull()?.let { f ->
             return Hit.PinHit(f.getNumberProperty("id").toLong())
         }
+        if (map.queryRenderedFeatures(box, "home-icon").isNotEmpty()) return Hit.HomeHit
         map.queryRenderedFeatures(box, "poi-icons").firstOrNull()?.let { return Hit.PoiHit(it) }
+        map.queryRenderedFeatures(RectF(pt.x - r * 0.7f, pt.y - r * 0.7f, pt.x + r * 0.7f, pt.y + r * 0.7f), "usertrail-line").firstOrNull()
+            ?.let { return Hit.UserTrailHit(it.getNumberProperty("id").toLong()) }
         val tr = RectF(pt.x - r * 0.7f, pt.y - r * 0.7f, pt.x + r * 0.7f, pt.y + r * 0.7f)
         val trails = map.queryRenderedFeatures(tr, "trail_free", "trail_maybe", "trail_no", "trail_road_casing", "net_trail", "net_road")
         // prefer off-road classes over roads when overlapping

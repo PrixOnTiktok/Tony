@@ -82,6 +82,39 @@ class RouterTest {
         }
     }
 
+    @Test fun offTrailDestination() {
+        // a spot ~400 m into the bush east of a forest road
+        val base = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.FASTEST, false)!!
+        val dLat = base.lats.last(); val dLon = base.lons.last() + 400.0 / (111320.0 * Math.cos(Math.toRadians(dLat)))
+        val rt = r.route(bancroft.first, bancroft.second, dLat, dLon, RouteMode.FASTEST, false)!!
+        println("off-trail end: ${formatDist(rt.offEndM)}  last=${rt.maneuvers.dropLast(1).last().text}")
+        assertTrue(rt.offEndM > 35)
+        assertTrue(Math.abs(rt.lats.last() - dLat) < 1e-9 && Math.abs(rt.lons.last() - dLon) < 1e-9)
+    }
+
+    @Test fun userTrailsAreUsedAndDetected() {
+        val base = r.route(bancroft.first, bancroft.second, coeHill.first, coeHill.second, RouteMode.FASTEST, false)!!
+        val i = base.lats.size / 4; val j = base.lats.size * 3 / 4
+        // a made-up shortcut straight across between two points of the route
+        val shortcut = (0..20).map { k -> val f = k / 20.0
+            (base.lats[i] + f * (base.lats[j] - base.lats[i])) to (base.lons[i] + f * (base.lons[j] - base.lons[i])) }
+        val before = r.route(bancroft.first, bancroft.second, coeHill.first, coeHill.second, RouteMode.MOSTLY_TRAILS, false)!!
+        r.setUserTrails(listOf(shortcut))
+        val withTrail = r.route(bancroft.first, bancroft.second, coeHill.first, coeHill.second, RouteMode.MOSTLY_TRAILS, false)!!
+        r.setUserTrails(emptyList())
+        println("user trail: ${formatDist(before.distanceM)} -> ${formatDist(withTrail.distanceM)}, uses it: ${withTrail.edges.any { it >= g.edgeCount }}")
+        assertTrue(withTrail.edges.any { it >= g.edgeCount })
+
+        // detection: ride the route but swing 150 m north for a stretch in the middle
+        val track = base.lats.indices.map { k ->
+            val off = if (k in i..(i + 40).coerceAtMost(j)) 150.0 / 110540.0 else 0.0
+            ca.bancroft.trails.data.TrackPoint(base.lats[k] + off, base.lons[k], k * 1000L, null, 10f)
+        }
+        val found = ca.bancroft.trails.data.UserTrailStore.detect(track, g, emptyList())
+        println("detected ${found.size} new trail(s): ${found.joinToString { formatDist(it.lengthM) }}")
+        assertTrue(found.isNotEmpty())
+    }
+
     @Test fun avoidMaybeReducesMaybe() {
         val a = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, false)!!
         val b = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, true)!!

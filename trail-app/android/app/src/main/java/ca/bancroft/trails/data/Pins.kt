@@ -101,6 +101,26 @@ class Settings(ctx: Context) {
     var loopKm: Int
         get() = p.getInt("loopKm", 30)
         set(v) = p.edit().putInt("loopKm", v).apply()
+    /** Home. Default: estimated position of 267 Bradshaw Rd (Hastings Highlands), from rural civic numbering (~10 m per number). */
+    var homeLat: Double
+        get() = p.getFloat("homeLat", 45.024219f).toDouble()
+        set(v) = p.edit().putFloat("homeLat", v.toFloat()).apply()
+    var homeLon: Double
+        get() = p.getFloat("homeLon", -77.700471f).toDouble()
+        set(v) = p.edit().putFloat("homeLon", v.toFloat()).apply()
+    var homeLabel: String
+        get() = p.getString("homeLabel", "267 Bradshaw Rd") ?: "267 Bradshaw Rd"
+        set(v) = p.edit().putString("homeLabel", v).apply()
+    /** false until the rider confirms the exact spot (the default is an estimate). */
+    var homeExact: Boolean
+        get() = p.getBoolean("homeExact", false)
+        set(v) = p.edit().putBoolean("homeExact", v).apply()
+    var autoRecord: Boolean
+        get() = p.getBoolean("autoRecord", true)
+        set(v) = p.edit().putBoolean("autoRecord", v).apply()
+    var showRidden: Boolean
+        get() = p.getBoolean("showRidden", true)
+        set(v) = p.edit().putBoolean("showRidden", v).apply()
     var seenIntro: Boolean
         get() = p.getBoolean("seenIntro", false)
         set(v) = p.edit().putBoolean("seenIntro", v).apply()

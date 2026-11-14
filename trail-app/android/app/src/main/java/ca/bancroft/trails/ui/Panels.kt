@@ -118,6 +118,8 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Satellite
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Sos
 import ca.bancroft.trails.nav.formatDist
 import ca.bancroft.trails.nav.formatTime
 import ca.bancroft.trails.routing.Route
@@ -246,14 +248,20 @@ fun BrowsePanel(vm: MapViewModel, recording: Boolean, onSettings: () -> Unit, on
         }
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilledTonalButton(onLoop, Modifier.weight(1f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp)) {
-                Icon(Icons.Filled.Loop, null); Spacer(Modifier.width(8.dp)); Text("Plan a loop", fontSize = 16.sp)
+            FilledTonalButton({ vm.goHome() }, Modifier.weight(0.8f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)) {
+                Icon(Icons.Filled.Home, null); Spacer(Modifier.width(6.dp)); Text("Home", fontSize = 16.sp)
             }
-            FilledTonalButton(onRecord, Modifier.weight(1f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
+            FilledTonalButton(onLoop, Modifier.weight(0.9f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)) {
+                Icon(Icons.Filled.Loop, null); Spacer(Modifier.width(6.dp)); Text("Loop", fontSize = 16.sp)
+            }
+            FilledTonalButton(onRecord, Modifier.weight(1.1f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
                 colors = if (recording) ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFFB3261E), contentColor = Color.White)
                 else ButtonDefaults.filledTonalButtonColors()) {
                 Icon(if (recording) Icons.Filled.Stop else Icons.Filled.FiberManualRecord, null, tint = if (recording) Color.White else Color(0xFFD32F2F))
-                Spacer(Modifier.width(8.dp)); Text(if (recording) "Stop ride" else "Record ride", fontSize = 16.sp)
+                Spacer(Modifier.width(6.dp)); Text(if (recording) "Stop" else "Record", fontSize = 16.sp)
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -289,6 +297,8 @@ fun DetailsPanel(vm: MapViewModel, t: Target, loc: Location?, onSavePin: (Target
             is Target.MyPin -> "My pin · ${t.pin.type.label}"
             is Target.Point -> "%.5f, %.5f".format(t.lat, t.lon)
             is Target.Me -> "±${t.accuracyM.toInt()} m GPS"
+            is Target.Home -> t.label + if (t.exact) "" else " (estimated spot)"
+            is Target.YourTrail -> "Ridden ${SimpleDateFormat("MMM d, yyyy", Locale.CANADA).format(Date(t.trail.created))} · ${formatDist(t.trail.lengthM)}"
         }
         PanelHeader(t.title, listOfNotNull(subtitle, distLabel(loc, t.lat, t.lon)).joinToString(" · ")) { vm.close() }
         Spacer(Modifier.height(10.dp))
@@ -320,6 +330,29 @@ fun DetailsPanel(vm: MapViewModel, t: Target, loc: Location?, onSavePin: (Target
             }
             is Target.Point -> {}
             is Target.Me -> { MyLocationDetails(vm, t); return@Panel }
+            is Target.Home -> {
+                if (!t.exact) Text("Placed from the address (rural numbers are ~10 m apart), so it may be off a bit. " +
+                    "Next time you're in the driveway, tap \"I'm here\".", style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    BigButton("Route home", Icons.Filled.Home, { vm.goHome() }, Modifier.weight(1f))
+                    OutlinedButton({ loc?.let { vm.setHome(it.latitude, it.longitude) } }, Modifier.heightIn(min = 60.dp),
+                        shape = RoundedCornerShape(18.dp), enabled = loc != null) { Icon(Icons.Filled.MyLocation, null); Spacer(Modifier.width(6.dp)); Text("I'm here") }
+                }
+                return@Panel
+            }
+            is Target.YourTrail -> {
+                Text("You rode this where no map shows a trail, so it's saved as your own and routes can use it. " +
+                    "Make sure you're allowed there (Crown land or landowner's OK).", style = MaterialTheme.typography.bodyLarge)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    BigButton("Route here", Icons.Filled.Directions, { vm.planTo(t) }, Modifier.weight(1f))
+                    OutlinedButton({ vm.deleteUserTrail(t.trail) }, Modifier.heightIn(min = 60.dp), shape = RoundedCornerShape(18.dp)) {
+                        Icon(Icons.Filled.Delete, null); Spacer(Modifier.width(6.dp)); Text("Remove")
+                    }
+                }
+                return@Panel
+            }
         }
         Spacer(Modifier.height(14.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -332,6 +365,9 @@ fun DetailsPanel(vm: MapViewModel, t: Target, loc: Location?, onSavePin: (Target
                     Icon(Icons.Filled.PushPin, null); Spacer(Modifier.width(6.dp)); Text("Pin")
                 }
             }
+        }
+        if (t is Target.Point) TextButton({ vm.setHome(t.lat, t.lon) }, Modifier.heightIn(min = 48.dp)) {
+            Icon(Icons.Filled.Home, null); Spacer(Modifier.width(6.dp)); Text("Make this home")
         }
     }
 }
@@ -376,19 +412,22 @@ private fun MyLocationDetails(vm: MapViewModel, t: Target.Me) {
         Text(formatSpeed(t.speedKmh), style = MaterialTheme.typography.bodyMedium)
     }
     Spacer(Modifier.height(14.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        BigButton("Share location", Icons.Filled.Share, {
-            val text = "I'm at %.5f, %.5f (ATV, near %s). https://maps.google.com/?q=%.5f,%.5f".format(
-                t.lat, t.lon, road?.let { data!!.graph.name(it.edge) } ?: "Bancroft area", t.lat, t.lon)
-            ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), "Share location"))
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        BigButton("Share", Icons.Filled.Share, {
+            ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT,
+                "I'm at %.5f, %.5f (ATV, near %s). https://maps.google.com/?q=%.5f,%.5f".format(
+                    t.lat, t.lon, road?.let { data!!.graph.name(it.edge) } ?: "Bancroft area", t.lat, t.lon)), "Share location"))
         }, Modifier.weight(1f))
-        Button({ ctx.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:911"))) }, Modifier.heightIn(min = 60.dp),
-            shape = RoundedCornerShape(18.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB3261E), contentColor = Color.White)) {
-            Icon(Icons.Filled.Call, null); Spacer(Modifier.width(6.dp)); Text("911", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        FilledTonalButton({ vm.openSos() }, Modifier.heightIn(min = 60.dp), shape = RoundedCornerShape(18.dp)) {
+            Icon(Icons.Filled.Sos, null); Spacer(Modifier.width(6.dp)); Text("Stranded?")
         }
     }
-    Text("Texting your coordinates works even with one bar of signal.", style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp))
+    Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text("Pins: long-press the map. Home: open Home and tap \"I'm here\".", style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+        Spacer(Modifier.width(8.dp))
+        Hold911()
+    }
 }
 
 private fun toDms(lat: Double, lon: Double): String {
@@ -471,6 +510,8 @@ fun SearchPanel(vm: MapViewModel) {
                     is Target.Trail -> "〰" to clsLabel(t.cls)
                     is Target.Point -> "•" to ""
                     is Target.Me -> "◉" to ""
+                    is Target.Home -> "🏠" to ""
+                    is Target.YourTrail -> "〰" to "Your trail"
                 }
                 ResultRow(icon, t.title, sub, null) { vm.select(t); vm.flyTo(t, if (t is Target.Trail) 14.0 else 15.0) }
             }
@@ -638,7 +679,16 @@ fun LoopPanel(vm: MapViewModel, m: Mode.Loop, onStart: () -> Unit) {
 fun RidesPanel(vm: MapViewModel) {
     val rides by vm.rides.collectAsState()
     Panel {
-        PanelHeader("My rides", if (rides.isEmpty()) null else "${rides.size} saved · ${formatDist(rides.sumOf { it.distanceM })} total") { vm.close() }
+        PanelHeader("My rides", null) { vm.close() }
+        if (rides.isNotEmpty()) {
+            val st = vm.stats()
+            Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                StatBox("${st.rides}", "rides"); StatBox(formatDist(st.km * 1000), "ridden")
+                StatBox("%.1f h".format(st.hours), "riding"); StatBox(formatSpeed(st.maxKmh), "top speed")
+            }
+            if (st.yourTrailsKm > 0) Text("You've found ${formatDist(st.yourTrailsKm * 1000)} of trail no map has (teal dashes).",
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         LazyColumn(Modifier.heightIn(max = 380.dp)) {
             if (rides.isEmpty()) item { Text("No rides yet. Tap \"Record ride\" before you head out.", Modifier.padding(vertical = 16.dp), style = MaterialTheme.typography.bodyLarge) }
             items(rides, key = { it.id }) { r ->
@@ -646,6 +696,14 @@ fun RidesPanel(vm: MapViewModel) {
                     "${formatTime(r.durationMs / 1000.0)} · max ${formatSpeed(r.maxKmh)}", formatDist(r.distanceM)) { vm.viewRide(r) }
             }
         }
+    }
+}
+
+@Composable
+private fun StatBox(value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -832,6 +890,8 @@ fun LayersSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit) {
             ToggleRow("🍴  Food & stores", l.food) { vm.setLayers(l.copy(food = it)) }
             ToggleRow("★  Places to see, parking", l.poi) { vm.setLayers(l.copy(poi = it)) }
             ToggleRow("⛔  Forest road gates", l.gates) { vm.setLayers(l.copy(gates = it)) }
+            val ridden by vm.showRidden.collectAsState()
+            ToggleRow("〰  Where I've ridden", ridden) { vm.setShowRidden(it) }
         }
     }
 }
@@ -879,6 +939,8 @@ fun SettingsSheet(vm: MapViewModel, onDismiss: () -> Unit, onLegend: () -> Unit)
             }
             Spacer(Modifier.height(8.dp))
             ToggleRow("Voice turn directions", voice) { vm.setVoice(it) }
+            val autoRec by vm.autoRecord.collectAsState()
+            ToggleRow("Record every ride I navigate", autoRec) { vm.setAutoRecord(it) }
             val imperial by vm.imperial.collectAsState()
             ToggleRow("Use miles", imperial) { vm.setImperial(it) }
             val range by vm.fuelRange.collectAsState()

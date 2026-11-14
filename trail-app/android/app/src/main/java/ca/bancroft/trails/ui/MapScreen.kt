@@ -101,6 +101,12 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     val recording by vm.recording.collectAsState()
     var online by remember { mutableStateOf(isOnline(ctx)) }
     var confirmStopRec by remember { mutableStateOf(false) }
+    val home by vm.home.collectAsState()
+    val userTrails by vm.userTrails.collectAsState()
+    val ridden by vm.ridden.collectAsState()
+    val showRidden by vm.showRidden.collectAsState()
+    val leaveBy by vm.leaveBy.collectAsState()
+    val heading = rememberHeading()
 
     var controller by remember { mutableStateOf<MapController?>(null) }
     var styleReady by remember { mutableStateOf(false) }
@@ -176,6 +182,10 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                 val d = vm.data.value
                 when (hit) {
                     is MapController.Hit.PinHit -> vm.pins.value.firstOrNull { it.id == hit.id }?.let { vm.select(Target.MyPin(it)) }
+                    is MapController.Hit.HomeHit -> vm.select(vm.home.value)
+                    is MapController.Hit.UserTrailHit -> vm.userTrails.value.firstOrNull { it.id == hit.id }?.let {
+                        vm.select(Target.YourTrail(it, ll.latitude, ll.longitude))
+                    }
                     is MapController.Hit.PoiHit -> {
                         val f = hit.f
                         val lat = f.getNumberProperty("lat").toDouble(); val lon = f.getNumberProperty("lon").toDouble()
@@ -213,6 +223,9 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     LaunchedEffect(styleReady, pins) { if (styleReady) controller?.setPins(pins) }
     LaunchedEffect(styleReady, mapStyle) { if (styleReady) controller?.setMapStyle(mapStyle) }
     LaunchedEffect(styleReady, track) { if (styleReady) controller?.setTrack(track) }
+    LaunchedEffect(styleReady, home) { if (styleReady) controller?.setHome(home) }
+    LaunchedEffect(styleReady, userTrails) { if (styleReady) controller?.setUserTrails(userTrails) }
+    LaunchedEffect(styleReady, ridden, showRidden) { if (styleReady) controller?.setRidden(if (showRidden) ridden else emptyList()) }
     LaunchedEffect(styleReady, mode) {
         val c = controller ?: return@LaunchedEffect
         if (!styleReady) return@LaunchedEffect
@@ -292,12 +305,14 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         StatusChip(data != null, data?.meta?.osmDate, mapStyle, online)
                         recording?.let { RecChip(it) { confirmStopRec = true } }
-                        SunsetChip(location)
+                        SunsetChip(location, leaveBy)
                     }
                     Spacer(Modifier.weight(1f))
-                    AnimatedVisibility(bearing != 0f, enter = fadeIn(), exit = fadeOut()) {
-                        RoundButton(onClick = { controller?.resetNorth() }, size = 48) {
-                            Icon(Icons.Filled.Navigation, "Point north", Modifier.rotate(-bearing))
+                    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        CompassWidget(heading, bearing) { controller?.resetNorth() }
+                        Surface(onClick = { vm.openSos() }, shape = RoundedCornerShape(50), color = Color(0xFFB3261E), contentColor = Color.White,
+                            shadowElevation = 4.dp, modifier = Modifier.size(width = 64.dp, height = 40.dp)) {
+                            Box(contentAlignment = Alignment.Center) { Text("SOS", fontWeight = FontWeight.Bold) }
                         }
                     }
                 }
@@ -343,6 +358,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                         is Mode.Details -> DetailsPanel(vm, m.target, location, onSavePin = { pinDraft = it })
                         is Mode.Loop -> LoopPanel(vm, m, onStart = { askNotifications(); vm.startLoop() })
                         is Mode.Rides -> RidesPanel(vm)
+                        is Mode.Sos -> SosPanel(vm, location, heading)
                         is Mode.RideView -> RideViewPanel(vm, m.ride)
                         is Mode.Nearby -> NearbyPanel(vm, m.category, location)
                         is Mode.Search -> SearchPanel(vm)
@@ -414,10 +430,23 @@ private fun RecChip(live: RideRecorder.Live, onClick: () -> Unit) {
 
 /** Shows up in the last 90 minutes before sunset so you're not caught out after dark. */
 @Composable
-private fun SunsetChip(loc: android.location.Location?) {
+private fun SunsetChip(loc: android.location.Location?, leaveBy: Long?) {
     val lat = loc?.latitude ?: 45.0575; val lon = loc?.longitude ?: -77.8553
     val sunset = Sun.sunset(lat, lon) ?: return
     val left = (sunset - System.currentTimeMillis()) / 60000
+    val leaveIn = leaveBy?.let { (it - System.currentTimeMillis()) / 60000 }
+    // "leave by" shows up to an hour ahead so you get home before dark
+    if (leaveIn != null && leaveIn in -60..60) {
+        Surface(shape = RoundedCornerShape(50), color = Color(0xFF3E2723), contentColor = Color(0xFFFFCC80), shadowElevation = 3.dp) {
+            Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.WbTwilight, null, Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(if (leaveIn > 0) "Head home by ${SimpleDateFormat("h:mm a", Locale.CANADA).format(Date(leaveBy))} to beat dark"
+                    else "Head home now to beat dark", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+            }
+        }
+        return
+    }
     if (left !in 0..90) return
     Surface(shape = RoundedCornerShape(50), color = Color(0xFF3E2723), contentColor = Color(0xFFFFCC80), shadowElevation = 3.dp) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {

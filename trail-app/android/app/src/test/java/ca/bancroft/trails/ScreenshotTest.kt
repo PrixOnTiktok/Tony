@@ -41,6 +41,8 @@ import ca.bancroft.trails.routing.Router
 import ca.bancroft.trails.ui.BrowsePanel
 import ca.bancroft.trails.ui.DetailsPanel
 import ca.bancroft.trails.ui.LoopPanel
+import ca.bancroft.trails.ui.SosPanel
+import ca.bancroft.trails.ui.CompassWidget
 import ca.bancroft.trails.ui.MapViewModel
 import ca.bancroft.trails.ui.Mode
 import ca.bancroft.trails.ui.NavBanner
@@ -83,6 +85,12 @@ class ScreenshotTest {
                 val f = File(bgDir, bg)
                 if (f.exists()) Image(BitmapFactory.decodeFile(f.path).asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
                 Column(Modifier.fillMaxWidth().padding(top = 40.dp, start = 12.dp, end = 12.dp)) { top() }
+                if (fabs) Column(Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = 12.dp), horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CompassWidget(32f, 0f) {}
+                    Surface(shape = RoundedCornerShape(50), color = androidx.compose.ui.graphics.Color(0xFFB3261E), contentColor = androidx.compose.ui.graphics.Color.White,
+                        modifier = Modifier.size(width = 64.dp, height = 40.dp)) { Box(contentAlignment = Alignment.Center) { Text("SOS", fontWeight = FontWeight.Bold) } }
+                }
                 Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(bottom = 20.dp), horizontalAlignment = Alignment.End) {
                     if (fabs) Column(Modifier.padding(end = 16.dp, bottom = 12.dp), verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.End) {
                         RoundButton({}, 56) { Icon(Icons.Filled.Layers, null) }
@@ -142,6 +150,21 @@ class ScreenshotTest {
             Phone("bg_browse.png", false, fabs = false) {
                 DetailsPanel(vm, Target.Me(45.0575, -77.8553, 6f, 330.0, 0.0), null) {}
             }
+        }
+    }
+
+    @Test fun sos() {
+        val vm = vm()
+        val loc = android.location.Location("gps").apply { latitude = 45.1200; longitude = -77.6200; accuracy = 8f }
+        captureRoboImage(File(out, "11_stranded.png").path) {
+            Phone("bg_network.png", false, fabs = false) { SosPanel(vm, loc, 40f) }
+        }
+    }
+
+    @Test fun home() {
+        val vm = vm()
+        captureRoboImage(File(out, "12_home.png").path) {
+            Phone("bg_browse.png", false, fabs = false) { DetailsPanel(vm, vm.home.value, null) {} }
         }
     }
 
