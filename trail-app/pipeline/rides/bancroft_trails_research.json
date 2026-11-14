@@ -477,5 +477,201 @@
   "No published route was found that uses Bradshaw Rd, Detlor Rd or Upper Turriff Rd specifically. They connect to Hwy 62 at L'Amable (Dungannon Mud Bog / OHSR clubhouse) and the Old Hastings Road north end.",
   "Not found or unverifiable: a Bancroft 'Settler's Route' (the 106 km Settler's Route is RCATV, Renfrew County); a 'Lake St. Peter snowmobile club' (the area is served by Maple Leaf Snow Skimmers); Reddit/YouTube route specifics (sites blocked).",
   "Hastings Highlands lists an Ontario Trails entry 'Multi Use Trail East of Lake St. Peter' (ontariotrails.on.ca/trail/multi-use-trail-east-of-lake-st-peter). Details could not be fetched; it is probably the HHT north end or an EOTA spur."
- ]
+ ],
+ "followup": {
+  "generated": "2026-11-14",
+  "method": "Read with curl: ontariotrails.on.ca, comewander.ca, backroadmapbooks.com, destinationontario.com, and bancroftthisweek / mybancroftnow (WordPress REST search, about 350 headlines scanned). Trailforks and Wikiloc returned Cloudflare 403. Coordinates come from the OTN layer and OSM road endpoints in the app's extract.",
+  "trails": [
+   {
+    "name": "Spruce Lake Trail (EOTA) + Spruce Lake bridge",
+    "type": "ATV trail / forest haul road",
+    "where": "West end about 45.0152,-77.6923, at the end of Upper Turriff Rd in L'Amable near Bradshaw Rd. Runs east about 8.9 km to about 44.9967,-77.6056, where it meets the Egan Creek Trail. A new bridge at the end of Upper Turriff Rd opened 29 May 2015 (EOTA, BAFIA, Town of Bancroft and others; $110k); it gives access to Crown forestry lands and EOTA ATV/snowmobile trails.",
+    "length_km": 8.9,
+    "atv_status": "pass (EOTA, per OTN permitted uses). Shared with logging traffic.",
+    "coords": {
+     "west": [
+      45.0152,
+      -77.6923
+     ],
+     "east": [
+      44.9967,
+      -77.6056
+     ]
+    },
+    "confidence": "high",
+    "sources": [
+     "https://www.bancroftthisweek.com/spruce-lake-bridge-open-for-business/",
+     "LIO OTN layer (Spruce Lake Trail, EOTA)"
+    ],
+    "note": "This is the closest EOTA trail to the rider, about 0.8 km from Bradshaw / Upper Turriff."
+   },
+   {
+    "name": "Egan Creek Trail (EOTA)",
+    "type": "ATV trail",
+    "where": "Continues SE from the Spruce Lake Trail at about 44.9956,-77.6049 to about 44.9446,-77.5575, toward Egan Creek Rd (Faraday / Limerick).",
+    "length_km": 7.9,
+    "atv_status": "pass (EOTA)",
+    "coords": {
+     "nw": [
+      44.9956,
+      -77.6049
+     ],
+     "se": [
+      44.9446,
+      -77.5575
+     ]
+    },
+    "confidence": "medium (geometry from OTN; no web description)",
+    "sources": [
+     "LIO OTN layer"
+    ]
+   },
+   {
+    "name": "Old Bessemer Trail (EOTA)",
+    "type": "ATV trail / old mine road",
+    "where": "From about 45.0265,-77.7234 (off Bessemer Lane, NE of L'Amable) NE about 10.6 km to about 45.0625,-77.6111, where it joins Bessemer Rd heading north (45.06 to 45.11) toward the old Bessemer mine area.",
+    "length_km": 10.6,
+    "atv_status": "pass (EOTA per OTN); Bessemer Rd itself is a road",
+    "coords": {
+     "sw": [
+      45.0265,
+      -77.7234
+     ],
+     "ne": [
+      45.0625,
+      -77.6111
+     ]
+    },
+    "confidence": "medium",
+    "sources": [
+     "LIO OTN layer"
+    ]
+   },
+   {
+    "name": "Swordfin Lake / V Lake / Bowers / Cross / Grassy Lake / Crooked Trails (EOTA)",
+    "type": "short ATV connector trails",
+    "where": "A cluster between Old Bessemer Trail and Spruce Lake Trail, 2-8 km east of Bradshaw Rd. Swordfin Lake 8.4 km, V Lake 7.2 km, Bowers 2 km, Cross 1.8 km, Grassy Lake 3.4 km, Crooked 3.3 km. Brenmar Trail (5.5 km) is further SE near 44.97,-77.56.",
+    "atv_status": "pass (EOTA)",
+    "coords": null,
+    "confidence": "medium (OTN only; no web pages found)",
+    "sources": [
+     "LIO OTN layer"
+    ]
+   },
+   {
+    "name": "Coe Hill ATV Riders (CHATVC) trail system",
+    "type": "OFATV club trail network",
+    "where": "North Hastings and North Kawartha (Coe Hill / Wollaston, toward Apsley). Opens about 30 Apr / 1 May and closes 30 Nov. Status is shown live in QuadON. Club events include Rock the Forest (forest trails), a poker run since 2000, and the Ghost Town ride.",
+    "atv_status": "OFATV permit",
+    "coords": null,
+    "confidence": "high (exists); geometry is only in QuadON",
+    "sources": [
+     "https://www.mybancroftnow.com/55088/uncategorized/local-atv-trails-set-to-open/",
+     "https://www.mybancroftnow.com/54008/news/coe-hill-renfrew-county-atv-clubs-urge-riders-to-respect-snowmobile-season/",
+     "https://www.bancroftthisweek.com/chatvc-poker-run-returns-for-sixth-year-sept-26/",
+     "https://www.destinationontario.com/en-ca/articles/atv-trails-ontario",
+     "https://www.ontariotrails.on.ca/trail/coe-hill-atv-club-trails"
+    ]
+   },
+   {
+    "name": "IB&O Rail Trail + Homesteader Trail loop (Highlands East)",
+    "type": "rail trail + 25 km loop",
+    "where": "Former Irondale-Bancroft-Ottawa railway bed through Wilberforce, Tory Hill and Gooderham. OSM 'IB & O Rail Trail' path starts near 44.973,-78.275. The Homesteader loop (25 km, Tory Hill) uses back roads plus the IB&O. Edge of the radius (about 37 km W).",
+    "atv_status": "HATVA pass beyond the local section; ATV listed by Ontario Trails",
+    "coords": {
+     "tory_hill_area": [
+      44.9731,
+      -78.2751
+     ]
+    },
+    "confidence": "medium",
+    "sources": [
+     "https://www.ontariotrails.on.ca/trail/homesteader-trail",
+     "https://www.highlandseast.ca/en/explore-and-play/ib-and-o-rail-trail.aspx"
+    ]
+   },
+   {
+    "name": "Ottawa Valley ATV Club (OVATVC) trails",
+    "type": "OFATV club network (690 km)",
+    "where": "Madawaska Highlands, bounded by Calabogie (NE), Sharbot Lake (S), Bancroft (W) and the Madawaska River (N). The western edge (Denbigh / Hwy 41 / Griffith) is about 40+ km east.",
+    "atv_status": "OFATV permit",
+    "coords": null,
+    "confidence": "medium",
+    "sources": [
+     "https://www.destinationontario.com/en-ca/articles/atv-trails-ontario"
+    ]
+   },
+   {
+    "name": "Trail near McCauley Lake Road",
+    "type": "ATV trail (unnamed)",
+    "where": "OSM McCauley Lake Rd is near 45.54,-78.09 (north of Lake St. Peter / Madawaska), outside the radius. A fatal rollover happened there on 2026-08-25.",
+    "atv_status": "unknown",
+    "confidence": "low",
+    "sources": [
+     "https://www.mybancroftnow.com/74222/news/police/opp/fatal-atv-collision-near-mccauley-lake-claims-life-of-london-man/"
+    ]
+   }
+  ],
+  "corrections": [
+   "'Multi-Use Trail East of Lake St. Peter' (Ontario Trails) is the Hastings Heritage Trail north end, not a separate trail. Listed activities: ATV, snowmobile, off-road cycling; year-round; contact North Hastings Naturally. Source: https://www.ontariotrails.on.ca/trail/multi-use-trail-east-of-lake-st-peter",
+   "The Dungannon Mud Bog starts at the Dungannon Recreation Centre (L'Amable), 8:30 am, about 75 km of trails (2016). Source: https://www.mybancroftnow.com/12708/news/12708/",
+   "A 'Bancroft ATV Club' and a 'North Hastings ATV Club' are named in club directories (comewander, Ontario Trails), but no website or trail details were found. Sources: https://comewander.ca/story/get-muddy-these-atv-routes-and-runs, https://www.ontariotrails.on.ca/content/atv-clubs"
+  ],
+  "closures_and_hazards": [
+   {
+    "what": "Hastings Heritage Trail washout near Airport Rd / River's Edge Rd, north end of Bancroft (Dec 2015). Later, a bridge closure in the Nicholas Rd / Chemaushgon area (Jan 2016, repaired).",
+    "sources": [
+     "https://www.mybancroftnow.com/9273/news/portion-of-heritage-trail-closed/",
+     "https://www.mybancroftnow.com/10538/news/portion-of-heritage-trail-awaits-bridge-repairs/"
+    ]
+   },
+   {
+    "what": "2021 grants ($245k): HHT Bancroft to Lake St. Peter $80k, Town of Bancroft $60k, Marmora to Bancroft $80k, 'east of Birds Creek to Highlands East' $25k (that segment is unidentified).",
+    "sources": [
+     "https://www.mybancroftnow.com/52398/news/over-245000-worth-of-repairs-to-be-invested-in-north-hastings-trails/"
+    ]
+   },
+   {
+    "what": "Paudash Trail Blazers: stay off the paved runway on the former Martin Mill property along E109 (north end, Algonquin boundary). This applies to ATVs too, or the link to Maple Leaf trails may be lost.",
+    "sources": [
+     "https://www.mybancroftnow.com/63325/news/atv-club-its-imperative-trail-riders-stay-off-the-old-martin-mill-runway/"
+    ]
+   },
+   {
+    "what": "Maple Leaf Snow Skimmers: most of their trails are marked, posted and gated. ATVers breaking gates on private land put the trails at risk; OFSC trails are not ATV trails.",
+    "sources": [
+     "https://www.mybancroftnow.com/48870/news/maple-leaf-snow-skimmers-calling-for-atvers-to-be-respectful-of-private-property/"
+    ]
+   },
+   {
+    "what": "Spring thaw: clubs ask riders to keep off trails until about May 1 (OFATV may delay to May 15). Club ATV season ends Nov 30.",
+    "sources": [
+     "https://www.mybancroftnow.com/20414/news/asked-keep-vehicles-off-local-trails/",
+     "https://www.mybancroftnow.com/29188/news/riders-may-have-to-wait-before-hitting-atv-trails/"
+    ]
+   },
+   {
+    "what": "Rally of the Tall Pines uses Old Hastings Road (Wollaston) as a closed stage (Nov 21, 2026). The Old Hastings Rd bridge over Egan Creek (Faraday) was under reconstruction in 2021.",
+    "sources": [
+     "https://www.bancroftthisweek.com/rally-of-the-tall-pines-requests-use-of-old-hastings-road-from-wollaston/",
+     "https://www.bancroftthisweek.com/old-hastings-road-bridge-work-completion-delayed-longer-than-anticipated/"
+    ]
+   }
+  ],
+  "apps": [
+   {
+    "name": "QuadON (OFATV)",
+    "coverage": "Live open/closed status of Coe Hill Riders and OVATVC/RCATV trails; the enhanced version shows POIs (per CHATVC)",
+    "source": "https://www.bancroftthisweek.com/chatvc-poker-run-returns-for-sixth-year-sept-26/"
+   },
+   {
+    "name": "Trailforks / Wikiloc",
+    "coverage": "Still blocked (Cloudflare 403), not assessed"
+   }
+  ],
+  "not_found": [
+   "Non-motorized only (do not map as ATV): McGeachie CA, Eagles Nest, The Gut, Nellie Lunn, Bird's Creek trail (HDTI).",
+   "No Backroad Mapbooks blog posts on Bancroft beyond the Weslemkoon loop and Egan Chutes; the store's search is JS-only."
+  ]
+ }
 }

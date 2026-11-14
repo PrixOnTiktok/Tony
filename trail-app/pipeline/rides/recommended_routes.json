@@ -15,6 +15,74 @@
  },
  "routes": [
   {
+   "id": "eota-spruce-egan",
+   "name": "Spruce Lake & Egan Creek trails (from Upper Turriff Rd)",
+   "type": "out-and-back",
+   "staging": {
+    "name": "End of Upper Turriff Rd, L'Amable",
+    "lat": 45.015,
+    "lon": -77.692
+   },
+   "waypoints": [
+    {
+     "name": "Spruce Lake Trail east end",
+     "lat": 44.997,
+     "lon": -77.606
+    },
+    {
+     "name": "Egan Creek Trail south end",
+     "lat": 44.945,
+     "lon": -77.558
+    }
+   ],
+   "length_km": 17,
+   "typical_time": "about 1.5-2 h there and back",
+   "difficulty": "easy-moderate (bush roads and trail)",
+   "season": "May to Nov (stay off in spring thaw)",
+   "pass_required": "EOTA pass",
+   "highlights": [
+    "EOTA trails starting about 1 km from Bradshaw Rd",
+    "2015 bridge opened access to Crown forest land"
+   ],
+   "sources": [
+    "https://www.bancroftthisweek.com/",
+    "https://data2.ontario.ca/dataset/ontario-trail-network",
+    "https://www.thetrail.ca/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "eota-old-bessemer",
+   "name": "Old Bessemer Trail",
+   "type": "out-and-back",
+   "staging": {
+    "name": "Old Bessemer Trail west end",
+    "lat": 45.027,
+    "lon": -77.723
+   },
+   "waypoints": [
+    {
+     "name": "Bessemer Rd",
+     "lat": 45.063,
+     "lon": -77.611
+    }
+   ],
+   "length_km": 10.6,
+   "typical_time": "about 1 h there and back",
+   "difficulty": "easy-moderate",
+   "season": "May to Nov",
+   "pass_required": "EOTA pass",
+   "highlights": [
+    "EOTA trail north-east from near Bradshaw Rd to Bessemer Rd"
+   ],
+   "sources": [
+    "https://www.bancroftthisweek.com/",
+    "https://data2.ontario.ca/dataset/ontario-trail-network",
+    "https://www.thetrail.ca/"
+   ],
+   "confidence": "medium"
+  },
+  {
    "id": "bon-echo-creek-loop",
    "name": "Bon Echo Creek Loop",
    "type": "loop",

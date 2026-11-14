@@ -67,8 +67,12 @@ REASONS = [
     "Mapped as open to ATVs ({note}).",                                                     # 25
     "Mapped as closed to ATVs / motor vehicles ({note}).",                                  # 26
     "Snowmobile trail ({note}). In summer most are closed to ATVs and cross private land. Some rail trails and Crown roads are open. Check signs.",  # 27
+    "{note} trail along a back road: an EOTA pass is probably needed. The road part may be open under township rules.",  # 28
+    "Hiking trail (confirmed non-motorized): no ATVs.",                                     # 29
 ]
-R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC, R_GAP, R_ORN, R_ORN_PRIV, R_ATV_YES, R_ATV_NO, R_SNOW = range(28)
+HIKING_ONLY = {"The Gut Trail", "Eagle's Nest Trail", "Eagles Nest Trail", "McGeachie Trail", "Nellie Lunn Trail", "Bird's Creek Trail",
+               "Birds Creek Trail", "McGeachie Conservation Area Trail"}
+R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC, R_GAP, R_ORN, R_ORN_PRIV, R_ATV_YES, R_ATV_NO, R_SNOW, R_EOTA_ROAD, R_HIKE_ONLY = range(30)
 
 
 def to_xy(lon, lat):
@@ -840,7 +844,10 @@ def main():
         is_snow = bool(ln.get("snow")) or is_ofsc or snow_otn
         if is_snow:
             flags |= F_SNOW
-        if kind == K_GAP:
+        if osm_name in HIKING_ONLY:
+            flags |= F_HIKING
+            cls, reason = NO, R_HIKE_ONLY
+        elif kind == K_GAP:
             cls, reason, note = (NO, R_PARK, park) if park else (MAYBE, R_GAP, "")
         elif ln["src"] == "orn" and not park:
             cls, reason = (FREE, R_ORN) if on_crown else (MAYBE, R_ORN_PRIV)
@@ -904,6 +911,12 @@ def main():
             cls, reason = highway_rule(ln["ref"], mid[0], mid[1])
             if reason == R_HWY_UNK:
                 flags |= F_LOWCONF
+        elif kind == K_MINOR and oprops and atv_ok and "Eastern Ontario Trails Alliance" in assoc and \
+                (ln.get("surface") in (None, "", "unpaved", "gravel", "dirt", "ground", "compacted") or "Trail" in osm_name):
+            # back roads that carry an EOTA trail (e.g. Spruce Lake / Egan Creek / Old Bessemer trails near L'Amable)
+            flags |= F_CLUB
+            kind = K_CLUB  # ride it as a trail (routing preference + drawing)
+            cls, reason, note = MAYBE, R_EOTA_ROAD, "EOTA"
         elif ln.get("access") in ("private", "no") and kind in (K_MINOR, K_SERVICE):
             flags |= F_PRIVATE
             cls, reason = (NO, R_ATV_NO) if ln.get("access") == "no" else (MAYBE, R_PRIVATE)
