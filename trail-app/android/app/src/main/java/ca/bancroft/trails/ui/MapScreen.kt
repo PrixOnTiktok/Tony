@@ -61,6 +61,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -331,6 +332,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
         ) {
             Column(Modifier.padding(end = 16.dp, bottom = 12.dp), verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.End) {
                 if (navigating == null) {
+                    RoundButton(onClick = { vm.openBuddy() }, size = 56) { Text("🤠", fontSize = 26.sp) }
                     RoundButton(onClick = { showLayers = true }, size = 56) { Icon(Icons.Filled.Layers, "Map style and layers") }
                 }
                 RoundButton(
@@ -365,6 +367,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                         is Mode.Rides -> RidesPanel(vm)
                         is Mode.Sos -> SosPanel(vm, location, heading)
                         is Mode.Ideas -> IdeasPanel(vm, location)
+                        is Mode.Buddy -> BuddyPanel(vm, location)
                         is Mode.Idea -> IdeaPanel(vm, m, onStart = { askNotifications(); vm.startIdea() })
                         is Mode.RideView -> RideViewPanel(vm, m.ride)
                         is Mode.Nearby -> NearbyPanel(vm, m.category, location)

@@ -243,6 +243,18 @@ class ScreenshotTest {
         }
     }
 
+    @Test fun trailBuddy() {
+        val vm = vm()
+        captureRoboImage(File(out, "18_trail_buddy.png").path) { Phone("bg_browse.png", false, fabs = false) { ca.bancroft.trails.ui.BuddyPanel(vm, null) } }
+        for ((min, stops) in listOf(120 to setOf("gas", "views", "history"), 60 to setOf("food"), 30 to emptySet<String>(), 240 to setOf("gas", "food", "water"))) {
+            vm.buddyRide(min, stops, RouteMode.MOSTLY_TRAILS, fromHome = true)
+            val m = waitIdea(vm)
+            println("BUDDY $min min $stops -> ${m.subtitle} | ${m.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" }}")
+            m.lines.forEach { println("   $it") }
+            if (min == 120) captureRoboImage(File(out, "19_buddy_result.png").path) { Phone("bg_plan.png", false, fabs = false) { IdeaPanel(vm, m) {} } }
+        }
+    }
+
     // ---------------- dark mode: every screen and menu
     private fun darkShot(name: String, bg: String = "bg_browse_dark.png", top: @Composable () -> Unit = {}, fabs: Boolean = false, content: @Composable androidx.compose.foundation.layout.BoxScope.() -> Unit) {
         captureRoboImage(File(out, "dark_$name.png").path) { Phone(bg, true, top = top, fabs = fabs, content = content) }

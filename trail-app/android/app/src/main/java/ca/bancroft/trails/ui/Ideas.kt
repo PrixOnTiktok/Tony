@@ -57,6 +57,14 @@ fun IdeasPanel(vm: MapViewModel, loc: Location?) {
             Text("Ride ideas", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
             IconButton({ vm.close() }, Modifier.size(48.dp)) { Icon(Icons.Filled.Close, "Close") }
         }
+        Surface(onClick = { vm.openBuddy() }, shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp).padding(bottom = 10.dp)) {
+            Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("🤠", fontSize = 26.sp); Spacer(Modifier.width(10.dp))
+                Column { Text("Ask Trail Buddy", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("Pick a length and stops, I'll build the ride", style = MaterialTheme.typography.bodySmall) }
+            }
+        }
         Text("Quick ride from ${if (loc != null) "here" else "home"}", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(6.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -128,6 +136,10 @@ fun IdeaPanel(vm: MapViewModel, m: Mode.Idea, onStart: () -> Unit) {
             }
         }
         Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
+            if (m.lines.isNotEmpty() && !m.computing) {
+                m.lines.forEach { Text(it, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 3.dp)) }
+                Spacer(Modifier.height(6.dp))
+            }
             m.ride?.let { r ->
                 val facts = listOfNotNull(r.km?.let { "${it.toInt()} km published" }, r.time, r.difficulty?.substringBefore(" ("), r.season, r.pass?.let { "Pass: $it" })
                 facts.forEach { Text("• $it", style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis) }

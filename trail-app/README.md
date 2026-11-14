@@ -48,6 +48,11 @@ every trail, gas/food/places and the router are all inside the app.
   - **20 places worth riding to:** lookouts, falls, ghost towns, general stores.
 - **Weather**: temperature, wind (speed, gusts, direction), wind chill standing and while riding, rain heads-up and a riding tip. It downloads a 3-day hourly forecast
   whenever you have signal and keeps working from the saved forecast offline (Open-Meteo, Environment Canada GEM model).
+- **Trail Buddy** (🤠 button): pick how long, what to hit (gas, food, views, water, history or just trails) and how
+  rough. It builds the loop, swaps in closer stops if it runs long, fills spare time with trail, and adds the riding
+  forecast, what to wear and a bit of personality.
+- **Riding forecast**: scores the next 6 hours (snow, slush and freeze-thaw, rain, freezing rain, storms, riding
+  wind chill, gusts, daylight) from Great to Stay home, with reasons and gear.
 - **Home**: one tap routes you home (preset to 267 Bradshaw Rd, an estimate from the address; tap "I'm here" in the
   driveway to make it exact).
 - **Your own trails**: ride somewhere no map has a trail and it's saved automatically (teal dashes). The router uses

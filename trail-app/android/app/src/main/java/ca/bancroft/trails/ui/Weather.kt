@@ -113,7 +113,8 @@ fun WeatherSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit, inlin
             }
             Text(status, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 4.dp))
             Spacer(Modifier.height(10.dp))
-            Text(rideTip(fc), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            val v = ca.bancroft.trails.data.RideAdvisor.advise(fc, sunset = ca.bancroft.trails.data.Sun.sunset(fc.lat, fc.lon))
+            if (v != null) VerdictCard(v) else Text(rideTip(fc), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(12.dp))
             Text("Next 24 hours", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(6.dp))

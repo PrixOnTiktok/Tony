@@ -92,7 +92,9 @@ sealed interface Mode {
     data object Ideas : Mode
     /** A suggested ride being previewed: a popular route or a quick timed ride. */
     data class Idea(val title: String, val subtitle: String, val ride: ca.bancroft.trails.data.RideIdea?, val route: Route?,
-                    val computing: Boolean, val note: String? = null) : Mode
+                    val computing: Boolean, val note: String? = null, val lines: List<String> = emptyList(),
+                    val verdict: ca.bancroft.trails.data.Verdict? = null) : Mode
+    data object Buddy : Mode
     data class RideView(val ride: Ride) : Mode
 }
 
@@ -224,7 +226,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
             is Mode.Browse -> return false
             is Mode.Navigating -> return true // stop needs an explicit hold
             is Mode.Plan -> _mode.value = Mode.Details(m.dest)
-            is Mode.Idea -> _mode.value = Mode.Ideas
+            is Mode.Idea -> _mode.value = if (m.lines.isNotEmpty()) Mode.Buddy else Mode.Ideas
             is Mode.RideView -> { _shownTrack.value = emptyList(); _mode.value = Mode.Rides }
             else -> { _shownTrack.value = emptyList(); _mode.value = Mode.Browse }
         }
@@ -337,6 +339,135 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
         val m = _mode.value as? Mode.Idea ?: return
         val route = m.route ?: return
         startNavigation(Target.Point(route.lats.last(), route.lons.last(), m.title), route)
+    }
+
+    // ---------- Trail Buddy: asks what you want, builds the ride, adds weather + a bit of personality
+    fun openBuddy() { _mode.value = Mode.Buddy }
+
+    /** Current riding verdict from the saved forecast (works offline). */
+    fun verdict(): ca.bancroft.trails.data.Verdict? {
+        val f = _weather.value ?: return null
+        val (lat, lon) = here()
+        return ca.bancroft.trails.data.RideAdvisor.advise(f, sunset = Sun.sunset(lat, lon))
+    }
+
+    fun buddyRide(minutes: Int, stops: Set<String>, mode: RouteMode, fromHome: Boolean) {
+        val r = router ?: return
+        val d = _data.value ?: return
+        _mode.value = Mode.Idea("Trail Buddy's pick", "Thinking…", null, null, computing = true)
+        planJob?.cancel()
+        planJob = viewModelScope.launch {
+            val loc = locationRepo.location.value
+            val (lat, lon) = if (fromHome || loc == null) _home.value.lat to _home.value.lon else loc.latitude to loc.longitude
+            val targetS = minutes * 60.0
+            val reach = minutes / 2.0 / 60.0 * 22_000.0 // how far out a stop can be (there-and-back at ~22 km/h)
+            val res = withContext(Dispatchers.Default) {
+                fun near(p: Pair<Double, Double>) = distM(lat, lon, p.first, p.second)
+                val viewsKinds = setOf("viewpoint", "peak", "lookout")
+                val waterKinds = setOf("waterfall", "beach", "picnic_site", "drinking_water")
+                val histKinds = setOf("historic", "museum", "attraction", "ruins", "monument", "memorial", "mine", "archaeological_site")
+                fun cands(cat: String): List<Triple<String, Double, Double>> = when (cat) {
+                    "gas" -> d.pois.filter { it.cat == "gas" }.map { Triple(it.title, it.lat, it.lon) }
+                    "food" -> d.pois.filter { it.cat == "food" && it.name.isNotBlank() }.map { Triple(it.name, it.lat, it.lon) }
+                    "views" -> d.pois.filter { it.kind in viewsKinds && it.name.isNotBlank() }.map { Triple(it.name, it.lat, it.lon) } +
+                        d.places.filter { it.name.contains("Lookout", true) || it.name.contains("Nest", true) || it.name.contains("Mountain", true) }.map { Triple(it.name, it.lat, it.lon) }
+                    "water" -> d.pois.filter { it.kind in waterKinds && it.name.isNotBlank() }.map { Triple(it.name, it.lat, it.lon) } +
+                        d.places.filter { listOf("Falls", "Chute", "Beach", "Dam", "Lake").any { k -> it.name.contains(k, true) } }.map { Triple(it.name, it.lat, it.lon) }
+                    "history" -> d.pois.filter { it.kind in histKinds && it.name.isNotBlank() }.map { Triple(it.name, it.lat, it.lon) } +
+                        d.places.filter { listOf("ghost", "Mine", "Mining", "Museum", "Glanmire", "Umfraville", "Old Hastings Road", "Millbridge", "Sodalite").any { k -> it.name.contains(k, true) } }.map { Triple(it.name, it.lat, it.lon) }
+                    else -> emptyList()
+                }
+                // candidates per wish, best first: gas/food nearest; sights about 40 % of the reach out (spread if several)
+                val sights = stops.count { it in setOf("views", "water", "history") }.coerceAtLeast(1)
+                val ranked = LinkedHashMap<String, List<Triple<String, Double, Double>>>()
+                for (cat in listOf("gas", "food", "views", "water", "history")) if (cat in stops) {
+                    val c = cands(cat).filter { near(it.second to it.third) in 300.0..reach }.distinctBy { it.first }
+                    ranked[cat] = if (cat == "gas" || cat == "food") c.sortedBy { near(it.second to it.third) }
+                        else c.sortedBy { kotlin.math.abs(near(it.second to it.third) - reach * 0.4 / sights) }
+                }
+                fun build(sel: Map<String, Triple<String, Double, Double>>): ca.bancroft.trails.routing.Route? {
+                    if (sel.isEmpty()) return r.loop(lat, lon, (minutes * 0.33).coerceAtLeast(3.0), mode, _avoidMaybe.value)
+                    // order stops greedily from the start
+                    val left = sel.values.toMutableList(); val order = ArrayList<Triple<String, Double, Double>>()
+                    var cur = lat to lon
+                    while (left.isNotEmpty()) { val n = left.minBy { distM(cur.first, cur.second, it.second, it.third) }; order += n; left -= n; cur = n.second to n.third }
+                    val pts = listOf(lat to lon) + order.map { it.second to it.third } + listOf(lat to lon)
+                    return r.via(pts, mode, _avoidMaybe.value, loop = true)
+                }
+                val sel = LinkedHashMap<String, Triple<String, Double, Double>>()
+                ranked.forEach { (k, v) -> v.firstOrNull { c -> sel.values.none { it.first == c.first } }?.let { sel[k] = it } }
+                var route = build(sel)
+                // too long? swap the farthest sight for a closer one; only drop it if nothing closer exists
+                var guard = 0
+                while (route != null && route.timeS > targetS * 1.3 && guard++ < 8) {
+                    val far = sel.entries.filter { it.key != "gas" }.maxByOrNull { near(it.value.second to it.value.third) } ?: break
+                    val curD = near(far.value.second to far.value.third)
+                    val closer = ranked[far.key].orEmpty().filter { near(it.second to it.third) < curD * 0.7 && sel.values.none { s -> s.first == it.first } }
+                        .maxByOrNull { near(it.second to it.third) }
+                    if (closer != null) sel[far.key] = closer else sel.remove(far.key)
+                    route = build(sel)
+                }
+                // short? use the spare time on a trail loop from the start
+                if (route != null && sel.isNotEmpty() && route.timeS < targetS * 0.7) {
+                    val spareKm = ((targetS - route.timeS) / 3600.0 * 18.0).coerceAtLeast(3.0)
+                    r.loop(lat, lon, spareKm, mode, _avoidMaybe.value)?.let { extra -> route = r.concat(listOf(route!!, extra), mode) }
+                }
+                val missed = stops - sel.keys
+                val nearestMissed = missed.associateWith { cat -> cands(cat).minOfOrNull { near(it.second to it.third) } }
+                missedNearest = nearestMissed
+                Triple(route, sel as Map<String, Triple<String, Double, Double>>, missed)
+            }
+            val (route, sel, missed) = res
+            val cur = _mode.value as? Mode.Idea ?: return@launch
+            val v = verdict()
+            _mode.value = cur.copy(subtitle = if (sel.isEmpty()) "A loop from ${if (fromHome) "home" else "here"}" else sel.values.joinToString(" → ") { it.first },
+                route = route, computing = false, verdict = v,
+                note = if (route == null) "Couldn't stitch that one together from the map. Try fewer stops or a longer ride." else null,
+                lines = buddyLines(route, sel, missed, minutes, v, lat, lon))
+            route?.let { _camera.value = CameraRequest.Fit(it) }
+        }
+    }
+
+    @Volatile private var missedNearest: Map<String, Double?> = emptyMap()
+
+    private fun buddyLines(route: Route?, sel: Map<String, Triple<String, Double, Double>>, missed: Set<String>, minutes: Int,
+                           v: ca.bancroft.trails.data.Verdict?, lat: Double, lon: Double): List<String> {
+        val out = ArrayList<String>()
+        val rnd = java.util.Random(System.currentTimeMillis() / 600_000)
+        fun pick(vararg s: String) = s[rnd.nextInt(s.size)]
+        v?.let { out += "${it.emoji} ${it.headline}" }
+        sel["gas"]?.let { out += pick("⛽ Fuel at ${it.first} first. A happy machine is a quiet machine.", "⛽ ${it.first} for gas. Nobody wants to push an ATV home.") }
+        sel["food"]?.let { out += pick("🍔 ${it.first} for snacks. Riding is hungry work.", "🍔 Pit stop at ${it.first}. Calories don't count on the trail.") }
+        sel["views"]?.let { out += pick("📸 ${it.first}: camera out, act like you're not out of breath.", "📸 ${it.first} for the view. Worth the climb.") }
+        sel["water"]?.let { out += pick("🌊 ${it.first}: stretch the legs, listen to the water.", "🌊 ${it.first}. Good spot to cool the machine and yourself.") }
+        sel["history"]?.let { out += pick("🏚️ ${it.first}: history class, ATV edition.", "🏚️ ${it.first}. Old Ontario, new mud.") }
+        sel.values.firstOrNull { it.first.contains("Provincial Park") }?.let {
+            out += "🚶 ${it.first.substringBefore(" -")} is a provincial park: park the machine at the edge and walk in."
+        }
+        val names = mapOf("gas" to "gas", "food" to "food", "views" to "a lookout", "water" to "water", "history" to "a history stop")
+        for (m in missed) {
+            val d = missedNearest[m]
+            out += if (d == null) "🤷 No ${names[m]} I know of out here. The map has its limits."
+                   else "🤷 Couldn't fit ${names[m]} into $minutes min: the nearest is ${ca.bancroft.trails.nav.formatDist(d)} away. Pick a longer ride for that one."
+        }
+        route?.let { rt ->
+            val off = (rt.trailShare * 100).toInt()
+            out += when {
+                off >= 70 -> "🌲 $off% off-road. Smiles guaranteed, mud likely."
+                off >= 35 -> "🌲 $off% off-road, the rest is back roads."
+                else -> "🛣️ Only $off% off-road on this one. Lots of gravel road between the good bits."
+            }
+            if (rt.timeS > minutes * 60 * 1.25) out += "⏱️ Runs about ${ca.bancroft.trails.nav.formatTime(rt.timeS)}, a bit over what you asked. Blame the scenery."
+            Sun.sunset(lat, lon)?.let { s ->
+                val end = System.currentTimeMillis() + (rt.timeS * 1000).toLong()
+                if (end > s && System.currentTimeMillis() < s) out += "🌇 You'd finish after sunset (${java.text.SimpleDateFormat("h:mm a", java.util.Locale.CANADA).format(java.util.Date(s))}). Leave soon or bring lights."
+            }
+            if (rt.kmByCls[ca.bancroft.trails.data.Cls.MAYBE] > 1) out += "🎫 Some \"maybe\" trail on this one: bring your EOTA pass if you have it."
+            val range = settings.fuelRangeKm
+            if (range > 0 && rt.distanceM / 1000 > range * 0.8 && "gas" !in sel.keys) out += "⛽ That's most of your tank. Seriously, add a gas stop."
+        }
+        v?.gear?.takeIf { it.isNotEmpty() }?.let { out += "🧤 Bring: ${it.joinToString(", ")}." }
+        return out
     }
 
     // ---------- home
