@@ -115,6 +115,10 @@ class Settings(ctx: Context) {
     var homeExact: Boolean
         get() = p.getBoolean("homeExact", false)
         set(v) = p.edit().putBoolean("homeExact", v).apply()
+    /** Let routes use snowmobile trails (off by default: most are winter-only / private land in summer). */
+    var useSnow: Boolean
+        get() = p.getBoolean("useSnow", false)
+        set(v) = p.edit().putBoolean("useSnow", v).apply()
     var autoRecord: Boolean
         get() = p.getBoolean("autoRecord", true)
         set(v) = p.edit().putBoolean("autoRecord", v).apply()

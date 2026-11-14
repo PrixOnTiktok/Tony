@@ -107,7 +107,11 @@ function trailLayers(mode) {
   layersOut.push({ id: "trail_road_center", type: "line", ...src, minzoom: 13, filter: isRoad,
     layout: { "line-cap": "round", "line-join": "round" },
     paint: { "line-color": c.center, "line-width": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 17, 2.2] } });
-  layersOut.push({ id: "trail_maybe", type: "line", ...src, filter: ["all", ["==", ["get", "c"], 1], ["!=", ["get", "k"], 8]],
+  // snowmobile trails: light blue dashes (shown so you can see them; routes use them only if you turn that on)
+  layersOut.push({ id: "trail_snow", type: "line", ...src, filter: ["all", ["has", "sn"], ["!=", ["get", "c"], 2]],
+    layout: { "line-cap": "butt", "line-join": "round" },
+    paint: { "line-color": mode === "dark" ? "#7FD3FF" : "#0288D1", "line-width": width(0.9), "line-dasharray": [2, 1.2] } });
+  layersOut.push({ id: "trail_maybe", type: "line", ...src, filter: ["all", ["==", ["get", "c"], 1], ["!=", ["get", "k"], 8], ["!", ["has", "sn"]]],
     layout: { "line-cap": "butt", "line-join": "round" },
     paint: { "line-color": c.maybe, "line-width": width(1), "line-dasharray": [3, 1.5] } });
   layersOut.push({ id: "trail_free", type: "line", ...src, filter: ["==", ["get", "c"], 0],

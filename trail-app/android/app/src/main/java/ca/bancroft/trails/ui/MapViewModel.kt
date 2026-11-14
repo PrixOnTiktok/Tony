@@ -151,6 +151,12 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     val ridden: StateFlow<List<List<Pair<Double, Double>>>> = _ridden.asStateFlow()
     private val _showRidden = MutableStateFlow(settings.showRidden)
     val showRidden: StateFlow<Boolean> = _showRidden.asStateFlow()
+    private val _useSnow = MutableStateFlow(settings.useSnow)
+    val useSnow: StateFlow<Boolean> = _useSnow.asStateFlow()
+    fun setUseSnow(v: Boolean) {
+        settings.useSnow = v; _useSnow.value = v; router?.useSnow = v
+        (_mode.value as? Mode.Plan)?.let { planTo(it.dest) }
+    }
     private val _autoRecord = MutableStateFlow(settings.autoRecord)
     val autoRecord: StateFlow<Boolean> = _autoRecord.asStateFlow()
 
@@ -173,7 +179,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     init {
         viewModelScope.launch(Dispatchers.Default) {
             val d = AppData.load(app)
-            router = Router(d.graph).also { it.setUserTrails(_userTrails.value.map { t -> t.pts }) }
+            router = Router(d.graph).also { it.setUserTrails(_userTrails.value.map { t -> t.pts }); it.useSnow = settings.useSnow }
             _data.value = d
             refreshRidden()
         }

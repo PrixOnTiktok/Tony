@@ -590,6 +590,14 @@ fun PlanPanel(vm: MapViewModel, m: Mode.Plan, hasLocation: Boolean, onNeedPermis
             }
             Switch(avoidMaybe, { vm.setAvoidMaybe(it) })
         }
+        val useSnow by vm.useSnow.collectAsState()
+        Row(Modifier.fillMaxWidth().clickable { vm.setUseSnow(!useSnow) }.heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text("Use snowmobile trails", style = MaterialTheme.typography.titleMedium)
+                Text("Many are winter-only or on private land in summer", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Switch(useSnow, { vm.setUseSnow(it) })
+        }
         Spacer(Modifier.height(8.dp))
         BigButton("Start", Icons.Filled.Directions, onStart, Modifier.fillMaxWidth(), enabled = r != null && !m.computing)
     }
@@ -940,6 +948,8 @@ fun SettingsSheet(vm: MapViewModel, onDismiss: () -> Unit, onLegend: () -> Unit)
             }
             Spacer(Modifier.height(8.dp))
             ToggleRow("Voice turn directions", voice) { vm.setVoice(it) }
+            val snow by vm.useSnow.collectAsState()
+            ToggleRow("Routes can use snowmobile trails", snow) { vm.setUseSnow(it) }
             val autoRec by vm.autoRecord.collectAsState()
             ToggleRow("Record every ride I navigate", autoRec) { vm.setAutoRecord(it) }
             val imperial by vm.imperial.collectAsState()
@@ -993,6 +1003,30 @@ fun LegendSheet(vm: MapViewModel, dark: Boolean, onDismiss: () -> Unit) {
             LegendRow(Cls.ROAD, dark, "Road: ATVs allowed", "The township by-law or provincial rules allow ATVs. Ride the shoulder, 20–50 km/h.")
             LegendRow(Cls.MAYBE, dark, "Maybe", "Club trails (pass likely), private land, restricted forest roads, or rules not confirmed.")
             LegendRow(Cls.NO, dark, "No ATVs", "Provincial parks, highways not open to ORVs, hiking-only trails.")
+            Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.foundation.Canvas(Modifier.size(width = 56.dp, height = 20.dp)) {
+                    drawLine(if (dark) Color(0xFF7FD3FF) else Color(0xFF0288D1), Offset(4f, size.height / 2), Offset(size.width - 4f, size.height / 2),
+                        strokeWidth = 6.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(12.dp.toPx(), 7.dp.toPx())))
+                }
+                Spacer(Modifier.width(14.dp))
+                Column {
+                    Text("Snowmobile trail", style = MaterialTheme.typography.titleMedium)
+                    Text("Shown for reference. Most are winter-only or private land in summer; routes skip them unless you turn them on.",
+                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.foundation.Canvas(Modifier.size(width = 56.dp, height = 20.dp)) {
+                    drawLine(Color(0xFF7A7A7A), Offset(4f, size.height / 2), Offset(size.width - 4f, size.height / 2),
+                        strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round, pathEffect = PathEffect.dashPathEffect(floatArrayOf(0.5f, 7.dp.toPx())))
+                }
+                Spacer(Modifier.width(14.dp))
+                Column {
+                    Text("Unmapped gap", style = MaterialTheme.typography.titleMedium)
+                    Text("A trail probably connects here but nobody mapped the link.", style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(width = 56.dp, height = 8.dp).background(Palette.route, RoundedCornerShape(4.dp)))

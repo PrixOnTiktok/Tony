@@ -64,8 +64,11 @@ REASONS = [
     "Gap in the map data: this trail almost certainly connects here, but nobody has mapped the link. Check on the ground.",  # 22
     "Back road from the Ontario Road Network on Crown land (not in OpenStreetMap): open unless gated or posted.",  # 23
     "Back road from the Ontario Road Network (not in OpenStreetMap). Not on Crown land, so it may be private. Ask first.",  # 24
+    "Mapped as open to ATVs ({note}).",                                                     # 25
+    "Mapped as closed to ATVs / motor vehicles ({note}).",                                  # 26
+    "Snowmobile trail ({note}). In summer most are closed to ATVs and cross private land. Some rail trails and Crown roads are open. Check signs.",  # 27
 ]
-R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC, R_GAP, R_ORN, R_ORN_PRIV = range(25)
+R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC, R_GAP, R_ORN, R_ORN_PRIV, R_ATV_YES, R_ATV_NO, R_SNOW = range(28)
 
 
 def to_xy(lon, lat):
@@ -238,6 +241,79 @@ def seg_dist(p, a, b):
     t = 0 if L == 0 else max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L))
     q = (a[0] + t * dx, a[1] + t * dy)
     return math.hypot(p[0] - q[0], p[1] - q[1]), t, q
+
+
+# ---------------------------------------------------------------- full OSM (pbf) with real tags
+OSM_HW = {
+    "track": K_TRACK, "path": K_PATH, "bridleway": K_PATH, "residential": K_MINOR, "unclassified": K_MINOR, "road": K_MINOR,
+    "living_street": K_MINOR, "service": K_SERVICE, "tertiary": K_MAJOR, "tertiary_link": K_MAJOR, "secondary": K_MAJOR,
+    "secondary_link": K_MAJOR, "primary": K_HWY, "primary_link": K_HWY, "trunk": K_HWY, "trunk_link": K_HWY,
+}
+ATV_TAG_YES = {"yes", "designated", "permissive"}
+
+
+def read_osm_pbf(path):
+    """Ways from a clipped OSM extract with the tags that matter for ATVs. Shared nodes give exact junctions.
+    Snowmobile-route membership and provincial-highway route networks come from relations."""
+    import osmium
+
+    snow_ways, atv_route_ways, net_of = {}, {}, {}
+
+    class Rel(osmium.SimpleHandler):
+        def relation(self, r):
+            t = r.tags
+            if t.get("type") != "route":
+                return
+            route = t.get("route")
+            ids = [m.ref for m in r.members if m.type == "w"]
+            if route == "snowmobile":
+                for i in ids:
+                    snow_ways[i] = t.get("name") or t.get("ref") or "snowmobile route"
+            elif route in ("atv", "offroad"):
+                for i in ids:
+                    atv_route_ways[i] = t.get("name") or t.get("ref") or "ATV route"
+            elif route == "road" and (t.get("network") or "").startswith("CA:ON:"):
+                for i in ids:
+                    net_of.setdefault(i, t.get("network"))
+
+    Rel().apply_file(path)
+    lines = []
+
+    class Ways(osmium.SimpleHandler):
+        def way(self, w):
+            t = w.tags
+            hw = t.get("highway")
+            kind = OSM_HW.get(hw)
+            snow = t.get("snowmobile") in ("yes", "designated", "permissive") or w.id in snow_ways
+            atv = t.get("atv") or t.get("ohv")
+            if kind is None:
+                # footways etc. only if explicitly open to ATVs or a snowmobile trail
+                if hw in ("footway", "cycleway") and atv in ATV_TAG_YES:
+                    kind = K_PATH
+                elif snow and hw in (None, "footway", "cycleway", "path", "track"):
+                    kind = K_TRACK
+                else:
+                    return
+            try:
+                xy = []
+                for n in w.nodes:
+                    x, y = to_xy(n.lon, n.lat)
+                    q = (round(x * 2) / 2, round(y * 2) / 2)
+                    if not xy or xy[-1] != q:
+                        xy.append(q)
+            except osmium.InvalidLocationError:
+                return
+            if len(xy) < 2:
+                return
+            lines.append({"xy": xy, "kind": kind, "name": t.get("name") or "", "ref": t.get("ref") or "",
+                          "bridge": t.get("bridge", "no") != "no", "tunnel": t.get("tunnel", "no") != "no",
+                          "access": t.get("access"), "src": "osm", "kd": hw, "network": net_of.get(w.id, ""),
+                          "atv": atv, "motor": t.get("motor_vehicle") or t.get("vehicle"), "snow": snow,
+                          "snow_name": snow_ways.get(w.id), "atv_route": atv_route_ways.get(w.id),
+                          "surface": t.get("surface"), "osm_id": w.id})
+
+    Ways().apply_file(path, locations=True)
+    return lines
 
 
 def lines_to_metric(lines):
@@ -518,8 +594,15 @@ def main():
     stats = collections.Counter()
 
     print("reading OSM tiles…", file=sys.stderr)
-    lines, pois = read_osm(os.path.join(data, "tiles", "z15.pmtiles"))
-    lines = lines_to_metric(lines)
+    tile_lines, pois = read_osm(os.path.join(data, "tiles", "z15.pmtiles"))
+    pbf = os.path.join(data, "osmfull", "region.osm.pbf")
+    if os.path.exists(pbf):
+        print("reading full OSM extract…", file=sys.stderr)
+        lines = read_osm_pbf(pbf)  # exact geometry + atv/snowmobile/access tags
+        stats["osm_source"] = "pbf"
+    else:
+        lines = lines_to_metric(tile_lines)
+        stats["osm_source"] = "tiles"
     stats["osm_lines"] = len(lines)
 
     print("loading LIO…", file=sys.stderr)
@@ -554,14 +637,16 @@ def main():
     added_otn = 0
     for xy, p in otn:
         uses = (p.get("PERMITTED_USES") or "")
-        if "ATV" not in uses and "Off-Road Motorcycle" not in uses:
+        snow_only = "Snowmobiling" in uses and "ATV" not in uses
+        if "ATV" not in uses and "Off-Road Motorcycle" not in uses and not snow_only:
             continue
         if coverage(xy, osm_idx, 30) >= 0.5:
             stats["otn_matched_osm"] += 1
             continue
         lines.append({"xy": [(round(a * 2) / 2, round(b * 2) / 2) for a, b in xy], "kind": K_CLUB,
                       "name": p.get("TRAIL_NAME") or "", "ref": "", "bridge": False, "tunnel": False,
-                      "access": None, "src": "otn"})
+                      "access": None, "src": "otn", "snow": snow_only,
+                      "snow_name": (p.get("TRAIL_NAME") or p.get("TRAIL_ASSOCIATION")) if snow_only else None})
         added_otn += 1
     stats["otn_added"] = added_otn
 
@@ -749,6 +834,12 @@ def main():
         motor_ok = atv_ok or eota_pass
         osm_name = ln["name"] or ""
         is_ofsc = osm_name.upper().startswith("OFSC") or "snowmobile" in osm_name.lower()
+        atv_tag = (ln.get("atv") or "").lower()
+        motor_tag = (ln.get("motor") or "").lower()
+        snow_otn = bool(oprops) and "Snowmobiling" in uses and not atv_ok and kind in (K_TRACK, K_PATH, K_CLUB)
+        is_snow = bool(ln.get("snow")) or is_ofsc or snow_otn
+        if is_snow:
+            flags |= F_SNOW
         if kind == K_GAP:
             cls, reason, note = (NO, R_PARK, park) if park else (MAYBE, R_GAP, "")
         elif ln["src"] == "orn" and not park:
@@ -759,10 +850,27 @@ def main():
             cls, reason, note = NO, R_PARK, park
         elif reserve and kind in (K_TRACK, K_PATH, K_FOREST, K_CLUB):
             cls, reason, note = MAYBE, R_RESERVE, reserve
-        elif is_ofsc and kind in (K_TRACK, K_PATH, K_CLUB, K_FOREST):
-            cls, reason = NO, R_OFSC
+        elif (atv_tag in ("yes", "designated", "permissive") or ln.get("atv_route")) and oprops and atv_ok and kind not in (K_MINOR, K_MAJOR, K_HWY):
+            flags |= F_CLUB  # open to ATVs, but it's a club/alliance trail: pass still needed
+            cls, reason, note = MAYBE, R_CLUB, assoc or "trail club"
+        elif atv_tag in ("yes", "designated", "permissive") or ln.get("atv_route"):
+            # OpenStreetMap mappers recorded this as open to ATVs (or part of an ATV route)
+            if kind in (K_MINOR, K_MAJOR, K_HWY, K_SERVICE):
+                cls, reason, note = ROAD, R_ATV_YES, "OpenStreetMap " + ("ATV route " + ln["atv_route"] if ln.get("atv_route") else "atv=" + atv_tag)
+            else:
+                cls, reason, note = FREE, R_ATV_YES, "OpenStreetMap " + ("ATV route " + ln["atv_route"] if ln.get("atv_route") else "atv=" + atv_tag)
+        elif atv_tag in ("permit", "members", "customers", "destination", "private"):
+            flags |= F_CLUB
+            cls, reason, note = MAYBE, R_CLUB, "OpenStreetMap atv=" + atv_tag
+        elif atv_tag == "no" or (motor_tag in ("no", "private") and kind in (K_TRACK, K_PATH, K_CLUB, K_FOREST)):
+            cls, reason, note = NO, R_ATV_NO, "OpenStreetMap " + ("atv=no" if atv_tag == "no" else "motor_vehicle=" + motor_tag)
+        elif is_snow and kind in (K_TRACK, K_PATH, K_CLUB, K_FOREST) and not (mn and mprops and mprops.get("OWNERSHIP_CLASS") == "Crown"
+                                                                             and mprops.get("STATUS") == "Open"):
+            # snowmobile trail not on an open Crown road: shown so you can see it, routed only if you choose
+            cls, reason, note = MAYBE, R_SNOW, ln.get("snow_name") or osm_name or "club trail"
         elif kind in (K_TRACK, K_PATH, K_CLUB) and mn and mprops and mprops.get("OWNERSHIP_CLASS") == "Crown" \
-                and mprops.get("STATUS") == "Open" and not (mprops.get("USE_RESTRICTION_DETAIL") or ""):
+                and mprops.get("STATUS") == "Open" and not (mprops.get("USE_RESTRICTION_DETAIL") or "") \
+                and "Heritage Trail" not in osm_name and "Rail Trail" not in osm_name:
             # OSM calls it a path/track (or a club trail runs on it) but MNRF records an open Crown forest road here:
             # ORVs may use Crown-land roads unless prohibited (O. Reg. 316/03 s.5), so no pass is needed.
             kind = K_FOREST
@@ -796,6 +904,10 @@ def main():
             cls, reason = highway_rule(ln["ref"], mid[0], mid[1])
             if reason == R_HWY_UNK:
                 flags |= F_LOWCONF
+        elif ln.get("access") in ("private", "no") and kind in (K_MINOR, K_SERVICE):
+            flags |= F_PRIVATE
+            cls, reason = (NO, R_ATV_NO) if ln.get("access") == "no" else (MAYBE, R_PRIVATE)
+            note = "OpenStreetMap access=" + ln.get("access")
         else:  # municipal / county roads
             cls, reason, note, low = muni_rule(muni, rules_by)
 
@@ -1027,6 +1139,8 @@ def write_display(path, edges, strings, systems=None):
                 lon, lat = to_ll(x, y)
                 coords.append([round(lon, 6), round(lat, 6)])
             props = {"c": e["cls"], "k": e["kind"], "e": i, "r": e["reason"], "q": e["conf"], "f": e["flags"]}
+            if e["reason"] == R_SNOW:
+                props["sn"] = 1
             if systems and systems[i]:
                 props["s"] = systems[i]
             if e["name"] >= 0:

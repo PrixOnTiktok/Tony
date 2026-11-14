@@ -44,6 +44,7 @@ object Flag {
     const val HIKING = 1024
     const val RESTRICTED = 2048
     const val UNPAVED = 4096
+    const val SNOW = 8192
 }
 
 /**

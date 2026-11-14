@@ -39,6 +39,8 @@ const val OFF_TRAIL_KMH = 8.0
 
 /** A* router over the bundled network with ATV-specific cost profiles. */
 class Router(private val g: Graph) {
+    /** Snowmobile trails cost a lot unless the rider opted in. */
+    @Volatile var useSnow: Boolean = false
 
     // ---- the rider's own trails (ridden where no map has a trail), added on top of the bundled network
     class UserEdge(val a: Int, val b: Int, val len: Double, val pts: List<DoubleArray>)
@@ -120,6 +122,7 @@ class Router(private val g: Graph) {
         }
         if (avoidMaybe && cls == Cls.MAYBE) f *= 25.0
         if (kind == Kind.GAP) f *= 2.0 // prefer real trails; use a gap only when it saves a lot
+        if ((eFlags(e) and Flag.SNOW) != 0 && cls != Cls.FREE) f *= if (useSnow) 1.2 else 30.0
         if ((eFlags(e) and Flag.LOWCONF) != 0 && road) f *= 1.15
         return f
     }
