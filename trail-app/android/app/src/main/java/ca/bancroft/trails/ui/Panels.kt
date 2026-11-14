@@ -394,7 +394,7 @@ private fun SourcesRow(flags: Int, conf: Int) {
 @Composable
 private fun WarnLine(text: String) {
     Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Icon(Icons.Filled.Warning, null, Modifier.size(18.dp), tint = Color(0xFFB26A00))
+        Icon(Icons.Filled.Warning, null, Modifier.size(18.dp), tint = warnColor())
         Spacer(Modifier.width(6.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium)
     }
@@ -611,7 +611,7 @@ private fun FuelLine(vm: MapViewModel, r: Route) {
     val km = r.distanceM / 1000.0
     val pct = km / range
     Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Icon(Icons.Filled.LocalGasStation, null, Modifier.size(18.dp), tint = if (pct > 0.8) Color(0xFFB26A00) else MaterialTheme.colorScheme.primary)
+        Icon(Icons.Filled.LocalGasStation, null, Modifier.size(18.dp), tint = if (pct > 0.8) warnColor() else MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(6.dp))
         Text(
             if (pct > 0.8) "Uses ${(pct * 100).toInt()}% of your ${range} km tank. Plan a gas stop." else "Fuel OK: ${(pct * 100).toInt()}% of your ${range} km tank",
@@ -861,11 +861,11 @@ private fun androidx.compose.material3.ColorScheme.errorContainerSafe() = Color(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LayersSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit) {
+fun LayersSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit, inline: Boolean = false) {
     val l by vm.layers.collectAsState()
     val style by vm.mapStyle.collectAsState()
     val theme by vm.theme.collectAsState()
-    ModalBottomSheet(onDismiss) {
+    SheetOrInline(inline, onDismiss) {
         Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp).verticalScroll(rememberScrollState())) {
             Text("Map", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(10.dp))
@@ -929,11 +929,11 @@ private fun ToggleRow(label: String, value: Boolean, onChange: (Boolean) -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsSheet(vm: MapViewModel, onDismiss: () -> Unit, onLegend: () -> Unit) {
+fun SettingsSheet(vm: MapViewModel, onDismiss: () -> Unit, onLegend: () -> Unit, inline: Boolean = false) {
     val theme by vm.theme.collectAsState()
     val voice by vm.voice.collectAsState()
     val data by vm.data.collectAsState()
-    ModalBottomSheet(onDismiss) {
+    SheetOrInline(inline, onDismiss) {
         Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp).verticalScroll(rememberScrollState())) {
             Text("Settings", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(12.dp))
@@ -994,8 +994,8 @@ fun SettingsSheet(vm: MapViewModel, onDismiss: () -> Unit, onLegend: () -> Unit)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LegendSheet(vm: MapViewModel, dark: Boolean, onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismiss) {
+fun LegendSheet(vm: MapViewModel, dark: Boolean, onDismiss: () -> Unit, inline: Boolean = false) {
+    SheetOrInline(inline, onDismiss) {
         Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 28.dp)) {
             Text("Map key", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(10.dp))

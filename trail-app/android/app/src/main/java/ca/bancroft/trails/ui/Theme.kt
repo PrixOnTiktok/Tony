@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
 import ca.bancroft.trails.data.Cls
 
 /** Colours from the design brief: muted map, high-contrast UI, colour-blind-safe trail classes. */
@@ -29,6 +31,14 @@ object Palette {
         else -> Color.White
     }
 }
+
+/** Accent text colours that stay readable in both themes. */
+@Composable
+fun isDarkTheme() = MaterialTheme.colorScheme.surface.let { 0.2126f * it.red + 0.7152f * it.green + 0.0722f * it.blue } < 0.5f
+@Composable
+fun rainColor() = if (isDarkTheme()) Color(0xFF8AB4FF) else Color(0xFF1565C0)
+@Composable
+fun warnColor() = if (isDarkTheme()) Color(0xFFFFB74D) else Color(0xFFB26A00)
 
 fun clsLabel(c: Int) = when (c) {
     Cls.FREE -> "Free to ride"
@@ -82,4 +92,19 @@ val NavStreet = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.SemiBold, li
 @Composable
 fun TrailTheme(dark: Boolean, content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = if (dark) DarkColors else LightColors, typography = AppTypography, content = content)
+}
+
+
+/** A bottom sheet, or the same content inline (used for screenshot tests). */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+fun SheetOrInline(inline: Boolean, onDismiss: () -> Unit, content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
+    if (inline) {
+        androidx.compose.material3.Surface(
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerLow, contentColor = MaterialTheme.colorScheme.onSurface,
+        ) { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(top = 20.dp)) { content() } }
+    } else {
+        androidx.compose.material3.ModalBottomSheet(onDismiss) { content() }
+    }
 }

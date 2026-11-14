@@ -51,7 +51,7 @@ fun WeatherChip(f: Forecast, onClick: () -> Unit) {
     val now = f.now() ?: return
     val (_, emoji) = weatherLabel(now.code)
     val rain = f.rainSoon()
-    Surface(onClick = onClick, shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
+    Surface(onClick = onClick, shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), contentColor = MaterialTheme.colorScheme.onSurface, shadowElevation = 3.dp) {
         androidx.compose.foundation.layout.FlowRow(Modifier.padding(horizontal = 12.dp, vertical = 6.dp), verticalArrangement = Arrangement.Center) {
             Text(emoji, fontSize = 16.sp)
             Spacer(Modifier.width(6.dp))
@@ -61,16 +61,16 @@ fun WeatherChip(f: Forecast, onClick: () -> Unit) {
             else if (Math.abs(now.feels - now.temp) >= 3) Text(" · feels ${fmtTemp(now.feels)}", style = MaterialTheme.typography.labelMedium)
             if (now.wind >= 10) Text(" · 💨 ${fmtWind(now.wind)} ${ca.bancroft.trails.data.compassDir(now.windDir)}", style = MaterialTheme.typography.labelMedium)
             if (rain != null) Text(" · 🌧 ${if (rain.time <= System.currentTimeMillis()) "rain now" else "rain ~" + hourLabel(rain.time)}",
-                style = MaterialTheme.typography.labelMedium, color = Color(0xFF1565C0), fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.labelMedium, color = rainColor(), fontWeight = FontWeight.SemiBold)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit) {
+fun WeatherSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit, inline: Boolean = false) {
     val f by vm.weather.collectAsState()
-    ModalBottomSheet(onDismiss) {
+    SheetOrInline(inline, onDismiss) {
         Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 24.dp).verticalScroll(rememberScrollState())) {
             val fc = f
             if (fc == null) {
@@ -124,7 +124,7 @@ fun WeatherSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit) {
                             Text(hourLabel(h.time), style = MaterialTheme.typography.labelMedium)
                             Text(weatherLabel(h.code).second, fontSize = 20.sp)
                             Text(fmtTemp(h.temp), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-                            Text(if (h.rainProb > 0) "${h.rainProb}%" else " ", style = MaterialTheme.typography.labelSmall, color = Color(0xFF1565C0))
+                            Text(if (h.rainProb > 0) "${h.rainProb}%" else " ", style = MaterialTheme.typography.labelSmall, color = rainColor())
                             Text("${Math.round(if (Units.imperial) h.wind / 1.609 else h.wind)} ${ca.bancroft.trails.data.compassDir(h.windDir)}",
                                 style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -138,7 +138,7 @@ fun WeatherSheet(vm: MapViewModel, online: Boolean, onDismiss: () -> Unit) {
                     Text(weatherLabel(d.code).second, fontSize = 20.sp)
                     Spacer(Modifier.width(10.dp))
                     Text(weatherLabel(d.code).first, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                    if (d.rainProb > 0) Text("${d.rainProb}%  ", style = MaterialTheme.typography.bodyMedium, color = Color(0xFF1565C0))
+                    if (d.rainProb > 0) Text("${d.rainProb}%  ", style = MaterialTheme.typography.bodyMedium, color = rainColor())
                     Text("${fmtTemp(d.max)} / ${fmtTemp(d.min)}", style = MaterialTheme.typography.titleMedium)
                 }
                 HorizontalDivider()

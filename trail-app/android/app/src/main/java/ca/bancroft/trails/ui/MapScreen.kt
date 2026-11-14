@@ -405,12 +405,12 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
 }
 
 @Composable
-private fun StatusChip(ready: Boolean, osmDate: String?, style: MapStyle, online: Boolean) {
+fun StatusChip(ready: Boolean, osmDate: String?, style: MapStyle, online: Boolean) {
     val satNoSignal = style == MapStyle.SATELLITE && !online
-    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
+    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), contentColor = MaterialTheme.colorScheme.onSurface, shadowElevation = 3.dp) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(if (satNoSignal) Icons.Filled.SignalWifiOff else Icons.Outlined.CloudOff, null, Modifier.size(16.dp),
-                tint = if (satNoSignal) Color(0xFFB26A00) else MaterialTheme.colorScheme.primary)
+                tint = if (satNoSignal) warnColor() else MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(6.dp))
             val text = when {
                 satNoSignal -> "Satellite needs signal · showing saved"

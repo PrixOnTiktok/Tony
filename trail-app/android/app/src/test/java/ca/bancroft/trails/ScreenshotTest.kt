@@ -243,6 +243,29 @@ class ScreenshotTest {
         }
     }
 
+    // ---------------- dark mode: every screen and menu
+    private fun darkShot(name: String, bg: String = "bg_browse_dark.png", top: @Composable () -> Unit = {}, fabs: Boolean = false, content: @Composable androidx.compose.foundation.layout.BoxScope.() -> Unit) {
+        captureRoboImage(File(out, "dark_$name.png").path) { Phone(bg, true, top = top, fabs = fabs, content = content) }
+    }
+
+    @Test fun darkMode() {
+        val vm = vm()
+        val f = ca.bancroft.trails.data.Forecast.parse(sampleWeather(), System.currentTimeMillis())
+        val m = Mode.Plan(Target.Place(vm.data.value!!.pois.first { it.cat == "food" }), routes(vm), RouteMode.MOSTLY_TRAILS, false)
+        darkShot("1_browse", top = { Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            ca.bancroft.trails.ui.StatusChip(true, "2026-11-13", ca.bancroft.trails.data.MapStyle.STANDARD, false)
+            ca.bancroft.trails.ui.WeatherChip(f) {} } }, fabs = true) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        darkShot("2_weather") { ca.bancroft.trails.ui.WeatherSheet(vm, false, {}, inline = true) }
+        darkShot("3_layers") { ca.bancroft.trails.ui.LayersSheet(vm, true, {}, inline = true) }
+        darkShot("4_settings") { ca.bancroft.trails.ui.SettingsSheet(vm, {}, {}, inline = true) }
+        darkShot("5_legend") { ca.bancroft.trails.ui.LegendSheet(vm, true, {}, inline = true) }
+        darkShot("6_plan") { PlanPanel(vm, m, hasLocation = true, onNeedPermission = {}, onStart = {}) }
+        darkShot("7_trail") { DetailsPanel(vm, Target.Trail(45.03, -77.835, "Spruce Lake Trail", ca.bancroft.trails.data.Cls.MAYBE, 6, 28, "EOTA", 2, 0), null) {} }
+        darkShot("8_sos") { SosPanel(vm, android.location.Location("gps").apply { latitude = 45.12; longitude = -77.62; accuracy = 8f }, 40f) }
+        darkShot("9_ideas") { IdeasPanel(vm, null) }
+        darkShot("10_gas") { NearbyPanel(vm, "gas", null) }
+    }
+
     @Composable private fun NetChip() = Pill("Trail network view")
     @Composable private fun SatChip() = Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Pill("Satellite · trails offline")
