@@ -216,9 +216,9 @@ class ScreenshotTest {
         fun arr(l: List<Any>) = l.joinToString(",", "[", "]") { if (it is String) "\"$it\"" else it.toString() }
         val days = (0 until 3).map { start.toLocalDate().plusDays(it.toLong()).toString() }
         return """{"latitude":45.02,"longitude":-77.7,"utc_offset_seconds":$off,"timezone":"America/Toronto",
-          "current":{"time":"${times[0]}","temperature_2m":7.4,"apparent_temperature":3.9,"weather_code":2,"wind_speed_10m":14.0,"wind_gusts_10m":30.0,"precipitation":0.0},
+          "current":{"time":"${times[0]}","temperature_2m":-6.0,"apparent_temperature":-12.0,"weather_code":2,"wind_speed_10m":22.0,"wind_gusts_10m":45.0,"wind_direction_10m":300,"precipitation":0.0},
           "hourly":{"time":${arr(times)},"temperature_2m":${arr(temps)},"apparent_temperature":${arr(temps.map { it - 3 })},"precipitation_probability":${arr(probs)},
-            "precipitation":${arr(probs.map { if (it > 50) 1.2 else 0.0 })},"weather_code":${arr(codes)},"wind_speed_10m":${arr(temps.map { 12.0 })}},
+            "precipitation":${arr(probs.map { if (it > 50) 1.2 else 0.0 })},"weather_code":${arr(codes)},"wind_speed_10m":${arr(temps.map { 12.0 })},"wind_gusts_10m":${arr(temps.map { 25.0 })},"wind_direction_10m":${arr(temps.map { 290 })}},
           "daily":{"time":${arr(days)},"weather_code":[63,3,0],"temperature_2m_max":[10,8,5],"temperature_2m_min":[2,-1,-4],"precipitation_probability_max":[80,30,5],"precipitation_sum":[4.8,0.2,0]}}"""
     }
 
@@ -226,7 +226,10 @@ class ScreenshotTest {
         val f = ca.bancroft.trails.data.Forecast.parse(sampleWeather(), System.currentTimeMillis())
         val now = f.now()!!
         println("WEATHER now ${now.temp} feels ${now.feels} code ${now.code}; rainSoon=${f.rainSoon()?.time}; tip=${ca.bancroft.trails.ui.rideTip(f)}")
-        org.junit.Assert.assertEquals(7.4, now.temp, 0.01)
+        org.junit.Assert.assertEquals(-6.0, now.temp, 0.01)
+        // Environment Canada table: -5 °C at 20 km/h ≈ -11
+        org.junit.Assert.assertEquals(-11.0, ca.bancroft.trails.data.windChillC(-5.0, 20.0)!!, 0.6)
+        println("WEATHER chill ${now.windChill} riding40 ${now.ridingChill(40.0)} dir ${ca.bancroft.trails.data.compassDir(now.windDir)}")
         org.junit.Assert.assertNotNull(f.rainSoon())
         // offline 2 hours later: "now" comes from the saved hourly forecast
         val later = f.copy(fetchedAt = System.currentTimeMillis() - 2 * 3600_000).now()!!

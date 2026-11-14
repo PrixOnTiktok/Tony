@@ -9,13 +9,33 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-data class WeatherHour(val time: Long, val temp: Double, val feels: Double, val rainProb: Int, val rain: Double, val code: Int, val wind: Double)
+data class WeatherHour(val time: Long, val temp: Double, val feels: Double, val rainProb: Int, val rain: Double, val code: Int, val wind: Double,
+                       val gust: Double = wind, val windDir: Double? = null) {
+    /** Wind chill standing still (Environment Canada formula). */
+    val windChill: Double? get() = windChillC(temp, wind)
+    /** Wind chill while riding at [kmh] (your speed adds to the wind you feel). */
+    fun ridingChill(kmh: Double): Double? = windChillC(temp, wind + kmh)
+}
+
+/** Environment Canada wind chill index (valid at or below 10 °C with wind of at least 5 km/h). */
+fun windChillC(t: Double, v: Double): Double? {
+    if (t > 10 || v < 5) return null
+    val p = Math.pow(v, 0.16)
+    return 13.12 + 0.6215 * t - 11.37 * p + 0.3965 * t * p
+}
+
+fun compassDir(deg: Double?): String {
+    if (deg == null) return ""
+    val n = listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+    return n[(((deg % 360) + 360) % 360 / 45.0 + 0.5).toInt() % 8]
+}
 data class WeatherDay(val date: Long, val max: Double, val min: Double, val rainProb: Int, val rain: Double, val code: Int)
 
 /** A saved forecast. Works offline: "now" is read from the hourly forecast for the current hour. */
 data class Forecast(
     val fetchedAt: Long, val lat: Double, val lon: Double,
     val currentTemp: Double?, val currentFeels: Double?, val currentCode: Int?, val currentWind: Double?, val currentGust: Double?,
+    val currentWindDir: Double? = null,
     val hours: List<WeatherHour>, val days: List<WeatherDay>,
 ) {
     /** The best "right now": live reading if it's fresh (< 90 min), else the forecast hour we're in. */
@@ -23,7 +43,7 @@ data class Forecast(
         val fresh = at - fetchedAt < 90 * 60_000
         val hour = hours.lastOrNull { it.time <= at } ?: hours.firstOrNull()
         return if (fresh && currentTemp != null) WeatherHour(at, currentTemp, currentFeels ?: currentTemp, hour?.rainProb ?: 0, hour?.rain ?: 0.0,
-            currentCode ?: hour?.code ?: 0, currentWind ?: hour?.wind ?: 0.0) else hour
+            currentCode ?: hour?.code ?: 0, currentWind ?: hour?.wind ?: 0.0, currentGust ?: hour?.gust ?: 0.0, currentWindDir ?: hour?.windDir) else hour
     }
 
     fun upcoming(at: Long = System.currentTimeMillis(), count: Int = 24) = hours.filter { it.time >= at - 3600_000 }.take(count)
@@ -49,7 +69,9 @@ data class Forecast(
             val hours = (0 until ht.length()).map { i ->
                 WeatherHour(t(ht.getString(i)), num(h.optJSONArray("temperature_2m"), i), num(h.optJSONArray("apparent_temperature"), i, num(h.optJSONArray("temperature_2m"), i)),
                     num(h.optJSONArray("precipitation_probability"), i).toInt(), num(h.optJSONArray("precipitation"), i),
-                    num(h.optJSONArray("weather_code"), i).toInt(), num(h.optJSONArray("wind_speed_10m"), i))
+                    num(h.optJSONArray("weather_code"), i).toInt(), num(h.optJSONArray("wind_speed_10m"), i),
+                    num(h.optJSONArray("wind_gusts_10m"), i, num(h.optJSONArray("wind_speed_10m"), i)),
+                    h.optJSONArray("wind_direction_10m")?.let { a -> if (a.isNull(i)) null else a.optDouble(i) })
             }
             val days = o.optJSONObject("daily")?.let { dl ->
                 val dt = dl.getJSONArray("time")
@@ -61,7 +83,8 @@ data class Forecast(
             } ?: emptyList()
             return Forecast(fetchedAt, o.optDouble("latitude"), o.optDouble("longitude"),
                 cur?.takeIf { it.has("temperature_2m") }?.optDouble("temperature_2m"), cur?.optDouble("apparent_temperature"),
-                cur?.optInt("weather_code"), cur?.optDouble("wind_speed_10m"), cur?.optDouble("wind_gusts_10m"), hours, days)
+                cur?.optInt("weather_code"), cur?.optDouble("wind_speed_10m"), cur?.optDouble("wind_gusts_10m"),
+                cur?.takeIf { it.has("wind_direction_10m") }?.optDouble("wind_direction_10m"), hours, days)
         }
     }
 }
@@ -82,8 +105,8 @@ class WeatherStore(ctx: Context) {
     /** Network call: run off the main thread. Saves on success and returns the new forecast. */
     fun fetch(lat: Double, lon: Double): Forecast {
         val url = URL("https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f".format(java.util.Locale.US, lat, lon) +
-            "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_gusts_10m,precipitation" +
-            "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m" +
+            "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,precipitation" +
+            "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m" +
             "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum" +
             "&timezone=auto&forecast_days=3&models=gem_seamless")
         val c = url.openConnection() as HttpURLConnection

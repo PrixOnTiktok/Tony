@@ -305,8 +305,8 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
             if (navigating != null) {
                 NavBanner(navigating, dark)
             } else {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.Top) {
+                    Column(Modifier.weight(1f, fill = false).padding(end = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         StatusChip(data != null, data?.meta?.osmDate, mapStyle, online)
                         weather?.takeIf { it.covers() }?.let { WeatherChip(it) { showWeather = true } }
                         recording?.let { RecChip(it) { confirmStopRec = true } }
