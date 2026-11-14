@@ -115,6 +115,11 @@ class RouterTest {
         assertTrue(found.isNotEmpty())
     }
 
+    @Test fun searchFindsEcho() {
+        assertTrue(ca.bancroft.trails.ui.MapViewModel.searchMatch("Bon Echo Creek Loop", "eco loop"))
+        assertTrue(ca.bancroft.trails.ui.MapViewModel.searchMatch("Hastings Heritage Trail", "hastngs"))
+    }
+
     @Test fun avoidMaybeReducesMaybe() {
         val a = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, false)!!
         val b = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, true)!!

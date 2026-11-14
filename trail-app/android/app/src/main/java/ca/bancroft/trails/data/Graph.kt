@@ -25,6 +25,8 @@ object Kind {
     const val HWY = 5
     const val CLUB = 6
     const val SERVICE = 7
+    /** dotted link where open data is missing the bit joining a trail to the network */
+    const val GAP = 8
     fun isRoad(k: Int) = k == MINOR || k == MAJOR || k == HWY || k == SERVICE
 }
 

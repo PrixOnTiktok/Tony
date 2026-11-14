@@ -15,6 +15,80 @@
  },
  "routes": [
   {
+   "id": "bon-echo-creek-loop",
+   "name": "Bon Echo Creek Loop",
+   "type": "loop",
+   "staging": {
+    "name": "Bon Echo Creek Loop (east side)",
+    "lat": 44.94547,
+    "lon": -77.3453,
+    "coord_confidence": "high"
+   },
+   "waypoints": [
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93962,
+     "lon": -77.36043,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.94221,
+     "lon": -77.36323,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93579,
+     "lon": -77.36098,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93454,
+     "lon": -77.37567,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93308,
+     "lon": -77.37041,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.92519,
+     "lon": -77.36747,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93055,
+     "lon": -77.35558,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.92653,
+     "lon": -77.349,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 22,
+   "typical_time": "about 1-1.5 h",
+   "difficulty": "easy (gravel forest road)",
+   "season": "spring to fall",
+   "pass_required": "none listed: MNRF forest road on Crown land; one water crossing is signed restricted",
+   "highlights": [
+    "22 km gravel forest-road loop on Crown land",
+    "north-west of Bon Echo Park (the park itself is closed to ATVs)"
+   ],
+   "sources": [
+    "https://data2.ontario.ca/dataset/ministry-of-natural-resources-and-forestry-road-segments"
+   ],
+   "confidence": "medium"
+  },
+  {
    "id": "old-hastings-road-ghost-towns",
    "name": "Old Hastings Road ghost-town ride (Bancroft area to Millbridge)",
    "type": "point-to-point (often ridden as out-and-back, or continued south on the Hastings Heritage Trail to Marmora)",

@@ -89,7 +89,12 @@ function trailLayers(mode) {
   const isRoad = ["==", ["get", "c"], 2];
   const layersOut = [];
   // casing under everything that isn't a road class
-  layersOut.push({ id: "trail_casing", type: "line", ...src, filter: ["!=", ["get", "c"], 2],
+  // dotted "gap" links: where open data is missing the short bit joining a trail to the network
+  layersOut.push({ id: "trail_gap", type: "line", ...src, minzoom: 12, filter: ["==", ["get", "k"], 8],
+    layout: { "line-cap": "round" },
+    paint: { "line-color": mode === "dark" ? "#C9CDD2" : "#5A5A5A", "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 17, 3.5],
+      "line-dasharray": [0.5, 2] } });
+  layersOut.push({ id: "trail_casing", type: "line", ...src, filter: ["all", ["!=", ["get", "c"], 2], ["!=", ["get", "k"], 8]],
     layout: { "line-cap": "round", "line-join": "round" },
     paint: { "line-color": c.casing, "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 8, 2.2, 10, 3.5, 14, 8, 17, 11.5],
       "line-opacity": ["interpolate", ["linear"], ["zoom"], 8, 0.35, 12, 0.8] } });
@@ -102,7 +107,7 @@ function trailLayers(mode) {
   layersOut.push({ id: "trail_road_center", type: "line", ...src, minzoom: 13, filter: isRoad,
     layout: { "line-cap": "round", "line-join": "round" },
     paint: { "line-color": c.center, "line-width": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 17, 2.2] } });
-  layersOut.push({ id: "trail_maybe", type: "line", ...src, filter: ["==", ["get", "c"], 1],
+  layersOut.push({ id: "trail_maybe", type: "line", ...src, filter: ["all", ["==", ["get", "c"], 1], ["!=", ["get", "k"], 8]],
     layout: { "line-cap": "butt", "line-join": "round" },
     paint: { "line-color": c.maybe, "line-width": width(1), "line-dasharray": [3, 1.5] } });
   layersOut.push({ id: "trail_free", type: "line", ...src, filter: ["==", ["get", "c"], 0],

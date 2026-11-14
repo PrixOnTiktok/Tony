@@ -11,8 +11,8 @@ android {
         applicationId = "ca.bancroft.trails"
         minSdk = 31
         targetSdk = 37
-        versionCode = 4
-        versionName = "4.0"
+        versionCode = 5
+        versionName = "5.0"
         ndk { abiFilters += listOf("arm64-v8a") } // Pixel phones are arm64; keeps the APK small
     }
 

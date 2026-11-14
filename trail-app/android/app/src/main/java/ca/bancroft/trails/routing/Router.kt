@@ -96,7 +96,7 @@ class Router(private val g: Graph) {
 
     private fun speedKmh(kind: Int) = when (kind) {
         Kind.TRACK -> 20.0; Kind.PATH -> 10.0; Kind.FOREST -> 30.0; Kind.MINOR -> 35.0
-        Kind.MAJOR -> 45.0; Kind.HWY -> 45.0; Kind.CLUB -> 20.0; Kind.SERVICE -> 15.0; else -> 20.0
+        Kind.MAJOR -> 45.0; Kind.HWY -> 45.0; Kind.CLUB -> 20.0; Kind.SERVICE -> 15.0; Kind.GAP -> 8.0; else -> 20.0
     }
 
     /** Multiplier on travel time; encodes the riding preference. Always >= 1 so the heuristic stays admissible. */
@@ -119,6 +119,7 @@ class Router(private val g: Graph) {
             }
         }
         if (avoidMaybe && cls == Cls.MAYBE) f *= 25.0
+        if (kind == Kind.GAP) f *= 2.0 // prefer real trails; use a gap only when it saves a lot
         if ((eFlags(e) and Flag.LOWCONF) != 0 && road) f *= 1.15
         return f
     }

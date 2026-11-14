@@ -461,16 +461,19 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
         val d = _data.value ?: return emptyList()
         if (q.isBlank()) return emptyList()
         val n = q.trim().lowercase()
+        fun fuzzy(text: String): Boolean = searchMatch(text, n)
         val out = ArrayList<Target>()
-        _pins.value.filter { it.name.lowercase().contains(n) || it.note.lowercase().contains(n) }.forEach { out.add(Target.MyPin(it)) }
-        d.pois.filter { it.name.lowercase().contains(n) || ca.bancroft.trails.data.kindLabel(it.kind).lowercase().contains(n) }
+        _pins.value.filter { fuzzy(it.name) || fuzzy(it.note) }.forEach { out.add(Target.MyPin(it)) }
+        d.rides.filter { fuzzy(it.name) }.take(10).forEach { r -> out.add(Target.Point(r.points.first().lat, r.points.first().lon, "Ride: ${r.name}")) }
+        d.places.filter { fuzzy(it.name) }.forEach { p -> out.add(Target.Point(p.lat, p.lon, p.name)) }
+        d.pois.filter { fuzzy(it.name) || ca.bancroft.trails.data.kindLabel(it.kind).lowercase().contains(n) }
             .take(40).forEach { out.add(Target.Place(it)) }
         // named trails / roads
         val g = d.graph
         val seen = HashSet<String>()
         for (e in 0 until g.edgeCount) {
             val nm = g.name(e) ?: continue
-            if (!nm.lowercase().contains(n) || !seen.add(nm)) continue
+            if (!fuzzy(nm) || !seen.add(nm)) continue
             val f = g.eFirst[e] + g.eCount[e] / 2
             out.add(Target.Trail(g.ptLat[f] / 1e6, g.ptLon[f] / 1e6, nm, g.eCls[e].toInt(), g.eKind[e].toInt(), g.eReason[e].toInt(),
                 g.note(e), g.eConf[e].toInt(), g.eFlags[e]))
@@ -605,6 +608,32 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** Forgiving search: each typed word must match the start of a word, allowing one typo and silent letters ("eco" finds "Echo"). */
+        fun searchMatch(text: String, query: String): Boolean {
+            val t = text.lowercase()
+            if (t.contains(query)) return true
+            val words = t.split(' ', '-', '\'', '.', ',').filter { it.isNotBlank() }
+            return query.split(' ').filter { it.isNotBlank() }.all { q -> words.any { w -> wordMatch(w, q) } }
+        }
+
+        private fun simplify(s: String) = s.replace("h", "").replace("ck", "k").replace("ph", "f")
+
+        private fun wordMatch(w: String, q: String): Boolean {
+            if (w.startsWith(q) || simplify(w).startsWith(simplify(q))) return true
+            if (q.length < 4) return false
+            val pre = w.take(q.length + 1)
+            return editDistance(pre, q) <= 1 || editDistance(w.take(q.length), q) <= 1
+        }
+
+        private fun editDistance(a: String, b: String): Int {
+            val d = Array(a.length + 1) { IntArray(b.length + 1) }
+            for (i in 0..a.length) d[i][0] = i
+            for (j in 0..b.length) d[0][j] = j
+            for (i in 1..a.length) for (j in 1..b.length)
+                d[i][j] = minOf(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + if (a[i - 1] == b[j - 1]) 0 else 1)
+            return d[a.length][b.length]
+        }
+
         fun distM(la1: Double, lo1: Double, la2: Double, lo2: Double) =
             hypot((lo2 - lo1) * 111320.0 * cos(Math.toRadians(la1)), (la2 - la1) * 110540.0)
     }

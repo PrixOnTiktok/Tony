@@ -31,9 +31,10 @@ KY = 110540.0
 
 FREE, MAYBE, ROAD, NO = 0, 1, 2, 3
 # kinds
-K_TRACK, K_PATH, K_FOREST, K_MINOR, K_MAJOR, K_HWY, K_CLUB, K_SERVICE = range(8)
-KIND_NAMES = ["Trail / track", "Narrow trail", "Forest access road", "Local road", "Main road", "Highway", "Club trail", "Service road"]
-SPEED = {K_TRACK: 20, K_PATH: 10, K_FOREST: 30, K_MINOR: 35, K_MAJOR: 45, K_HWY: 45, K_CLUB: 20, K_SERVICE: 15}
+K_TRACK, K_PATH, K_FOREST, K_MINOR, K_MAJOR, K_HWY, K_CLUB, K_SERVICE, K_GAP = range(9)
+KIND_NAMES = ["Trail / track", "Narrow trail", "Forest access road", "Local road", "Main road", "Highway", "Club trail", "Service road",
+              "Unmapped gap"]
+SPEED = {K_TRACK: 20, K_PATH: 10, K_FOREST: 30, K_MINOR: 35, K_MAJOR: 45, K_HWY: 45, K_CLUB: 20, K_SERVICE: 15, K_GAP: 8}
 # flags
 F_CROWN, F_PARK, F_OSM, F_MNRF, F_OTN, F_GATE, F_BRIDGE, F_LOWCONF, F_PRIVATE, F_CLUB, F_HIKING, F_RESTRICTED, F_UNPAVED, F_SNOW = [1 << i for i in range(14)]
 
@@ -60,8 +61,11 @@ REASONS = [
     "Inside {note} (conservation reserve): ORVs allowed on existing roads/trails unless posted closed.",  # 19
     "Dirt-bike-only trail ({note}): not open to ATVs.",                                    # 20
     "OFSC snowmobile trail: OFSC says no ATVs at any time of year; most cross private land (trespass).",  # 21
+    "Gap in the map data: this trail almost certainly connects here, but nobody has mapped the link. Check on the ground.",  # 22
+    "Back road from the Ontario Road Network on Crown land (not in OpenStreetMap): open unless gated or posted.",  # 23
+    "Back road from the Ontario Road Network (not in OpenStreetMap). Not on Crown land, so it may be private. Ask first.",  # 24
 ]
-R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC = range(22)
+R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC, R_GAP, R_ORN, R_ORN_PRIV = range(25)
 
 
 def to_xy(lon, lat):
@@ -561,6 +565,17 @@ def main():
         added_otn += 1
     stats["otn_added"] = added_otn
 
+    # Add Ontario Road Network roads (public, resource and recreation roads) that neither OSM nor MNRF has
+    all_idx = LineIndex([(ln["xy"], i) for i, ln in enumerate(lines)])
+    added_orn = 0
+    for xy, p in orn:
+        if p.get("ROAD_ELEMENT_TYPE") != "ROAD ELEMENT" or coverage(xy, all_idx, 20) >= 0.5:
+            continue
+        lines.append({"xy": [(round(a * 2) / 2, round(b * 2) / 2) for a, b in xy], "kind": K_FOREST, "name": "", "ref": "",
+                      "bridge": False, "tunnel": False, "access": None, "src": "orn"})
+        added_orn += 1
+    stats["orn_added"] = added_orn
+
     print("noding…", file=sys.stderr)
     stats["snapped"] = snap_endpoints(lines)
     nodes, edges = build_edges(lines)
@@ -580,6 +595,46 @@ def main():
         ra, rb = find(e["a"]), find(e["b"])
         if ra != rb:
             parent[ra] = rb
+    comp = collections.Counter(find(e["a"]) for e in edges)
+    main_comp = comp.most_common(1)[0][0]
+
+    # Bridge "floating" pieces: open data often misses the short lane/skid trail that joins a trail to the network.
+    # Join each piece's closest dangling end to the main network if within GAP_MAX_M, as a dotted "unmapped gap".
+    GAP_MAX_M = 400.0
+    deg = collections.Counter()
+    for e in edges:
+        deg[e["a"]] += 1; deg[e["b"]] += 1
+    gaps = 0
+    for _pass in range(3):
+        main_root = find(main_comp)
+        main_grid = Grid(150.0)
+        for e in edges:
+            if find(e["a"]) == main_root:
+                for n in (e["a"], e["b"]):
+                    main_grid.add_seg(n, nodes[n], nodes[n])
+        comp_len = collections.Counter()
+        for e in edges:
+            comp_len[find(e["a"])] += e["len"]
+        best = {}
+        for n, d in deg.items():
+            r = find(n)
+            if r == main_root or comp_len[r] < 300 or d != 1:
+                continue
+            x, y = nodes[n]
+            for m in main_grid.near(x, y, GAP_MAX_M):
+                dd = math.hypot(nodes[m][0] - x, nodes[m][1] - y)
+                if dd <= GAP_MAX_M and (r not in best or dd < best[r][0]):
+                    best[r] = (dd, n, m)
+        if not best:
+            break
+        for r, (dd, n, m) in best.items():
+            lines.append({"xy": [nodes[n], nodes[m]], "kind": K_GAP, "name": "", "ref": "", "bridge": False, "tunnel": False,
+                          "access": None, "src": "gap"})
+            edges.append({"a": n, "b": m, "pts": [nodes[n], nodes[m]], "len": max(dd, 1.0), "line": len(lines) - 1})
+            parent[find(n)] = find(m)
+            deg[n] += 1; deg[m] += 1
+            gaps += 1
+    stats["gap_connectors"] = gaps
     comp = collections.Counter(find(e["a"]) for e in edges)
     main_comp = comp.most_common(1)[0][0]
     stats["main_component_edges"] = comp[main_comp]
@@ -694,12 +749,24 @@ def main():
         motor_ok = atv_ok or eota_pass
         osm_name = ln["name"] or ""
         is_ofsc = osm_name.upper().startswith("OFSC") or "snowmobile" in osm_name.lower()
-        if park:
+        if kind == K_GAP:
+            cls, reason, note = (NO, R_PARK, park) if park else (MAYBE, R_GAP, "")
+        elif ln["src"] == "orn" and not park:
+            cls, reason = (FREE, R_ORN) if on_crown else (MAYBE, R_ORN_PRIV)
+            if not on_crown:
+                flags |= F_PRIVATE
+        elif park:
             cls, reason, note = NO, R_PARK, park
         elif reserve and kind in (K_TRACK, K_PATH, K_FOREST, K_CLUB):
             cls, reason, note = MAYBE, R_RESERVE, reserve
         elif is_ofsc and kind in (K_TRACK, K_PATH, K_CLUB, K_FOREST):
             cls, reason = NO, R_OFSC
+        elif kind in (K_TRACK, K_PATH, K_CLUB) and mn and mprops and mprops.get("OWNERSHIP_CLASS") == "Crown" \
+                and mprops.get("STATUS") == "Open" and not (mprops.get("USE_RESTRICTION_DETAIL") or ""):
+            # OSM calls it a path/track (or a club trail runs on it) but MNRF records an open Crown forest road here:
+            # ORVs may use Crown-land roads unless prohibited (O. Reg. 316/03 s.5), so no pass is needed.
+            kind = K_FOREST
+            cls, reason, note = FREE, R_FOREST, ""
         elif kind in (K_TRACK, K_PATH, K_CLUB) or (kind == K_FOREST and not mprops):
             if oprops and moto_only:
                 cls, reason, note = NO, R_DIRTBIKE, tname or assoc or "club"
@@ -731,6 +798,7 @@ def main():
                 flags |= F_LOWCONF
         else:  # municipal / county roads
             cls, reason, note, low = muni_rule(muni, rules_by)
+
             if low:
                 flags |= F_LOWCONF
         if mprops and mprops.get("STATUS") == "Restricted":
