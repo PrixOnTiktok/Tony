@@ -120,6 +120,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Sos
+import androidx.compose.material.icons.filled.Explore
 import ca.bancroft.trails.nav.formatDist
 import ca.bancroft.trails.nav.formatTime
 import ca.bancroft.trails.routing.Route
@@ -252,9 +253,9 @@ fun BrowsePanel(vm: MapViewModel, recording: Boolean, onSettings: () -> Unit, on
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)) {
                 Icon(Icons.Filled.Home, null); Spacer(Modifier.width(6.dp)); Text("Home", fontSize = 16.sp)
             }
-            FilledTonalButton(onLoop, Modifier.weight(0.9f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
+            FilledTonalButton({ vm.openIdeas() }, Modifier.weight(0.9f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)) {
-                Icon(Icons.Filled.Loop, null); Spacer(Modifier.width(6.dp)); Text("Loop", fontSize = 16.sp)
+                Icon(Icons.Filled.Explore, null); Spacer(Modifier.width(6.dp)); Text("Rides", fontSize = 16.sp)
             }
             FilledTonalButton(onRecord, Modifier.weight(1.1f).heightIn(min = 56.dp), shape = RoundedCornerShape(16.dp),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),

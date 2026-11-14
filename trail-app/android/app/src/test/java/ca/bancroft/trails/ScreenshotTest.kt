@@ -42,6 +42,8 @@ import ca.bancroft.trails.ui.BrowsePanel
 import ca.bancroft.trails.ui.DetailsPanel
 import ca.bancroft.trails.ui.LoopPanel
 import ca.bancroft.trails.ui.SosPanel
+import ca.bancroft.trails.ui.IdeasPanel
+import ca.bancroft.trails.ui.IdeaPanel
 import ca.bancroft.trails.ui.CompassWidget
 import ca.bancroft.trails.ui.MapViewModel
 import ca.bancroft.trails.ui.Mode
@@ -165,6 +167,41 @@ class ScreenshotTest {
         val vm = vm()
         captureRoboImage(File(out, "12_home.png").path) {
             Phone("bg_browse.png", false, fabs = false) { DetailsPanel(vm, vm.home.value, null) {} }
+        }
+    }
+
+    private fun waitIdea(vm: MapViewModel): Mode.Idea {
+        val t0 = System.currentTimeMillis()
+        while (System.currentTimeMillis() - t0 < 60000) {
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            val m = vm.mode.value as? Mode.Idea
+            if (m != null && !m.computing) return m
+            Thread.sleep(50)
+        }
+        error("idea not computed")
+    }
+
+    @Test fun rideIdeas() {
+        val vm = vm()
+        captureRoboImage(File(out, "13_ride_ideas.png").path) {
+            Phone("bg_network.png", false, fabs = false) { IdeasPanel(vm, null) }
+        }
+        // every routable popular ride should route
+        for (r in vm.data.value!!.rides) {
+            vm.openRide(r)
+            val m = waitIdea(vm)
+            println("RIDE ${r.name}: ${m.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" } ?: "NO ROUTE"} | ${m.note ?: ""}")
+        }
+        vm.openRide(vm.data.value!!.rides.first { it.id.startsWith("old-hastings") })
+        val m = waitIdea(vm)
+        captureRoboImage(File(out, "14_popular_ride.png").path) {
+            Phone("bg_plan.png", false, fabs = false) { IdeaPanel(vm, m) {} }
+        }
+        for (min in listOf(10, 20, 60, 120)) {
+            vm.quickRide(min)
+            val q = waitIdea(vm)
+            println("QUICK $min min: ${q.subtitle} -> ${q.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" } ?: q.note}")
+            if (min == 60) captureRoboImage(File(out, "15_quick_ride.png").path) { Phone("bg_loop.png", false, fabs = false) { IdeaPanel(vm, q) {} } }
         }
     }
 

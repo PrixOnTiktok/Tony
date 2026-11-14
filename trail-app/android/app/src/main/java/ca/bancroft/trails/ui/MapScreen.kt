@@ -234,6 +234,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
             is Mode.Navigating -> { c.setRoutes(mapOf(m.route.mode to m.route), m.route.mode); c.setDest(m.dest) }
             is Mode.Details -> { c.setRoutes(emptyMap(), null); c.setDest(null); if (m.target !is Target.Trail) c.setSelection(null) }
             is Mode.Loop -> { c.setRoutes(m.route?.let { mapOf(m.mode to it) } ?: emptyMap(), m.mode); c.setDest(null); c.setSelection(null) }
+            is Mode.Idea -> { c.setRoutes(m.route?.let { mapOf(it.mode to it) } ?: emptyMap(), m.route?.mode); c.setDest(null); c.setSelection(null) }
             else -> { c.setRoutes(emptyMap(), null); c.setDest(null); c.setSelection(null) }
         }
     }
@@ -359,6 +360,8 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                         is Mode.Loop -> LoopPanel(vm, m, onStart = { askNotifications(); vm.startLoop() })
                         is Mode.Rides -> RidesPanel(vm)
                         is Mode.Sos -> SosPanel(vm, location, heading)
+                        is Mode.Ideas -> IdeasPanel(vm, location)
+                        is Mode.Idea -> IdeaPanel(vm, m, onStart = { askNotifications(); vm.startIdea() })
                         is Mode.RideView -> RideViewPanel(vm, m.ride)
                         is Mode.Nearby -> NearbyPanel(vm, m.category, location)
                         is Mode.Search -> SearchPanel(vm)

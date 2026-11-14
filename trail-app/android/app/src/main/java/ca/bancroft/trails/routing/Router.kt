@@ -175,6 +175,33 @@ class Router(private val g: Graph) {
         return (lat + m * kotlin.math.cos(br) / 110540.0) to (lon + m * kotlin.math.sin(br) / (111320.0 * cos(Math.toRadians(lat))))
     }
 
+    /** Route through [points] in order (each a lat/lon pair); null if any leg fails. */
+    fun via(points: List<Pair<Double, Double>>, mode: RouteMode, avoidMaybe: Boolean, blocked: Set<Int> = emptySet(), loop: Boolean = false): Route? {
+        if (points.size < 2) return null
+        val legs = ArrayList<Route>()
+        val used = HashSet<Int>()
+        for (i in 0 until points.size - 1) {
+            reused = if (loop) used else emptySet()
+            val r = route(points[i].first, points[i].second, points[i + 1].first, points[i + 1].second, mode, avoidMaybe, blocked)
+            reused = emptySet()
+            if (r == null) return null
+            if (r.distanceM < 20) continue
+            legs.add(r); used.addAll(r.edges.toList())
+        }
+        if (legs.isEmpty()) return null
+        return if (legs.size == 1) legs[0] else concat(legs, mode).copy(isLoop = loop)
+    }
+
+    /** A there-and-back ride: [out] then the same way home. */
+    fun outAndBack(out: Route): Route {
+        val back = out.copy(lats = out.lats.reversedArray(), lons = out.lons.reversedArray(),
+            cumDist = DoubleArray(out.cumDist.size) { out.distanceM - out.cumDist[out.cumDist.size - 1 - it] },
+            maneuvers = listOf(Maneuver(0, 0.0, Turn.START, "Turn around and head back", "", -1),
+                Maneuver(out.lats.size - 1, out.distanceM, Turn.ARRIVE, "Back where you started", "", -1)),
+            edges = out.edges.reversedArray(), offStartM = out.offEndM, offEndM = out.offStartM)
+        return concat(listOf(out, back), out.mode).copy(isLoop = true)
+    }
+
     /** The rest of [r] from point [from] on (used to rejoin a loop after a detour). Class split is approximate. */
     fun tail(r: Route, from: Int): Route {
         val i0 = from.coerceIn(0, r.lats.size - 2)

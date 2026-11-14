@@ -17,6 +17,7 @@ echo "== classify + graph"; python3 "$HERE/build_data.py" "$WORK" "$WORK/out"
 tippecanoe -q -o "$ASSETS/trails.pmtiles" -Z7 -z14 --force --no-feature-limit --no-tile-size-limit --simplification=4 \
   -j "$(cat "$HERE/tile_filter.json")" -L trails:"$WORK/out/trails.geojson" -L junctions:"$WORK/out/junctions.geojson"
 cp "$WORK/out/graph.bin" "$WORK/out/pois.json" "$WORK/out/meta.json" "$ASSETS/"
+python3 "$HERE/make_rides.py" "$ASSETS"
 echo "== styles, fonts, sprites"
 (cd "$HERE/style" && npm install --silent && node gen_style.mjs "$ASSETS/style")
 RAW=https://raw.githubusercontent.com/protomaps/basemaps-assets/main

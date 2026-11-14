@@ -12,9 +12,9 @@ every trail, gas/food/places and the router are all inside the app.
 |---|---|---|---|
 | ![](docs/screenshots/2_trail_details.png) | ![](docs/screenshots/4_route_plan.png) | ![](docs/screenshots/5_navigating.png) | ![](docs/screenshots/10_my_location.png) |
 
-| Stranded / SOS | Home |
-|---|---|
-| ![](docs/screenshots/11_stranded.png) | ![](docs/screenshots/12_home.png) |
+| Stranded / SOS | Home | Ride ideas | Popular ride |
+|---|---|---|---|
+| ![](docs/screenshots/11_stranded.png) | ![](docs/screenshots/12_home.png) | ![](docs/screenshots/13_ride_ideas.png) | ![](docs/screenshots/14_popular_ride.png) |
 
 ## What it does
 - **Colour-coded trails**:
@@ -39,6 +39,13 @@ every trail, gas/food/places and the router are all inside the app.
   leave the loop it brings you back onto it.
 - **Record rides**: keeps recording with the screen off. Saved rides list with distance, time and max speed, and
   each ride can be shared as GPX.
+- **Ride ideas** (the "Rides" button):
+  - **Quick ride from here:** 10 min, 20 min, 1 hour or 2 hours. It picks the better of a loop or a there-and-back to
+    something worth seeing, and times it to match.
+  - **18 popular rides** researched from published sources (EOTA, Northern Ontario Travel, club and event pages), each
+    with length, season, pass and highlights. The app routes each one itself through the published points; no GPS
+    tracks were copied (`pipeline/rides/`).
+  - **20 places worth riding to:** lookouts, falls, ghost towns, general stores.
 - **Home**: one tap routes you home (preset to 267 Bradshaw Rd, an estimate from the address; tap "I'm here" in the
   driveway to make it exact).
 - **Your own trails**: ride somewhere no map has a trail and it's saved automatically (teal dashes). The router uses

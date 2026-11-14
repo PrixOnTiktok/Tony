@@ -89,6 +89,10 @@ sealed interface Mode {
     data class Loop(val km: Int, val mode: RouteMode, val route: Route?, val computing: Boolean, val noGps: Boolean = false) : Mode
     data object Rides : Mode
     data object Sos : Mode
+    data object Ideas : Mode
+    /** A suggested ride being previewed: a popular route or a quick timed ride. */
+    data class Idea(val title: String, val subtitle: String, val ride: ca.bancroft.trails.data.RideIdea?, val route: Route?,
+                    val computing: Boolean, val note: String? = null) : Mode
     data class RideView(val ride: Ride) : Mode
 }
 
@@ -191,6 +195,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
             is Mode.Browse -> return false
             is Mode.Navigating -> return true // stop needs an explicit hold
             is Mode.Plan -> _mode.value = Mode.Details(m.dest)
+            is Mode.Idea -> _mode.value = Mode.Ideas
             is Mode.RideView -> { _shownTrack.value = emptyList(); _mode.value = Mode.Rides }
             else -> { _shownTrack.value = emptyList(); _mode.value = Mode.Browse }
         }
@@ -209,6 +214,100 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     fun showMe() {
         val l = locationRepo.location.value ?: return
         select(Target.Me(l.latitude, l.longitude, l.accuracy, if (l.hasAltitude()) l.altitude else null, l.speed * 3.6))
+    }
+
+    // ---------- ride ideas
+    fun openIdeas() { _mode.value = Mode.Ideas }
+
+    private fun here(): Pair<Double, Double> = locationRepo.location.value?.let { it.latitude to it.longitude } ?: (_home.value.lat to _home.value.lon)
+
+    /** A popular ride, routed from where you are to its start, then through its points. */
+    fun openRide(ride: ca.bancroft.trails.data.RideIdea) {
+        val r = router ?: return
+        _mode.value = Mode.Idea(ride.name, ride.typeLabel, ride, null, computing = true)
+        planJob?.cancel()
+        planJob = viewModelScope.launch {
+            val (lat, lon) = here()
+            val mode = settings.routeMode
+            val res = withContext(Dispatchers.Default) {
+                val pts = ride.points.map { it.lat to it.lon }
+                val core = when {
+                    !ride.routable -> null
+                    ride.type == "loop" -> r.via(pts + pts.first(), mode, _avoidMaybe.value, loop = true)
+                    ride.type == "out_back" -> r.via(pts, mode, _avoidMaybe.value)?.let { r.outAndBack(it) }
+                    else -> r.via(pts, mode, _avoidMaybe.value)
+                }
+                val start = ride.points.first()
+                val away = distM(lat, lon, start.lat, start.lon)
+                // close by: ride there too. Far away: just the ride (most people trailer to the start)
+                val toStart = if (away in 500.0..15_000.0 || (core == null && away > 500)) r.route(lat, lon, start.lat, start.lon, mode, _avoidMaybe.value) else null
+                when {
+                    core != null && toStart != null -> r.concat(listOf(toStart, core), mode) to "Includes ${ca.bancroft.trails.nav.formatDist(toStart.distanceM)} to get to the start at ${start.name}."
+                    core != null && away > 15_000 -> core to "Starts at ${start.name}, ${ca.bancroft.trails.nav.formatDist(away)} from you. Trailer there, then tap Ride it."
+                    core != null -> core to null
+                    toStart != null -> toStart to "This one has no published route points, so this takes you to the start (${start.name})."
+                    else -> null to null
+                }
+            }
+            val cur = _mode.value as? Mode.Idea ?: return@launch
+            _mode.value = cur.copy(route = res.first, computing = false, note = res.second)
+            res.first?.let { _camera.value = CameraRequest.Fit(it) }
+        }
+    }
+
+    /**
+     * A ride of about [minutes] from where you are: the better of a loop or a there-and-back to something worth
+     * seeing (lookout, waterfall, ghost town, general store…), preferring trails.
+     */
+    fun quickRide(minutes: Int) {
+        val r = router ?: return
+        val d = _data.value ?: return
+        _mode.value = Mode.Idea("$minutes-minute ride", "From ${if (locationRepo.location.value != null) "here" else "home"}", null, null, computing = true)
+        planJob?.cancel()
+        planJob = viewModelScope.launch {
+            val (lat, lon) = here()
+            val mode = RouteMode.MOSTLY_TRAILS
+            val targetS = minutes * 60.0
+            val res = withContext(Dispatchers.Default) {
+                var km = (minutes * 0.33).coerceAtLeast(3.0) // ~20 km/h on trails
+                var loop = r.loop(lat, lon, km, mode, _avoidMaybe.value)
+                // second pass: scale the distance by how far off the time was
+                loop?.let { l -> if (kotlin.math.abs(l.timeS - targetS) > targetS * 0.2 && l.timeS > 0) {
+                    km = (km * targetS / l.timeS).coerceIn(2.0, 150.0)
+                    r.loop(lat, lon, km, mode, _avoidMaybe.value)?.let { l2 -> if (kotlin.math.abs(l2.timeS - targetS) < kotlin.math.abs(l.timeS - targetS)) loop = l2 }
+                } }
+                // there-and-back to a spot roughly half the time away (second pass corrects for road vs trail speed)
+                val spotsAll = (d.places.map { Triple(it.name, it.lat, it.lon) } +
+                    d.pois.filter { it.cat == "poi" && it.kind in setOf("viewpoint", "waterfall", "attraction", "beach", "picnic_site", "historic", "peak") && it.name.isNotBlank() }
+                        .map { Triple(it.name, it.lat, it.lon) } +
+                    d.pois.filter { it.cat == "food" || it.cat == "gas" }.filter { it.name.isNotBlank() }.map { Triple(it.name, it.lat, it.lon) })
+                    .map { it to distM(lat, lon, it.second, it.third) }
+                fun bestOutBack(reach: Double) = spotsAll.filter { it.second in reach * 0.35..reach * 0.9 }
+                    .sortedBy { kotlin.math.abs(it.second - reach * 0.65) }.take(6)
+                    .mapNotNull { (s, _) -> r.route(lat, lon, s.second, s.third, mode, _avoidMaybe.value)?.let { s.first to r.outAndBack(it) } }
+                    .minByOrNull { kotlin.math.abs(it.second.timeS - targetS) + (1 - it.second.trailShare) * 300 }
+                val reach0 = minutes / 2.0 / 60.0 * 20_000.0
+                var outBack = bestOutBack(reach0)
+                outBack?.let { ob -> if (kotlin.math.abs(ob.second.timeS - targetS) > targetS * 0.2 && ob.second.timeS > 0) {
+                    val again = bestOutBack(reach0 * targetS / ob.second.timeS)
+                    if (again != null && kotlin.math.abs(again.second.timeS - targetS) < kotlin.math.abs(ob.second.timeS - targetS)) outBack = again
+                } }
+                val loopFinal = loop
+                val loopScore = loopFinal?.let { kotlin.math.abs(it.timeS - targetS) + (1 - it.trailShare) * 300 } ?: Double.MAX_VALUE
+                val obScore = outBack?.let { kotlin.math.abs(it.second.timeS - targetS) + (1 - it.second.trailShare) * 300 - 120 } ?: Double.MAX_VALUE
+                if (obScore < loopScore) outBack!!.second to "There and back to ${outBack.first}" else loopFinal to "A loop from here"
+            }
+            val cur = _mode.value as? Mode.Idea ?: return@launch
+            _mode.value = cur.copy(subtitle = res.second, route = res.first, computing = false,
+                note = if (res.first == null) "Couldn't find a ride that short from here. Try a longer one." else null)
+            res.first?.let { _camera.value = CameraRequest.Fit(it) }
+        }
+    }
+
+    fun startIdea() {
+        val m = _mode.value as? Mode.Idea ?: return
+        val route = m.route ?: return
+        startNavigation(Target.Point(route.lats.last(), route.lons.last(), m.title), route)
     }
 
     // ---------- home

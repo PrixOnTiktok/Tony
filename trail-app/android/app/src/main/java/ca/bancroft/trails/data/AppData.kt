@@ -57,8 +57,21 @@ fun kindLabel(kind: String): String = when (kind) {
     else -> kind.replace('_', ' ').replaceFirstChar { it.uppercase() }
 }
 
+data class RidePoint(val name: String, val lat: Double, val lon: Double)
+
+/** A recommended ride from published sources (facts only); the app routes it itself. */
+data class RideIdea(
+    val id: String, val name: String, val type: String, val km: Double?, val time: String?, val difficulty: String?,
+    val season: String?, val pass: String?, val highlights: String?, val sources: List<String>, val points: List<RidePoint>,
+) {
+    val routable get() = points.size >= 2
+    val typeLabel get() = when (type) { "loop" -> "Loop"; "out_back" -> "There and back"; else -> "One way" }
+}
+
+data class Place(val name: String, val lat: Double, val lon: Double, val what: String?, val note: String?, val sources: List<String>)
+
 /** Everything bundled in the APK, loaded once. */
-class AppData(val graph: Graph, val meta: Meta, val pois: List<Poi>) {
+class AppData(val graph: Graph, val meta: Meta, val pois: List<Poi>, val rides: List<RideIdea> = emptyList(), val places: List<Place> = emptyList()) {
     companion object {
         fun load(ctx: Context): AppData {
             val am = ctx.assets
@@ -70,7 +83,22 @@ class AppData(val graph: Graph, val meta: Meta, val pois: List<Poi>) {
                 Poi(o.getString("cat"), o.getString("kind"), o.optString("name"), o.getDouble("lat"), o.getDouble("lon"),
                     if (o.has("ele") && !o.isNull("ele")) o.optDouble("ele") else null)
             }
-            return AppData(graph, meta, pois)
+            val (rides, places) = runCatching {
+                val o = JSONObject(am.open("rides.json").bufferedReader().use { it.readText() })
+                val ra = o.getJSONArray("rides"); val pa = o.getJSONArray("places")
+                fun str(j: JSONObject, k: String) = if (j.isNull(k)) null else j.optString(k).takeIf { it.isNotBlank() && it != "null" }
+                fun srcs(j: JSONObject) = j.optJSONArray("sources")?.let { a -> (0 until a.length()).map { a.getString(it) } } ?: emptyList()
+                (0 until ra.length()).map { i ->
+                    val r = ra.getJSONObject(i); val pts = r.getJSONArray("points")
+                    RideIdea(r.getString("id"), r.getString("name"), r.getString("type"), if (r.isNull("km")) null else r.optDouble("km"),
+                        str(r, "time"), str(r, "difficulty"), str(r, "season"), str(r, "pass"), str(r, "highlights"), srcs(r),
+                        (0 until pts.length()).map { k -> pts.getJSONObject(k).let { p -> RidePoint(p.getString("name"), p.getDouble("lat"), p.getDouble("lon")) } })
+                } to (0 until pa.length()).map { i ->
+                    val p = pa.getJSONObject(i)
+                    Place(p.getString("name"), p.getDouble("lat"), p.getDouble("lon"), str(p, "what"), str(p, "note"), srcs(p))
+                }
+            }.getOrDefault(emptyList<RideIdea>() to emptyList())
+            return AppData(graph, meta, pois, rides, places)
         }
     }
 }
