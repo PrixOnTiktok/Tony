@@ -1,0 +1,1482 @@
+{
+ "meta": {
+  "generated": "2026-11-14",
+  "bbox": [
+   44.16,
+   -79.13,
+   45.96,
+   -76.58
+  ],
+  "notes": [
+   "Facts only; no GPX copied. Coordinates are from OSM data in the app's own extract (road intersections / POIs) unless null.",
+   "No published ATV ride or destination was found that specifically uses Bradshaw Rd, Detlor Rd or Turriff Rd; nearest published spots are Egan Chutes, L'Amable dam/hamlet, Umfraville and the north end of Old Hastings Rd.",
+   "Couldn't verify: a '240 km Hastings Highland Tour' (Backroad Mapbooks) and the Weslemkoon/Merrill details beyond search summaries."
+  ]
+ },
+ "routes": [
+  {
+   "id": "eota-spruce-egan",
+   "name": "Spruce Lake & Egan Creek trails (from Upper Turriff Rd)",
+   "type": "out-and-back",
+   "staging": {
+    "name": "End of Upper Turriff Rd, L'Amable",
+    "lat": 45.015,
+    "lon": -77.692
+   },
+   "waypoints": [
+    {
+     "name": "Spruce Lake Trail east end",
+     "lat": 44.997,
+     "lon": -77.606
+    },
+    {
+     "name": "Egan Creek Trail south end",
+     "lat": 44.945,
+     "lon": -77.558
+    }
+   ],
+   "length_km": 17,
+   "typical_time": "about 1.5-2 h there and back",
+   "difficulty": "easy-moderate (bush roads and trail)",
+   "season": "May to Nov (stay off in spring thaw)",
+   "pass_required": "EOTA pass",
+   "highlights": [
+    "EOTA trails starting about 1 km from Bradshaw Rd",
+    "2015 bridge opened access to Crown forest land"
+   ],
+   "sources": [
+    "https://www.bancroftthisweek.com/",
+    "https://data2.ontario.ca/dataset/ontario-trail-network",
+    "https://www.thetrail.ca/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "eota-old-bessemer",
+   "name": "Old Bessemer Trail",
+   "type": "out-and-back",
+   "staging": {
+    "name": "Old Bessemer Trail west end",
+    "lat": 45.027,
+    "lon": -77.723
+   },
+   "waypoints": [
+    {
+     "name": "Bessemer Rd",
+     "lat": 45.063,
+     "lon": -77.611
+    }
+   ],
+   "length_km": 10.6,
+   "typical_time": "about 1 h there and back",
+   "difficulty": "easy-moderate",
+   "season": "May to Nov",
+   "pass_required": "EOTA pass",
+   "highlights": [
+    "EOTA trail north-east from near Bradshaw Rd to Bessemer Rd"
+   ],
+   "sources": [
+    "https://www.bancroftthisweek.com/",
+    "https://data2.ontario.ca/dataset/ontario-trail-network",
+    "https://www.thetrail.ca/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "bon-echo-creek-loop",
+   "name": "Bon Echo Creek Loop",
+   "type": "loop",
+   "staging": {
+    "name": "Bon Echo Creek Loop (east side)",
+    "lat": 44.94547,
+    "lon": -77.3453,
+    "coord_confidence": "high"
+   },
+   "waypoints": [
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93962,
+     "lon": -77.36043,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.94221,
+     "lon": -77.36323,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93579,
+     "lon": -77.36098,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93454,
+     "lon": -77.37567,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93308,
+     "lon": -77.37041,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.92519,
+     "lon": -77.36747,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.93055,
+     "lon": -77.35558,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Bon Echo Creek Loop",
+     "lat": 44.92653,
+     "lon": -77.349,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 22,
+   "typical_time": "about 1-1.5 h",
+   "difficulty": "easy (gravel forest road)",
+   "season": "spring to fall",
+   "pass_required": "none listed: MNRF forest road on Crown land; one water crossing is signed restricted",
+   "highlights": [
+    "22 km gravel forest-road loop on Crown land",
+    "north-west of Bon Echo Park (the park itself is closed to ATVs)"
+   ],
+   "sources": [
+    "https://data2.ontario.ca/dataset/ministry-of-natural-resources-and-forestry-road-segments"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "old-hastings-road-ghost-towns",
+   "name": "Old Hastings Road ghost-town ride (Bancroft area to Millbridge)",
+   "type": "point-to-point (often ridden as out-and-back, or continued south on the Hastings Heritage Trail to Marmora)",
+   "staging": {
+    "name": "Old Hastings Road at Hwy 62, just south of L'Amable / Bancroft",
+    "lat": 44.9986,
+    "lon": -77.783,
+    "coord_confidence": "high",
+    "note": "northern end of Old Hastings Road where it leaves Hwy 62 (OSM road intersection)"
+   },
+   "waypoints": [
+    {
+     "name": "Umfraville Road turnoff (Umfraville cemetery)",
+     "lat": 44.9894,
+     "lon": -77.7903,
+     "coord_confidence": "high",
+     "note": "road intersection; cemetery is up Umfraville Rd"
+    },
+    {
+     "name": "Ormsby (Old Hastings Rd x Hwy 620; Old Schoolhouse tea room, Old Hastings Gallery)",
+     "lat": 44.8811,
+     "lon": -77.7505,
+     "coord_confidence": "high",
+     "note": "road intersection; businesses' current status unknown"
+    },
+    {
+     "name": "Thanet (small roadside cemetery)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none",
+     "note": "just north of Murphy's Corners"
+    },
+    {
+     "name": "Murphy's Corners (Old Hastings Rd x Steenburg Lake Rd; old service station)",
+     "lat": 44.8136,
+     "lon": -77.7205,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Glanmire (cemetery steps, concrete bridge over Beaver Creek, small falls)",
+     "lat": 44.7554,
+     "lon": -77.6852,
+     "coord_confidence": "medium",
+     "note": "OSM 'Glanmire Cemetery'"
+    },
+    {
+     "name": "Millbridge (rejoins Hwy 62)",
+     "lat": 44.6743,
+     "lon": -77.5748,
+     "coord_confidence": "medium",
+     "note": "Old Hastings Rd x Hwy 62 southern junction"
+    },
+    {
+     "name": "Optional: Eldorado (Ontario's first gold rush plaque) and Marmora (Marmoraton Mine lookout) via Hastings Heritage Trail",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": 45,
+   "length_note": "Old Hastings Road remnant is ~45 km per source; Marmora extension adds more (unknown)",
+   "typical_time": "About an hour of riding per source, but intended as a slow all-day/half-day exploration with stops",
+   "difficulty": "easy (relaxed gravel-road touring)",
+   "season": "spring to fall (article trips in summer)",
+   "pass_required": "unknown for the road itself (public road; depends on municipal ORV by-laws); EOTA pass needed for the Hastings Heritage Trail connections",
+   "highlights": [
+    "ghost towns of a 1850s colonization road",
+    "pioneer cemeteries",
+    "Beaver Creek bridge and disappearing creek at Glanmire",
+    "Hogan's Hotel at Millbridge Station",
+    "Eldorado gold-rush plaque",
+    "Marmoraton open-pit mine lookout"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
+    "https://norddelontario.ca/node/12263",
+    "https://curiocity.com/bancroft-ontario/"
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "hht-bancroft-lake-st-peter",
+   "name": "Hastings Heritage Trail north: Bancroft - Maynooth - Lake St. Peter",
+   "type": "out-and-back (rail trail)",
+   "staging": {
+    "name": "Bancroft, Hastings Heritage Trail at Station St (downtown, by the mineral museum / old station)",
+    "lat": 45.0565,
+    "lon": -77.8555,
+    "coord_confidence": "high"
+   },
+   "waypoints": [
+    {
+     "name": "Birds Creek",
+     "lat": 45.1073,
+     "lon": -77.8788,
+     "coord_confidence": "medium",
+     "note": "school/park in hamlet; trail passes ~1 km west"
+    },
+    {
+     "name": "Maynooth (Maynooth General Store)",
+     "lat": 45.2313,
+     "lon": -77.9377,
+     "coord_confidence": "high",
+     "note": "trail passes ~1 km from store"
+    },
+    {
+     "name": "Lake St. Peter - Linkie's General Store & Gas Bar (fuel, food, picnic area)",
+     "lat": 45.3073,
+     "lon": -78.0382,
+     "coord_confidence": "high",
+     "note": "north terminus of the trail"
+    }
+   ],
+   "length_km": 40,
+   "length_note": "one-way; ~28 km Bancroft-Maynooth + ~12 km Maynooth-Lake St. Peter, measured along OSM trail geometry (estimate, not from a published source)",
+   "typical_time": "unknown (estimate 1.5-2 h each way at rail-trail pace)",
+   "difficulty": "novice (old rail bed; can be dusty/sandy)",
+   "season": "open all year per Town of Bancroft; ATV season spring-fall",
+   "pass_required": "EOTA (OnePass EOTA or OFATV accepted per Destination Ontario)",
+   "highlights": [
+    "Ontario's Highlands rail trail",
+    "fuel and Kawartha Dairy ice cream at Linkie's",
+    "links to Logger's Loop / HATVA trails at Lake St. Peter"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/great-riding-in-bancroft",
+    "https://bancroft.hosted.civiclive.com/visiting/trails/hastings_heritage_trail",
+    "https://www.destinationontario.com/en-ca/things-to-do/outdoor-adventures/atving/atv-trails-ontario",
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska"
+   ],
+   "confidence": "high (route); medium (length)"
+  },
+  {
+   "id": "hht-full",
+   "name": "Hastings Heritage Trail end-to-end (Glen Ross - Lake St. Peter)",
+   "type": "point-to-point (rail trail)",
+   "staging": {
+    "name": "Glen Ross (south terminus)",
+    "lat": 44.2656,
+    "lon": -77.5988,
+    "coord_confidence": "medium",
+    "note": "south end of trail geometry in OSM"
+   },
+   "waypoints": [
+    {
+     "name": "Marmora area",
+     "lat": 44.484,
+     "lon": -77.681,
+     "coord_confidence": "high",
+     "note": "town hall; trail passes west of town"
+    },
+    {
+     "name": "Millbridge",
+     "lat": 44.6743,
+     "lon": -77.5748,
+     "coord_confidence": "medium"
+    },
+    {
+     "name": "Gilmour / Limerick Lake Lodge area (lodge ~1 mile south of trail)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Bancroft",
+     "lat": 45.0565,
+     "lon": -77.8555,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Maynooth",
+     "lat": 45.2313,
+     "lon": -77.9377,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Lake St. Peter (Linkie's)",
+     "lat": 45.3073,
+     "lon": -78.0382,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 156,
+   "typical_time": "multi-day or very long day (unknown)",
+   "difficulty": "novice",
+   "season": "open year-round; ATV riding mainly mid-April to fall",
+   "pass_required": "EOTA",
+   "highlights": [
+    "156 km former Central Ontario Railway line",
+    "wetlands, forests, lakes and farmland on the edge of the Canadian Shield",
+    "connects to Old Hastings Road at Millbridge/Ormsby area"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/great-riding-in-bancroft",
+    "https://www.destinationontario.com/en-ca/things-to-do/outdoor-adventures/atving/atv-trails-ontario",
+    "https://bancroft.hosted.civiclive.com/visiting/trails/hastings_heritage_trail",
+    "https://northernontario.travel/atving/limerick-lake-lodge-eastern-ontario-trails-alliance-atv-trails"
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "eota-tweed-bancroft",
+   "name": "EOTA Tweed - Bancroft Run",
+   "type": "point-to-point (EOTA self-guided / guided 2-day tour: ride up, overnight in Bancroft, return)",
+   "staging": {
+    "name": "Tweed (parking area; Tweed Fairgrounds)",
+    "lat": 44.4808,
+    "lon": -77.3068,
+    "coord_confidence": "medium",
+    "note": "alternate start: Corbyville (outside bbox)"
+   },
+   "waypoints": [
+    {
+     "name": "Stoco Lake (Tweed)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Marmora Mine",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none",
+     "note": "Marmoraton Mine near Marmora"
+    },
+    {
+     "name": "Bancroft",
+     "lat": 45.0565,
+     "lon": -77.8555,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Eagle's Nest lookout, Bancroft",
+     "lat": 45.0724,
+     "lon": -77.8593,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 180,
+   "length_note": "'approx. 180 km run to Bancroft' from Tweed or Corbyville per EOTA packages page",
+   "typical_time": "all day each way; EOTA guided version is 2 days with overnight at Bancroft Inn & Suites",
+   "difficulty": "intermediate ('intermediate at best'); carry spare fuel",
+   "season": "spring, summer, fall tours",
+   "pass_required": "EOTA",
+   "highlights": [
+    "all off-road from Tweed to Bancroft",
+    "world's smallest jail (Tweed)",
+    "Marmora Mine",
+    "Eagle's Nest over the York River valley"
+   ],
+   "sources": [
+    "https://www.thetrail.ca/the-trails/",
+    "https://www.thetrail.ca/packages-deals/",
+    "https://northernontario.travel/atving/atv-adventures-eastern-ontario-trail-alliance-eota"
+   ],
+   "confidence": "high"
+  },
+  {
+   "id": "eota-tweed-flinton-gilmour",
+   "name": "EOTA Tweed - Flinton - Gilmour Loop (aka Tweed to Gunter Loop)",
+   "type": "loop",
+   "staging": {
+    "name": "Tweed",
+    "lat": 44.4808,
+    "lon": -77.3068,
+    "coord_confidence": "medium"
+   },
+   "waypoints": [
+    {
+     "name": "Stoco Lake",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Marmora Mine",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Gunter",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Flinton",
+     "lat": 44.6877,
+     "lon": -77.2099,
+     "coord_confidence": "medium",
+     "note": "Flinton township hall"
+    },
+    {
+     "name": "Gilmour",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none",
+     "note": "on Hwy 62 near Weslemkoon Lake Rd junction (~44.81,-77.63, unverified)"
+    },
+    {
+     "name": "Bon Echo Provincial Park / Mazinaw Rock (side visit)",
+     "lat": 44.9003,
+     "lon": -77.1926,
+     "coord_confidence": "medium",
+     "note": "Bon Echo visitor centre (OSM)"
+    }
+   ],
+   "length_km": null,
+   "typical_time": "unknown (full day)",
+   "difficulty": "unknown (EOTA rail beds plus bush trails)",
+   "season": "spring-fall",
+   "pass_required": "EOTA",
+   "highlights": [
+    "Mazinaw Rock, 100 m cliff at Bon Echo",
+    "Marmora Mine",
+    "fishing holes along the way"
+   ],
+   "sources": [
+    "https://www.thetrail.ca/the-trails/",
+    "https://www.thetrail.ca/packages-deals/",
+    "https://northernontario.travel/atving/atv-adventures-eastern-ontario-trail-alliance-eota"
+   ],
+   "confidence": "medium (named loop; exact route/length not published in text)"
+  },
+  {
+   "id": "eota-centre-hastings-loop",
+   "name": "EOTA Centre (Central) Hastings Heritage Loop",
+   "type": "loop",
+   "staging": {
+    "name": "Tweed",
+    "lat": 44.4808,
+    "lon": -77.3068,
+    "coord_confidence": "medium"
+   },
+   "waypoints": [
+    {
+     "name": "Madoc",
+     "lat": 44.504,
+     "lon": -77.4839,
+     "coord_confidence": "medium",
+     "note": "fire station in village"
+    },
+    {
+     "name": "Eldorado (trail turns south just north of the Eldorado sign)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Marmora / Marmora Mine",
+     "lat": 44.484,
+     "lon": -77.681,
+     "coord_confidence": "medium"
+    },
+    {
+     "name": "Stirling",
+     "lat": 44.2956,
+     "lon": -77.5491,
+     "coord_confidence": "high",
+     "note": "library"
+    },
+    {
+     "name": "Crookston bridge, Moira Lake, Deer Creek bridge, Drag Lake",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": null,
+   "length_note": "EOTA directions mention legs of ~17-22 km, ~30 km and ~25 km; total not stated",
+   "typical_time": "full day (unknown)",
+   "difficulty": "unknown (mostly rail trail; some road connectors through Madoc)",
+   "season": "spring-fall",
+   "pass_required": "EOTA",
+   "highlights": [
+    "Marmora Mine pit lake",
+    "Stirling (Kraft Hockeyville 2012)",
+    "Memorial picnic area",
+    "several trail bridges"
+   ],
+   "sources": [
+    "https://www.thetrail.ca/the-trails/",
+    "https://www.thetrail.ca/packages-deals/"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "rockin-the-trails-tweed",
+   "name": "Rockin' the Trail(s) event loop, Tweed",
+   "type": "loop (annual event ride)",
+   "staging": {
+    "name": "Tweed Fairgrounds",
+    "lat": 44.4808,
+    "lon": -77.3068,
+    "coord_confidence": "high"
+   },
+   "waypoints": [],
+   "length_km": 70,
+   "typical_time": "day ride, concert in evening",
+   "difficulty": "unknown (ATVs, SxS and ADV welcome)",
+   "season": "June (2026: June 20; 2027: June 19)",
+   "pass_required": "EOTA (event)",
+   "highlights": [
+    "EOTA's flagship ride + concert",
+    "prostate cancer fundraiser"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario",
+    "https://northernontario.travel/atving/rockin-trail-2026-ontarios-ultimate-atv-event"
+   ],
+   "confidence": "medium (loop not described)"
+  },
+  {
+   "id": "weslemkoon-lake-loop",
+   "name": "Weslemkoon Lake Loop",
+   "type": "loop (with many side trails)",
+   "staging": {
+    "name": "Frank & Freda's ATV Camp and Ride, near the end of Weslemkoon Lake Road (alt: off Mississippi Road)",
+    "lat": 44.9841,
+    "lon": -77.4181,
+    "coord_confidence": "low",
+    "note": "coordinate is the end of Weslemkoon Lake Rd in OSM, not the camp itself"
+   },
+   "waypoints": [
+    {
+     "name": "Weslemkoon Lake",
+     "lat": 45.0411,
+     "lon": -77.4159,
+     "coord_confidence": "medium",
+     "note": "lake label"
+    },
+    {
+     "name": "Mississippi Road (alternate staging; runs N-S east of Bancroft from near Hwy 28)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none",
+     "note": "road spans ~44.98-45.16N, 77.48-77.61W"
+    },
+    {
+     "name": "Whitefish Lake (trails loop around it to the south)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Weslemkoon Lake Road at Hwy 62 (Gilmour) - drive-in access",
+     "lat": 44.8082,
+     "lon": -77.6311,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 120,
+   "typical_time": "unknown (full day+)",
+   "difficulty": "mixed: wide gravel roads (ATV/4x4) to narrow rocky climbs and singletrack",
+   "season": "spring-fall",
+   "pass_required": "unknown ('depending on your trail, permits may be required' - OFATV or EOTA)",
+   "highlights": [
+    "120 km around a large wilderness lake just east of Bancroft",
+    "hundreds of km of side trails on forest access roads",
+    "Merrill Lake spur"
+   ],
+   "sources": [
+    "https://backroadmapbooks.com/blogs/default-blog/cottage-country-off-road-thrills-atv-trails-and-overland-routes-for-adventure-seekers",
+    "https://www.overlandbound.com/forums/threads/atv-trails-useable.31483/"
+   ],
+   "confidence": "medium (from Backroad Mapbooks blog via search summaries; page not directly readable)"
+  },
+  {
+   "id": "merrill-lake-spur",
+   "name": "Weslemkoon south end to Merrill Lake",
+   "type": "out-and-back",
+   "staging": {
+    "name": "South end of Weslemkoon Lake, off Weslemkoon Lake Road",
+    "lat": 44.9841,
+    "lon": -77.4181,
+    "coord_confidence": "low"
+   },
+   "waypoints": [
+    {
+     "name": "Merrill Lake (secluded beach, wilderness camping)",
+     "lat": 44.9226,
+     "lon": -77.3928,
+     "coord_confidence": "medium",
+     "note": "lake label"
+    }
+   ],
+   "length_km": null,
+   "typical_time": "unknown",
+   "difficulty": "hard (rough and muddy)",
+   "season": "summer-fall (mud in spring)",
+   "pass_required": "unknown",
+   "highlights": [
+    "secluded beach",
+    "wilderness camping"
+   ],
+   "sources": [
+    "https://backroadmapbooks.com/blogs/default-blog/cottage-country-off-road-thrills-atv-trails-and-overland-routes-for-adventure-seekers",
+    "https://www.overlandbound.com/forums/threads/atv-trails-useable.31483/latest"
+   ],
+   "confidence": "low-medium"
+  },
+  {
+   "id": "loggers-loop",
+   "name": "Logger's Loop (Madawaska - Lake St. Peter - Whitney - Madawaska)",
+   "type": "loop",
+   "staging": {
+    "name": "Madawaska (All Star Resort / Madawaska Country Store)",
+    "lat": 45.5021,
+    "lon": -77.9842,
+    "coord_confidence": "medium",
+    "note": "Madawaska Country Store"
+   },
+   "waypoints": [
+    {
+     "name": "Old logging roads south from Madawaska (abandoned bridge cascade)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Lake St. Peter - Linkie's General Store (fuel, lunch)",
+     "lat": 45.3073,
+     "lon": -78.0382,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Short section of Hastings Heritage Trail at Lake St. Peter",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Whitney - Algonquin Lunch Bar & Service Centre (fuel)",
+     "lat": 45.4936,
+     "lon": -78.2392,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Return along the Madawaska River",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": null,
+   "length_note": "not published; one full day",
+   "typical_time": "full day",
+   "difficulty": "intermediate (rocky, twisty, hilly old logging roads with water crossings; last leg easy)",
+   "season": "summer (article); spring-fall",
+   "pass_required": "unknown (area trails are HATVA/RCATV network; buy the local club pass)",
+   "highlights": [
+    "'most popular route in this area'",
+    "water crossings",
+    "Madawaska River scenery",
+    "ice cream at Linkie's"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska",
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska?page=12"
+   ],
+   "confidence": "high (route); length unknown"
+  },
+  {
+   "id": "madawaska-spectacle-barrys-bay",
+   "name": "Madawaska River corridor - Spectacle Lake Lodge - EOTA lookout - Barry's Bay",
+   "type": "point-to-point / loop back along the Madawaska River corridor",
+   "staging": {
+    "name": "Madawaska (Madawaska Country Store, breakfast)",
+    "lat": 45.5021,
+    "lon": -77.9842,
+    "coord_confidence": "medium"
+   },
+   "waypoints": [
+    {
+     "name": "Old railway corridor along the Madawaska River",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Spectacle Lake Lodge (brunch/burgers, fuel)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none",
+     "note": "near Spectacle Lakes ~45.52,-77.86 (lake label); lodge exact location unverified"
+    },
+    {
+     "name": "EOTA lookout with warm-up shack and picnic table (rocky climb)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Barry's Bay (ATV-friendly town; Tim Hortons drive-through)",
+     "lat": 45.4881,
+     "lon": -77.6797,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": null,
+   "typical_time": "full day",
+   "difficulty": "intermediate (more technical trail to the lodge; rocky climb to lookout)",
+   "season": "spring-fall (RCATV season May 1-Nov 30)",
+   "pass_required": "RCATV/OFATV (unverified for each segment)",
+   "highlights": [
+    "lookout over the Madawaska Valley",
+    "ATV-friendly lodge lunch",
+    "deep water crossing (Madawaska Valley article)"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska",
+    "https://northernontario.travel/atving/other-side-alqonquin-park-barrys-bay-and-madawaska-valley",
+    "https://northernontario.travel/atving/best-atv-trails-ontario-renfrew-county"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "hatva-madawaska-fall-tour",
+   "name": "HATVA Madawaska Fall Tour Ride (from Lake St. Peter)",
+   "type": "loop (club event route)",
+   "staging": {
+    "name": "Linkie's General Store, Lake St. Peter",
+    "lat": 45.3073,
+    "lon": -78.0382,
+    "coord_confidence": "high"
+   },
+   "waypoints": [],
+   "length_km": 110,
+   "typical_time": "full day",
+   "difficulty": "beginner/intermediate (some deep water, mud holes, rocks)",
+   "season": "early October (fall colours)",
+   "pass_required": "HATVA (day pass required for each machine)",
+   "highlights": [
+    "fall colours",
+    "club-led"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario",
+    "https://northernontario.travel/atving/complete-list-atv-events-ontario"
+   ],
+   "confidence": "high (event facts); route not published"
+  },
+  {
+   "id": "settlers-route",
+   "name": "Settler's Route (RCATV)",
+   "type": "point-to-point (Golden Lake/Pikwakanagan to Wilno)",
+   "staging": {
+    "name": "Pikwakanagan / Golden Lake",
+    "lat": 45.5743,
+    "lon": -77.2546,
+    "coord_confidence": "medium",
+    "note": "Pikwakanagan Fuels"
+   },
+   "waypoints": [
+    {
+     "name": "Killaloe",
+     "lat": 45.5561,
+     "lon": -77.4184,
+     "coord_confidence": "high"
+    },
+    {
+     "name": "Foymount (abandoned radar base ghost town, highest populated point in Ontario)",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Wilno (Wilno Tavern)",
+     "lat": 45.5109,
+     "lon": -77.5607,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 106,
+   "typical_time": "full day",
+   "difficulty": "easy-moderate (mostly abandoned railbeds and gravel roads)",
+   "season": "May 1 - Nov 30",
+   "pass_required": "RCATV permit (OFATV family)",
+   "highlights": [
+    "connects Pakkotinna and Opeongo trail systems",
+    "Foymount",
+    "Deacon Lookout over Golden Lake"
+   ],
+   "sources": [
+    "https://comewander.ca/story/atv-trails",
+    "https://comewander.ca/story/adrenalin-filled-atv-adventures-ottawa-valley",
+    "https://northernontario.travel/atving/best-atv-trails-ontario-renfrew-county"
+   ],
+   "confidence": "medium (comewander pages read via search summaries only)"
+  },
+  {
+   "id": "opeongo-trail-system",
+   "name": "Opeongo Trail System (Wilno - Madawaska), RCATV",
+   "type": "trail system / day loops",
+   "staging": {
+    "name": "Wilno or Barry's Bay",
+    "lat": 45.4881,
+    "lon": -77.6797,
+    "coord_confidence": "medium",
+    "note": "Barry's Bay"
+   },
+   "waypoints": [
+    {
+     "name": "Burnett's Lookout",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Gun Lake Mine",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Opeongo River Mill",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Old Mill site off Aylen Lake Rd and nearby lookout",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": null,
+   "typical_time": "unknown",
+   "difficulty": "unknown (mixed)",
+   "season": "May 1 - Nov 30",
+   "pass_required": "RCATV/OFATV",
+   "highlights": [
+    "lookouts",
+    "swimming in the Madawaska River",
+    "fall colours ride in October"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/best-atv-trails-ontario-renfrew-county",
+    "https://northernontario.travel/atving/other-side-alqonquin-park-barrys-bay-and-madawaska-valley"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "wilberforce-curling-ride",
+   "name": "Wilberforce ATV Ride route (Wilberforce - Gooderham - Greens Mountain - Rail Trail - Tory Hill)",
+   "type": "loop (annual charity ride)",
+   "staging": {
+    "name": "Wilberforce Curling Club, Wilberforce",
+    "lat": 45.0373,
+    "lon": -78.2244,
+    "coord_confidence": "medium",
+    "note": "village library; curling club exact location unverified"
+   },
+   "waypoints": [
+    {
+     "name": "Gooderham",
+     "lat": 44.9078,
+     "lon": -78.379,
+     "coord_confidence": "high",
+     "note": "library"
+    },
+    {
+     "name": "Greens Mountain",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Haliburton/IB&O Rail Trail section",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Tory Hill",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": 90,
+   "length_note": "one year's variant went Tory Hill - Hadlington - around Pencil Lake - Five Corners",
+   "typical_time": "about 6 hours",
+   "difficulty": "mixed: easy rail trail plus rockier, muddier technical sections",
+   "season": "mid/late August (2026: Aug 15)",
+   "pass_required": "HATVA (fee waived for event riders)",
+   "highlights": [
+    "four checkpoints",
+    "SxS friendly (2026)"
+   ],
+   "sources": [
+    "https://www.bancroftthisweek.com/hitting-the-trails-for-curling/",
+    "https://haliburtonecho.ca/hitting-the-trails-for-curling/",
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "kinmount-minden-anson",
+   "name": "Kinmount - Minden - Anson Mountain lookout (KATVA/HATVA)",
+   "type": "out-and-back",
+   "staging": {
+    "name": "Kinmount (Austin Sawmill / rail trail)",
+    "lat": 44.7824,
+    "lon": -78.6517,
+    "coord_confidence": "medium"
+   },
+   "waypoints": [
+    {
+     "name": "Rail trail north toward Haliburton, then bush trail",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Minden (trailside lunch, fuel)",
+     "lat": 44.9295,
+     "lon": -78.7273,
+     "coord_confidence": "medium"
+    },
+    {
+     "name": "South Snake Lake",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    },
+    {
+     "name": "Anson Mountain lookout",
+     "lat": null,
+     "lon": null,
+     "coord_confidence": "none"
+    }
+   ],
+   "length_km": null,
+   "typical_time": "full day",
+   "difficulty": "expert for the Anson Mountain trail (steep rock climbs, tricky water crossings); rail trail easy",
+   "season": "spring-fall",
+   "pass_required": "HATVA or KATVA (reciprocal)",
+   "highlights": [
+    "Anson Mountain lookout",
+    "Austin Sawmill Heritage Project in Kinmount"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/getting-know-katva-and-hatva-trails",
+    "https://northernontario.travel/atving/match-made-atv-heaven-hatva-and-katva-joint-ride"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "haliburton-rail-trail",
+   "name": "Haliburton County Rail Trail (Haliburton - Kinmount)",
+   "type": "point-to-point / out-and-back (rail trail)",
+   "staging": {
+    "name": "Haliburton Village",
+    "lat": 45.0471,
+    "lon": -78.5102,
+    "coord_confidence": "medium",
+    "note": "library"
+   },
+   "waypoints": [
+    {
+     "name": "Kinmount (connects to Victoria Rail Trail south to Fenelon Falls / Lindsay)",
+     "lat": 44.7824,
+     "lon": -78.6517,
+     "coord_confidence": "medium"
+    },
+    {
+     "name": "Fenelon Falls (optional, on Victoria Rail Trail)",
+     "lat": 44.5383,
+     "lon": -78.738,
+     "coord_confidence": "high"
+    }
+   ],
+   "length_km": 34,
+   "typical_time": "unknown (est. 1-1.5 h each way)",
+   "difficulty": "easy",
+   "season": "May 1 - Nov 30 (ATVs with permit); snowmobiles only in winter",
+   "pass_required": "HATVA or KATVA permit; side-by-sides NOT permitted (County by-law 3148)",
+   "highlights": [
+    "easy scenic rail bed",
+    "Kinmount village",
+    "links to Victoria Rail Trail"
+   ],
+   "sources": [
+    "https://www.haliburtoncounty.ca/roads-and-trails/trails/",
+    "https://www.destinationontario.com/en-ca/things-to-do/outdoor-adventures/atving/atv-trails-ontario",
+    "https://northernontario.travel/atving/getting-know-katva-and-hatva-trails"
+   ],
+   "confidence": "medium-high"
+  },
+  {
+   "id": "hatva-presidents-ride-carnarvon",
+   "name": "HATVA President's Ride (Carnarvon)",
+   "type": "loop (club event)",
+   "staging": {
+    "name": "Carnarvon (Hwy 35/118)",
+    "lat": null,
+    "lon": null,
+    "coord_confidence": "none"
+   },
+   "waypoints": [],
+   "length_km": 65,
+   "typical_time": "day",
+   "difficulty": "beginner/intermediate (mud, water)",
+   "season": "early May",
+   "pass_required": "HATVA",
+   "highlights": [
+    "season opener",
+    "trailside BBQ"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario",
+    "https://northernontario.travel/atving/complete-2024-list-atv-events-ontario"
+   ],
+   "confidence": "medium"
+  },
+  {
+   "id": "dungannon-mud-bog",
+   "name": "Dungannon Mud Bog ride (L'Amable)",
+   "type": "loop (annual charity ride)",
+   "staging": {
+    "name": "L'Amable (Hwy 62 at Detlor Rd)",
+    "lat": 45.0114,
+    "lon": -77.7872,
+    "coord_confidence": "medium",
+    "note": "L'Amable post office / road junction; actual staging site unverified"
+   },
+   "waypoints": [],
+   "length_km": 75,
+   "typical_time": "day (registration 8-10/11 am, trail lunch, roast beef dinner)",
+   "difficulty": "unknown (optional mud pit and obstacle course at lunch)",
+   "season": "last weekend of April",
+   "pass_required": "included in entry (trail access included per listing)",
+   "highlights": [
+    "400+ quad entries",
+    "mud pit at lunch stop"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario",
+    "https://northernontario.travel/atving/complete-2023-list-atv-events-ontario",
+    "https://northernontario.travel/atving/great-riding-in-bancroft"
+   ],
+   "confidence": "medium (route itself unpublished)"
+  },
+  {
+   "id": "bancroft-offroad-tours",
+   "name": "Bancroft Offroad Tours guided UTV ride",
+   "type": "guided (2-hour or 4-hour)",
+   "staging": {
+    "name": "Bancroft area (operator base; location not published in article)",
+    "lat": null,
+    "lon": null,
+    "coord_confidence": "none"
+   },
+   "waypoints": [],
+   "length_km": null,
+   "typical_time": "2 h or 4 h",
+   "difficulty": "beginner-friendly (2 h); more varied terrain (4 h)",
+   "season": "unknown",
+   "pass_required": "included in tour",
+   "highlights": [
+    "machines, gear, fuel and trail pass included"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/guided-utv-adventures-bancroft-offroad-tours"
+   ],
+   "confidence": "high (operator facts); no route"
+  },
+  {
+   "id": "backwoods-atv-tour",
+   "name": "Backwoods ATV Tour (annual, Bancroft)",
+   "type": "loop",
+   "staging": {
+    "name": "Riverside Park, 26B Station St, Bancroft",
+    "lat": 45.0565,
+    "lon": -77.8555
+   },
+   "waypoints": [],
+   "length_km": 70,
+   "typical_time": "day ride (event)",
+   "difficulty": "unknown",
+   "season": "annual event",
+   "pass_required": "event registration",
+   "highlights": [
+    "annual group ride from downtown Bancroft"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/atv-events-ontario"
+   ],
+   "confidence": "medium"
+  }
+ ],
+ "destinations": [
+  {
+   "name": "Eagles Nest Park lookout (Hawkwatch platform)",
+   "lat": 45.0724,
+   "lon": -77.8593,
+   "coord_confidence": "high",
+   "what": "Cliff-top lookout over Bancroft and the York River valley; drive to top, short walk",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
+    "https://www.thetrail.ca/the-trails/"
+   ],
+   "area": "Bancroft",
+   "note": "ATV access on park road not confirmed"
+  },
+  {
+   "name": "Bancroft Mineral & Mining Museum / North Hastings Heritage Museum (old station)",
+   "lat": 45.0599,
+   "lon": -77.8591,
+   "coord_confidence": "high",
+   "what": "Museums beside the Hastings Heritage Trail downtown",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ],
+   "area": "Bancroft"
+  },
+  {
+   "name": "Downtown Bancroft (Hastings Heritage Trail at Station St)",
+   "lat": 45.0565,
+   "lon": -77.8555,
+   "coord_confidence": "high",
+   "what": "Fuel/food hub; Town by-law permits ATVs on roads",
+   "sources": [
+    "https://northernontario.travel/atving/great-riding-in-bancroft",
+    "https://bancroft.hosted.civiclive.com/visiting/trails/hastings_heritage_trail"
+   ],
+   "area": "Bancroft"
+  },
+  {
+   "name": "Egan Chutes Provincial Park - Egan Chute & Flat Rapids (York River)",
+   "lat": 45.0746,
+   "lon": -77.7348,
+   "coord_confidence": "medium",
+   "what": "Waterfalls; non-operating park, access road off Hwy 28 at York River bridge (parking ~45.0690,-77.7328)",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Egan_Chutes_Provincial_Park",
+    "https://www.ontarioparks.ca/park/eganchutes"
+   ],
+   "area": "east of Bancroft, ~1-3 km from Detlor Rd / Bradshaw Rd area",
+   "note": "ATV use inside park NOT confirmed; walk in"
+  },
+  {
+   "name": "Princess Sodalite Mine rock shop & rock farm",
+   "lat": null,
+   "lon": null,
+   "coord_confidence": "none",
+   "what": "Sodalite quarry/rock shop, pick-your-own; 31241 Hwy 28 E, ~4 km east of Bancroft; open daily May-Oct",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Princess_Sodalite_Mine",
+    "https://hastings.ca/adventures/experiences/rockhounding"
+   ],
+   "area": "east of Bancroft on Hwy 28"
+  },
+  {
+   "name": "L'Amable Dam public beach (Old L'Amable Road)",
+   "lat": null,
+   "lon": null,
+   "coord_confidence": "none",
+   "what": "Sandy beach, dock, picnic tables; walk to base of the small dam",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
+    "https://bancroft.hosted.civiclive.com/visiting/things_to_do_and_see_in_bancroft/beaches_and_boat_launches"
+   ],
+   "area": "L'Amable; Old L'Amable Rd spans ~45.017-45.029N, 77.787-77.812W"
+  },
+  {
+   "name": "L'Amable hamlet (old cemetery; Hwy 62 at Detlor Rd)",
+   "lat": 45.0114,
+   "lon": -77.7872,
+   "coord_confidence": "medium",
+   "what": "Near-ghost village; staging town for the Dungannon Mud Bog ride; Detlor Rd runs NE from here toward Bradshaw Rd and Egan Chutes",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario"
+   ],
+   "area": "L'Amable"
+  },
+  {
+   "name": "Umfraville cemetery (Old Hastings Rd x Umfraville Rd)",
+   "lat": 44.9894,
+   "lon": -77.7903,
+   "coord_confidence": "high",
+   "what": "Only remaining landmark of Umfraville ghost village",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ],
+   "area": "just south of L'Amable / Turriff area"
+  },
+  {
+   "name": "High Falls (Baptiste Lake dam, York River) - via Y Road off Hwy 62 N",
+   "lat": null,
+   "lon": null,
+   "coord_confidence": "none",
+   "what": "Waterfall trail below Baptiste Lake dam; Y Road ~45.096-45.103N, 77.883-77.900W",
+   "sources": [
+    "https://waterfallsofontario.com/high-falls-at-bancroft.php",
+    "https://curiocity.com/high-falls-dam-bancroft-ontario/"
+   ],
+   "area": "north of Bancroft"
+  },
+  {
+   "name": "Ormsby (Old Schoolhouse tea room, Old Hastings Gallery)",
+   "lat": 44.8811,
+   "lon": -77.7505,
+   "coord_confidence": "high",
+   "what": "Pioneer buildings at Old Hastings Rd x Hwy 620",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ],
+   "area": "south of Bancroft",
+   "note": "business status unknown"
+  },
+  {
+   "name": "Murphy's Corners old service station",
+   "lat": 44.8136,
+   "lon": -77.7205,
+   "coord_confidence": "high",
+   "what": "Boarded-up station with carport - rest stop",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ]
+  },
+  {
+   "name": "Glanmire cemetery & Beaver Creek concrete bridge",
+   "lat": 44.7554,
+   "lon": -77.6852,
+   "coord_confidence": "medium",
+   "what": "Church steps to nowhere, bridge, small falls/swimming holes, creek that vanishes underground",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ],
+   "note": "poison ivy on path under bridge"
+  },
+  {
+   "name": "Millbridge / Millbridge Station (Hogan's Hotel)",
+   "lat": 44.6743,
+   "lon": -77.5748,
+   "coord_confidence": "medium",
+   "what": "Ghost-town remnants where Old Hastings Rd rejoins Hwy 62",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail"
+   ]
+  },
+  {
+   "name": "Linkie's General Store & Gas Bar, Lake St. Peter",
+   "lat": 45.3073,
+   "lon": -78.0382,
+   "coord_confidence": "high",
+   "what": "Fuel, food, ice cream, shaded picnic tables; HHT north end; HATVA ride staging",
+   "sources": [
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska",
+    "https://northernontario.travel/atving/2026-complete-list-atv-events-ontario"
+   ]
+  },
+  {
+   "name": "Maynooth General Store",
+   "lat": 45.2313,
+   "lon": -77.9377,
+   "coord_confidence": "high",
+   "what": "Village store on the Hastings Heritage Trail corridor",
+   "sources": [
+    "https://northernontario.travel/atving/great-riding-in-bancroft",
+    "https://northernontario.travel/atving/guided-utv-adventures-bancroft-offroad-tours"
+   ],
+   "area": "Maynooth",
+   "note": "ATV-friendliness of store not confirmed"
+  },
+  {
+   "name": "Coe Hill (Gas & Country Restaurant; Wollaston Lake public beach)",
+   "lat": 44.8625,
+   "lon": -77.8311,
+   "coord_confidence": "medium",
+   "what": "Fuel/food stop; Coe Hill Riders ATV club home; beach with washrooms",
+   "sources": [
+    "https://hastings.ca/adventures/our-communities/wollaston",
+    "https://northernontario.travel/atving/limerick-lake-lodge-eastern-ontario-trails-alliance-atv-trails"
+   ],
+   "area": "Coe Hill",
+   "note": "coordinate is village school"
+  },
+  {
+   "name": "Limerick Lake Lodge (Gilmour)",
+   "lat": null,
+   "lon": null,
+   "coord_confidence": "none",
+   "what": "ATV lodge ~1 mile south of Hastings Heritage Trail; sells EOTA passes, wash station",
+   "sources": [
+    "https://northernontario.travel/atving/limerick-lake-lodge-eastern-ontario-trails-alliance-atv-trails",
+    "https://www.thetrail.ca/the-trails/"
+   ]
+  },
+  {
+   "name": "Merrill Lake",
+   "lat": 44.9226,
+   "lon": -77.3928,
+   "coord_confidence": "medium",
+   "what": "Secluded beach and wilderness camping via rough trails from Weslemkoon Lake",
+   "sources": [
+    "https://backroadmapbooks.com/blogs/default-blog/cottage-country-off-road-thrills-atv-trails-and-overland-routes-for-adventure-seekers"
+   ]
+  },
+  {
+   "name": "Barry's Bay",
+   "lat": 45.4881,
+   "lon": -77.6797,
+   "coord_confidence": "high",
+   "what": "ATV-friendly town (Tim Hortons drive-through allowed)",
+   "sources": [
+    "https://northernontario.travel/atving/best-atv-trails-ontario-renfrew-county",
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska"
+   ]
+  },
+  {
+   "name": "Madawaska Country Store",
+   "lat": 45.5021,
+   "lon": -77.9842,
+   "coord_confidence": "high",
+   "what": "Store + small restaurant; Logger's Loop start",
+   "sources": [
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska"
+   ]
+  },
+  {
+   "name": "Whitney - Algonquin Lunch Bar & Service Centre",
+   "lat": 45.4936,
+   "lon": -78.2392,
+   "coord_confidence": "high",
+   "what": "Fuel and refreshments on Logger's Loop",
+   "sources": [
+    "https://northernontario.travel/atving/reasons-love-atving-madawaska"
+   ]
+  },
+  {
+   "name": "Wilno Tavern",
+   "lat": 45.5109,
+   "lon": -77.5607,
+   "coord_confidence": "high",
+   "what": "Restaurant recommended on the Settler's Route",
+   "sources": [
+    "https://comewander.ca/story/atv-trails"
+   ]
+  },
+  {
+   "name": "Bon Echo Provincial Park - Mazinaw Rock",
+   "lat": 44.9003,
+   "lon": -77.1926,
+   "coord_confidence": "medium",
+   "what": "100 m cliff over Mazinaw Lake; on EOTA Tweed-Flinton-Gilmour loop",
+   "sources": [
+    "https://www.thetrail.ca/the-trails/"
+   ]
+  },
+  {
+   "name": "Kinmount - Austin Sawmill Heritage Project",
+   "lat": 44.7818,
+   "lon": -78.6525,
+   "coord_confidence": "medium",
+   "what": "Restored sawmill displays on the rail trail",
+   "sources": [
+    "https://northernontario.travel/atving/getting-know-katva-and-hatva-trails"
+   ],
+   "note": "coordinate is Kinmount Station (OSM)"
+  },
+  {
+   "name": "Marmoraton Mine lookout, Marmora",
+   "lat": null,
+   "lon": null,
+   "coord_confidence": "none",
+   "what": "Flooded open-pit iron mine with viewing area",
+   "sources": [
+    "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
+    "https://www.thetrail.ca/the-trails/"
+   ]
+  },
+  {
+   "name": "Bird's Creek Park 'n' Ride",
+   "lat": 45.1073,
+   "lon": -77.8788,
+   "what": "Staging lot on Hwy 62 by the Hastings Heritage Trail (OFSC B108E in winter)",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Gilmour Park 'n' Ride",
+   "lat": 44.8082,
+   "lon": -77.6311,
+   "what": "Staging at Hwy 62 & Weslemkoon Lake Rd, the way into the Weslemkoon Crown-land loop",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Riverside Park staging, Bancroft",
+   "lat": 45.0565,
+   "lon": -77.8555,
+   "what": "Downtown Bancroft trailhead on the Hastings Heritage Trail (Station St)",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Old Hastings Snow Riders clubhouse, L'Amable",
+   "lat": 45.0114,
+   "lon": -77.7872,
+   "what": "Snowmobile club base and park 'n' ride on Hwy 62 at L'Amable",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  }
+ ]
+}

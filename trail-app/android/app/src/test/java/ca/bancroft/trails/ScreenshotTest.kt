@@ -1,0 +1,344 @@
+package ca.bancroft.trails
+
+import android.app.Application
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.test.core.app.ApplicationProvider
+import ca.bancroft.trails.data.Cls
+import ca.bancroft.trails.data.Flag
+import ca.bancroft.trails.data.Kind
+import ca.bancroft.trails.data.RouteMode
+import ca.bancroft.trails.nav.Navigator
+import ca.bancroft.trails.routing.Router
+import ca.bancroft.trails.ui.BrowsePanel
+import ca.bancroft.trails.ui.DetailsPanel
+import ca.bancroft.trails.ui.LoopPanel
+import ca.bancroft.trails.ui.SosPanel
+import ca.bancroft.trails.ui.IdeasPanel
+import ca.bancroft.trails.ui.IdeaPanel
+import ca.bancroft.trails.ui.CompassWidget
+import ca.bancroft.trails.ui.MapViewModel
+import ca.bancroft.trails.ui.Mode
+import ca.bancroft.trails.ui.NavBanner
+import ca.bancroft.trails.ui.NavBottomBar
+import ca.bancroft.trails.ui.NearbyPanel
+import ca.bancroft.trails.ui.PlanPanel
+import ca.bancroft.trails.ui.RoundButton
+import ca.bancroft.trails.ui.Target
+import ca.bancroft.trails.ui.TrailTheme
+import com.github.takahirom.roborazzi.captureRoboImage
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
+import java.io.File
+
+/**
+ * Renders the real Compose panels over map backgrounds (rendered from the same bundled style in a browser)
+ * at Pixel 11 Pro size: ~412 x 915 dp.
+ */
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(sdk = [36], qualifiers = "w412dp-h915dp-port-xhdpi", application = Application::class)
+class ScreenshotTest {
+    private val bgDir = System.getProperty("screenshot.bg") ?: "../../preview"
+    private val out = File("build/screenshots").apply { mkdirs() }
+
+    private fun vm(): MapViewModel {
+        val vm = MapViewModel(ApplicationProvider.getApplicationContext())
+        val t0 = System.currentTimeMillis()
+        while (vm.data.value == null && System.currentTimeMillis() - t0 < 60000) Thread.sleep(50)
+        return vm
+    }
+
+    @Composable
+    private fun Phone(bg: String, dark: Boolean, top: @Composable () -> Unit = {}, fabs: Boolean = true, content: @Composable BoxScope.() -> Unit) {
+        TrailTheme(dark) {
+            Box(Modifier.fillMaxSize()) {
+                val f = File(bgDir, bg)
+                if (f.exists()) Image(BitmapFactory.decodeFile(f.path).asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                Column(Modifier.fillMaxWidth().padding(top = 40.dp, start = 12.dp, end = 12.dp)) { top() }
+                if (fabs) Column(Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = 12.dp), horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CompassWidget(32f, 0f) {}
+                    Surface(shape = RoundedCornerShape(50), color = androidx.compose.ui.graphics.Color(0xFFB3261E), contentColor = androidx.compose.ui.graphics.Color.White,
+                        modifier = Modifier.size(width = 64.dp, height = 40.dp)) { Box(contentAlignment = Alignment.Center) { Text("SOS", fontWeight = FontWeight.Bold) } }
+                }
+                Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(bottom = 20.dp), horizontalAlignment = Alignment.End) {
+                    if (fabs) Column(Modifier.padding(end = 16.dp, bottom = 12.dp), verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.End) {
+                        RoundButton({}, 56) { Icon(Icons.Filled.Layers, null) }
+                        RoundButton({}, 64) { Icon(Icons.Filled.MyLocation, null, Modifier.size(30.dp)) }
+                    }
+                    Box(Modifier.fillMaxWidth()) { content() }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun Chip(date: String) {
+        Row {
+            Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
+                Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.CloudOff, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
+                    Spacer(Modifier.size(6.dp))
+                    Text("Offline · data $date", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+    }
+
+    @Test fun browse() {
+        val vm = vm()
+        captureRoboImage(File(out, "1_browse.png").path) {
+            Phone("bg_browse.png", false, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun networkView() {
+        val vm = vm()
+        captureRoboImage(File(out, "7_trail_network.png").path) {
+            Phone("bg_network.png", false, top = { NetChip() }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun satellite() {
+        val vm = vm()
+        captureRoboImage(File(out, "8_satellite.png").path) {
+            Phone("bg_satellite.png", false, top = { SatChip() }) { BrowsePanel(vm, true, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun loop() {
+        val vm = vm()
+        val r = Router(vm.data.value!!.graph).loop(45.0575, -77.8553, 30.0, RouteMode.MOSTLY_TRAILS, false)
+        captureRoboImage(File(out, "9_loop.png").path) {
+            Phone("bg_loop.png", false, fabs = false) { LoopPanel(vm, Mode.Loop(30, RouteMode.MOSTLY_TRAILS, r, false)) {} }
+        }
+    }
+
+    @Test fun myLocation() {
+        val vm = vm()
+        captureRoboImage(File(out, "10_my_location.png").path) {
+            Phone("bg_browse.png", false, fabs = false) {
+                DetailsPanel(vm, Target.Me(45.0575, -77.8553, 6f, 330.0, 0.0), null) {}
+            }
+        }
+    }
+
+    @Test fun sos() {
+        val vm = vm()
+        val loc = android.location.Location("gps").apply { latitude = 45.1200; longitude = -77.6200; accuracy = 8f }
+        captureRoboImage(File(out, "11_stranded.png").path) {
+            Phone("bg_network.png", false, fabs = false) { SosPanel(vm, loc, 40f) }
+        }
+    }
+
+    @Test fun home() {
+        val vm = vm()
+        captureRoboImage(File(out, "12_home.png").path) {
+            Phone("bg_browse.png", false, fabs = false) { DetailsPanel(vm, vm.home.value, null) {} }
+        }
+    }
+
+    private fun waitIdea(vm: MapViewModel): Mode.Idea {
+        val t0 = System.currentTimeMillis()
+        while (System.currentTimeMillis() - t0 < 60000) {
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            val m = vm.mode.value as? Mode.Idea
+            if (m != null && !m.computing) return m
+            Thread.sleep(50)
+        }
+        error("idea not computed")
+    }
+
+    @Test fun rideIdeas() {
+        val vm = vm()
+        captureRoboImage(File(out, "13_ride_ideas.png").path) {
+            Phone("bg_network.png", false, fabs = false) { IdeasPanel(vm, null) }
+        }
+        // every routable popular ride should route
+        for (r in vm.data.value!!.rides) {
+            vm.openRide(r)
+            val m = waitIdea(vm)
+            println("RIDE ${r.name}: ${m.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" } ?: "NO ROUTE"} | ${m.note ?: ""}")
+        }
+        vm.openRide(vm.data.value!!.rides.first { it.id.startsWith("old-hastings") })
+        val m = waitIdea(vm)
+        captureRoboImage(File(out, "14_popular_ride.png").path) {
+            Phone("bg_plan.png", false, fabs = false) { IdeaPanel(vm, m) {} }
+        }
+        for (min in listOf(10, 20, 60, 120)) {
+            vm.quickRide(min)
+            val q = waitIdea(vm)
+            println("QUICK $min min: ${q.subtitle} -> ${q.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" } ?: q.note}")
+            if (min == 60) captureRoboImage(File(out, "15_quick_ride.png").path) { Phone("bg_loop.png", false, fabs = false) { IdeaPanel(vm, q) {} } }
+        }
+    }
+
+    /** Open-Meteo-shaped response starting at the current hour (local offset -5 h): dry, rain from +4 h. */
+    private fun sampleWeather(): String {
+        val off = -5 * 3600
+        val start = java.time.LocalDateTime.now(java.time.ZoneOffset.ofTotalSeconds(off)).withMinute(0).withSecond(0).withNano(0)
+        val times = (0 until 72).map { start.plusHours(it.toLong()).toString() }
+        val temps = (0 until 72).map { 6.0 + 4 * Math.sin(it / 24.0 * 2 * Math.PI) }
+        val probs = (0 until 72).map { if (it in 4..7) 80 else 10 }
+        val codes = (0 until 72).map { if (it in 4..7) 63 else 2 }
+        fun arr(l: List<Any>) = l.joinToString(",", "[", "]") { if (it is String) "\"$it\"" else it.toString() }
+        val days = (0 until 3).map { start.toLocalDate().plusDays(it.toLong()).toString() }
+        return """{"latitude":45.02,"longitude":-77.7,"utc_offset_seconds":$off,"timezone":"America/Toronto",
+          "current":{"time":"${times[0]}","temperature_2m":-6.0,"apparent_temperature":-12.0,"weather_code":2,"wind_speed_10m":22.0,"wind_gusts_10m":45.0,"wind_direction_10m":300,"precipitation":0.0},
+          "hourly":{"time":${arr(times)},"temperature_2m":${arr(temps)},"apparent_temperature":${arr(temps.map { it - 3 })},"precipitation_probability":${arr(probs)},
+            "precipitation":${arr(probs.map { if (it > 50) 1.2 else 0.0 })},"weather_code":${arr(codes)},"wind_speed_10m":${arr(temps.map { 12.0 })},"wind_gusts_10m":${arr(temps.map { 25.0 })},"wind_direction_10m":${arr(temps.map { 290 })}},
+          "daily":{"time":${arr(days)},"weather_code":[63,3,0],"temperature_2m_max":[10,8,5],"temperature_2m_min":[2,-1,-4],"precipitation_probability_max":[80,30,5],"precipitation_sum":[4.8,0.2,0]}}"""
+    }
+
+    @Test fun weather() {
+        val f = ca.bancroft.trails.data.Forecast.parse(sampleWeather(), System.currentTimeMillis())
+        val now = f.now()!!
+        println("WEATHER now ${now.temp} feels ${now.feels} code ${now.code}; rainSoon=${f.rainSoon()?.time}; tip=${ca.bancroft.trails.ui.rideTip(f)}")
+        org.junit.Assert.assertEquals(-6.0, now.temp, 0.01)
+        // Environment Canada table: -5 °C at 20 km/h ≈ -11
+        org.junit.Assert.assertEquals(-11.0, ca.bancroft.trails.data.windChillC(-5.0, 20.0)!!, 0.6)
+        println("WEATHER chill ${now.windChill} riding40 ${now.ridingChill(40.0)} dir ${ca.bancroft.trails.data.compassDir(now.windDir)}")
+        org.junit.Assert.assertNotNull(f.rainSoon())
+        // offline 2 hours later: "now" comes from the saved hourly forecast
+        val later = f.copy(fetchedAt = System.currentTimeMillis() - 2 * 3600_000).now()!!
+        println("WEATHER offline-later ${later.temp} code ${later.code}")
+        org.junit.Assert.assertTrue(f.covers(System.currentTimeMillis() + 48 * 3600_000L))
+        val vm = vm()
+        captureRoboImage(File(out, "17_weather_chip.png").path) {
+            Phone("bg_browse.png", false, top = { Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { Chip(vm.data.value!!.meta.osmDate); ca.bancroft.trails.ui.WeatherChip(f) {} } }) {
+                BrowsePanel(vm, false, {}, {}, {}, {})
+            }
+        }
+    }
+
+    @Test fun trailBuddy() {
+        val vm = vm()
+        captureRoboImage(File(out, "18_trail_buddy.png").path) { Phone("bg_browse.png", false, fabs = false) { ca.bancroft.trails.ui.BuddyPanel(vm, null) } }
+        for ((min, stops) in listOf(120 to setOf("gas", "views", "history"), 60 to setOf("food"), 30 to emptySet<String>(), 240 to setOf("gas", "food", "water"))) {
+            vm.buddyRide(min, stops, RouteMode.MOSTLY_TRAILS, fromHome = true)
+            val m = waitIdea(vm)
+            println("BUDDY $min min $stops -> ${m.subtitle} | ${m.route?.let { "${ca.bancroft.trails.nav.formatDist(it.distanceM)} ${ca.bancroft.trails.nav.formatTime(it.timeS)} off=${(it.trailShare * 100).toInt()}%" }}")
+            m.lines.forEach { println("   $it") }
+            if (min == 120) captureRoboImage(File(out, "19_buddy_result.png").path) { Phone("bg_plan.png", false, fabs = false) { IdeaPanel(vm, m) {} } }
+        }
+    }
+
+    // ---------------- dark mode: every screen and menu
+    private fun darkShot(name: String, bg: String = "bg_browse_dark.png", top: @Composable () -> Unit = {}, fabs: Boolean = false, content: @Composable androidx.compose.foundation.layout.BoxScope.() -> Unit) {
+        captureRoboImage(File(out, "dark_$name.png").path) { Phone(bg, true, top = top, fabs = fabs, content = content) }
+    }
+
+    @Test fun darkMode() {
+        val vm = vm()
+        val f = ca.bancroft.trails.data.Forecast.parse(sampleWeather(), System.currentTimeMillis())
+        val m = Mode.Plan(Target.Place(vm.data.value!!.pois.first { it.cat == "food" }), routes(vm), RouteMode.MOSTLY_TRAILS, false)
+        darkShot("1_browse", top = { Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            ca.bancroft.trails.ui.StatusChip(true, "2026-11-13", ca.bancroft.trails.data.MapStyle.STANDARD, false)
+            ca.bancroft.trails.ui.WeatherChip(f) {} } }, fabs = true) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        darkShot("2_weather") { ca.bancroft.trails.ui.WeatherSheet(vm, false, {}, inline = true) }
+        darkShot("3_layers") { ca.bancroft.trails.ui.LayersSheet(vm, true, {}, inline = true) }
+        darkShot("4_settings") { ca.bancroft.trails.ui.SettingsSheet(vm, {}, {}, inline = true) }
+        darkShot("5_legend") { ca.bancroft.trails.ui.LegendSheet(vm, true, {}, inline = true) }
+        darkShot("6_plan") { PlanPanel(vm, m, hasLocation = true, onNeedPermission = {}, onStart = {}) }
+        darkShot("7_trail") { DetailsPanel(vm, Target.Trail(45.03, -77.835, "Spruce Lake Trail", ca.bancroft.trails.data.Cls.MAYBE, 6, 28, "EOTA", 2, 0), null) {} }
+        darkShot("8_sos") { SosPanel(vm, android.location.Location("gps").apply { latitude = 45.12; longitude = -77.62; accuracy = 8f }, 40f) }
+        darkShot("9_ideas") { IdeasPanel(vm, null) }
+        darkShot("10_gas") { NearbyPanel(vm, "gas", null) }
+    }
+
+    @Composable private fun NetChip() = Pill("Trail network view")
+    @Composable private fun SatChip() = Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Pill("Satellite · trails offline")
+        Surface(shape = RoundedCornerShape(50), color = androidx.compose.ui.graphics.Color(0xFFB3261E), contentColor = androidx.compose.ui.graphics.Color.White) {
+            Text("Recording · 12.4 km · 0:48", Modifier.padding(horizontal = 12.dp, vertical = 7.dp), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        }
+    }
+
+    @Composable
+    private fun Pill(t: String) {
+        Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
+            Text(t, Modifier.padding(horizontal = 12.dp, vertical = 7.dp), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        }
+    }
+
+    @Test fun browseDark() {
+        val vm = vm()
+        captureRoboImage(File(out, "6_browse_dark.png").path) {
+            Phone("bg_browse_dark.png", true, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun trailDetails() {
+        val vm = vm()
+        val t = Target.Trail(45.03, -77.835, "Hastings Heritage Trail", Cls.MAYBE, Kind.PATH, 2, "Eastern Ontario Trails Alliance", 2,
+            Flag.OSM or Flag.OTN or Flag.CLUB)
+        captureRoboImage(File(out, "2_trail_details.png").path) {
+            Phone("bg_detail.png", false) { DetailsPanel(vm, t, null) {} }
+        }
+    }
+
+    @Test fun gasNearby() {
+        val vm = vm()
+        captureRoboImage(File(out, "3_gas_nearby.png").path) {
+            Phone("bg_browse.png", false, fabs = false) { NearbyPanel(vm, "gas", null) }
+        }
+    }
+
+    private fun routes(vm: MapViewModel) = Router(vm.data.value!!.graph).let { r ->
+        RouteMode.entries.associateWith { r.route(45.0575, -77.8553, 44.8530, -77.8250, it, false) }
+    }
+
+    @Test fun plan() {
+        val vm = vm()
+        val dest = Target.Place(vm.data.value!!.pois.first { it.name.contains("Coe Hill") || it.cat == "food" })
+        val m = Mode.Plan(dest, routes(vm), RouteMode.MOSTLY_TRAILS, computing = false)
+        captureRoboImage(File(out, "4_route_plan.png").path) {
+            Phone("bg_plan.png", false, fabs = false) { PlanPanel(vm, m, hasLocation = true, onNeedPermission = {}, onStart = {}) }
+        }
+    }
+
+    @Test fun navigating() {
+        val vm = vm()
+        val r = routes(vm)[RouteMode.MOSTLY_TRAILS]!!
+        val nav = Navigator(r)
+        val i = (r.lats.size * 0.12).toInt()
+        var st = nav.update(r.lats[0], r.lons[0])
+        for (k in 0..i step 3) st = nav.update(r.lats[k], r.lons[k])
+        val m = Mode.Navigating(Target.Point(44.853, -77.825), r, st)
+        captureRoboImage(File(out, "5_navigating.png").path) {
+            Phone("bg_nav.png", true, top = { NavBanner(m, true) }, fabs = false) { NavBottomBar(vm, m, {}, following = true) }
+        }
+    }
+}
