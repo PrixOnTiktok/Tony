@@ -205,6 +205,41 @@ class ScreenshotTest {
         }
     }
 
+    /** Open-Meteo-shaped response starting at the current hour (local offset -5 h): dry, rain from +4 h. */
+    private fun sampleWeather(): String {
+        val off = -5 * 3600
+        val start = java.time.LocalDateTime.now(java.time.ZoneOffset.ofTotalSeconds(off)).withMinute(0).withSecond(0).withNano(0)
+        val times = (0 until 72).map { start.plusHours(it.toLong()).toString() }
+        val temps = (0 until 72).map { 6.0 + 4 * Math.sin(it / 24.0 * 2 * Math.PI) }
+        val probs = (0 until 72).map { if (it in 4..7) 80 else 10 }
+        val codes = (0 until 72).map { if (it in 4..7) 63 else 2 }
+        fun arr(l: List<Any>) = l.joinToString(",", "[", "]") { if (it is String) "\"$it\"" else it.toString() }
+        val days = (0 until 3).map { start.toLocalDate().plusDays(it.toLong()).toString() }
+        return """{"latitude":45.02,"longitude":-77.7,"utc_offset_seconds":$off,"timezone":"America/Toronto",
+          "current":{"time":"${times[0]}","temperature_2m":7.4,"apparent_temperature":3.9,"weather_code":2,"wind_speed_10m":14.0,"wind_gusts_10m":30.0,"precipitation":0.0},
+          "hourly":{"time":${arr(times)},"temperature_2m":${arr(temps)},"apparent_temperature":${arr(temps.map { it - 3 })},"precipitation_probability":${arr(probs)},
+            "precipitation":${arr(probs.map { if (it > 50) 1.2 else 0.0 })},"weather_code":${arr(codes)},"wind_speed_10m":${arr(temps.map { 12.0 })}},
+          "daily":{"time":${arr(days)},"weather_code":[63,3,0],"temperature_2m_max":[10,8,5],"temperature_2m_min":[2,-1,-4],"precipitation_probability_max":[80,30,5],"precipitation_sum":[4.8,0.2,0]}}"""
+    }
+
+    @Test fun weather() {
+        val f = ca.bancroft.trails.data.Forecast.parse(sampleWeather(), System.currentTimeMillis())
+        val now = f.now()!!
+        println("WEATHER now ${now.temp} feels ${now.feels} code ${now.code}; rainSoon=${f.rainSoon()?.time}; tip=${ca.bancroft.trails.ui.rideTip(f)}")
+        org.junit.Assert.assertEquals(7.4, now.temp, 0.01)
+        org.junit.Assert.assertNotNull(f.rainSoon())
+        // offline 2 hours later: "now" comes from the saved hourly forecast
+        val later = f.copy(fetchedAt = System.currentTimeMillis() - 2 * 3600_000).now()!!
+        println("WEATHER offline-later ${later.temp} code ${later.code}")
+        org.junit.Assert.assertTrue(f.covers(System.currentTimeMillis() + 48 * 3600_000L))
+        val vm = vm()
+        captureRoboImage(File(out, "17_weather_chip.png").path) {
+            Phone("bg_browse.png", false, top = { Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { Chip(vm.data.value!!.meta.osmDate); ca.bancroft.trails.ui.WeatherChip(f) {} } }) {
+                BrowsePanel(vm, false, {}, {}, {}, {})
+            }
+        }
+    }
+
     @Composable private fun NetChip() = Pill("Trail network view")
     @Composable private fun SatChip() = Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Pill("Satellite · trails offline")

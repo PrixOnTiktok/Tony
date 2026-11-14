@@ -46,6 +46,8 @@ every trail, gas/food/places and the router are all inside the app.
     with length, season, pass and highlights. The app routes each one itself through the published points; no GPS
     tracks were copied (`pipeline/rides/`).
   - **20 places worth riding to:** lookouts, falls, ghost towns, general stores.
+- **Weather**: temperature, feels-like, rain heads-up and a riding tip. It downloads a 3-day hourly forecast
+  whenever you have signal and keeps working from the saved forecast offline (Open-Meteo, Environment Canada GEM model).
 - **Home**: one tap routes you home (preset to 267 Bradshaw Rd, an estimate from the address; tap "I'm here" in the
   driveway to make it exact).
 - **Your own trails**: ride somewhere no map has a trail and it's saved automatically (teal dashes). The router uses

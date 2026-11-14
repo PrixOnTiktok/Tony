@@ -165,6 +165,29 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     val leaveBy: StateFlow<Long?> = _leaveBy.asStateFlow()
     private var leaveByCheckedAt = 0L
 
+    // ---------- weather (saved on the phone, refreshed when there's signal)
+    private val weatherStore = ca.bancroft.trails.data.WeatherStore(app)
+    private val _weather = MutableStateFlow(weatherStore.load())
+    val weather: StateFlow<ca.bancroft.trails.data.Forecast?> = _weather.asStateFlow()
+    private var weatherBusy = false
+    private var weatherTriedAt = 0L
+
+    /** Refresh if the saved forecast is old (30 min) or for a place 25 km away. Silent when offline. */
+    fun refreshWeather(force: Boolean = false) {
+        val now = System.currentTimeMillis()
+        if (weatherBusy || (!force && now - weatherTriedAt < 5 * 60_000)) return
+        val loc = locationRepo.location.value
+        val lat = loc?.latitude ?: _home.value.lat; val lon = loc?.longitude ?: _home.value.lon
+        val f = _weather.value
+        val stale = f == null || now - f.fetchedAt > 30 * 60_000 || distM(lat, lon, f.lat, f.lon) > 25_000
+        if (!force && !stale) return
+        weatherBusy = true; weatherTriedAt = now
+        viewModelScope.launch {
+            runCatching { withContext(Dispatchers.IO) { weatherStore.fetch(lat, lon) } }.onSuccess { _weather.value = it }
+            weatherBusy = false
+        }
+    }
+
     private val _voice = MutableStateFlow(settings.voice)
     val voice: StateFlow<Boolean> = _voice.asStateFlow()
 
@@ -570,6 +593,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     fun onLocation(loc: Location) {
         recording.value?.let { live -> _shownTrack.value = live.points.map { it.lat to it.lon } }
         updateLeaveBy(loc)
+        refreshWeather()
         val m = _mode.value as? Mode.Navigating ?: return
         val nav = navigator ?: return
         val st = nav.update(loc.latitude, loc.longitude)

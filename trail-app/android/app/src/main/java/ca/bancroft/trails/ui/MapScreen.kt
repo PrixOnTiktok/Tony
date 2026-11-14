@@ -107,6 +107,8 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     val showRidden by vm.showRidden.collectAsState()
     val leaveBy by vm.leaveBy.collectAsState()
     val heading = rememberHeading()
+    val weather by vm.weather.collectAsState()
+    var showWeather by remember { mutableStateOf(false) }
 
     var controller by remember { mutableStateOf<MapController?>(null) }
     var styleReady by remember { mutableStateOf(false) }
@@ -221,6 +223,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     // feed content to the map
     LaunchedEffect(styleReady, data, layers) { if (styleReady) data?.let { controller?.setPois(it.pois, layers) } }
     LaunchedEffect(styleReady, pins) { if (styleReady) controller?.setPins(pins) }
+    LaunchedEffect(online, data != null) { if (online) vm.refreshWeather(force = vm.weather.value == null) }
     LaunchedEffect(styleReady, mapStyle) { if (styleReady) controller?.setMapStyle(mapStyle) }
     LaunchedEffect(styleReady, track) { if (styleReady) controller?.setTrack(track) }
     LaunchedEffect(styleReady, home) { if (styleReady) controller?.setHome(home) }
@@ -305,6 +308,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         StatusChip(data != null, data?.meta?.osmDate, mapStyle, online)
+                        weather?.takeIf { it.covers() }?.let { WeatherChip(it) { showWeather = true } }
                         recording?.let { RecChip(it) { confirmStopRec = true } }
                         SunsetChip(location, leaveBy)
                     }
@@ -384,6 +388,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     }
 
     if (showLayers) LayersSheet(vm, online, onDismiss = { showLayers = false })
+    if (showWeather) WeatherSheet(vm, online, onDismiss = { showWeather = false })
     if (confirmStopRec) StopRecordingDialog(recording, onDismiss = { confirmStopRec = false }, onStop = { save ->
         confirmStopRec = false
         vm.stopRecording(save)?.let { vm.viewRide(it) }
