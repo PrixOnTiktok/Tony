@@ -1058,6 +1058,29 @@
     "https://northernontario.travel/atving/guided-utv-adventures-bancroft-offroad-tours"
    ],
    "confidence": "high (operator facts); no route"
+  },
+  {
+   "id": "backwoods-atv-tour",
+   "name": "Backwoods ATV Tour (annual, Bancroft)",
+   "type": "loop",
+   "staging": {
+    "name": "Riverside Park, 26B Station St, Bancroft",
+    "lat": 45.0565,
+    "lon": -77.8555
+   },
+   "waypoints": [],
+   "length_km": 70,
+   "typical_time": "day ride (event)",
+   "difficulty": "unknown",
+   "season": "annual event",
+   "pass_required": "event registration",
+   "highlights": [
+    "annual group ride from downtown Bancroft"
+   ],
+   "sources": [
+    "https://northernontario.travel/atving/atv-events-ontario"
+   ],
+   "confidence": "medium"
   }
  ],
  "destinations": [
@@ -1342,6 +1365,50 @@
     "https://northernontario.travel/atving/the-old-hastings-road-atv-trail",
     "https://www.thetrail.ca/the-trails/"
    ]
+  },
+  {
+   "name": "Bird's Creek Park 'n' Ride",
+   "lat": 45.1073,
+   "lon": -77.8788,
+   "what": "Staging lot on Hwy 62 by the Hastings Heritage Trail (OFSC B108E in winter)",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Gilmour Park 'n' Ride",
+   "lat": 44.8082,
+   "lon": -77.6311,
+   "what": "Staging at Hwy 62 & Weslemkoon Lake Rd, the way into the Weslemkoon Crown-land loop",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Riverside Park staging, Bancroft",
+   "lat": 45.0565,
+   "lon": -77.8555,
+   "what": "Downtown Bancroft trailhead on the Hastings Heritage Trail (Station St)",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
+  },
+  {
+   "name": "Old Hastings Snow Riders clubhouse, L'Amable",
+   "lat": 45.0114,
+   "lon": -77.7872,
+   "what": "Snowmobile club base and park 'n' ride on Hwy 62 at L'Amable",
+   "sources": [
+    "https://www.thetrail.ca/",
+    "https://ofsc.on.ca/"
+   ],
+   "coord_confidence": "medium"
   }
  ]
 }
