@@ -48,17 +48,20 @@ REASONS = [
     "{note}: no ATV by-law found, but rural townships on O. Reg. 8/03 allow ORVs on roads by default. Check signs.",  # 7
     "{note} only allows ATVs on some roads. Look for signs before riding along it.",      # 8
     "ATVs can't ride along this road in {note}. Crossing straight across is OK.",        # 9
-    "Provincial highway closed to ORVs (O. Reg. 316/03 Schedule A). Cross only.",         # 10
+    "Provincial highway not open to ORVs here (O. Reg. 316/03). Cross straight across only.",  # 10
     "Provincial highway: ORV rules for this stretch are unconfirmed. Shoulder only, 50 km/h max.",  # 11
-    "Secondary highway: ORVs allowed on the shoulder, 50 km/h max.",                      # 12
-    "Inside {note}: no ORVs in provincial parks and conservation reserves.",              # 13
+    "Provincial highway open to ORVs (O. Reg. 316/03 Sched. B): shoulder, with traffic, lights on, 20 km/h if posted 50 or less, else 50 km/h max.",  # 12
+    "Inside {note}: no ORVs in provincial parks (O. Reg. 347/07 s.34).",                # 13
     "Non-motorized trail ({note}): no ATVs.",                                             # 14
     "{note}: ATV road rules not confirmed. Maybe allowed. Check signs or the township.",  # 15
     "Forest access road on private or managed land: permission may be needed.",           # 16
     "Rail trail / multi-use trail: usually needs a club pass ({note}).",                  # 17
     "Trail not on Crown land and not in any club system: probably private. Ask first.",   # 18
+    "Inside {note} (conservation reserve): ORVs allowed on existing roads/trails unless posted closed.",  # 19
+    "Dirt-bike-only trail ({note}): not open to ATVs.",                                    # 20
+    "OFSC snowmobile trail: OFSC says no ATVs at any time of year; most cross private land (trespass).",  # 21
 ]
-R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL = range(19)
+R_CROWN, R_FOREST, R_CLUB, R_PRIVATE, R_RESTRICT, R_PATH, R_BYLAW, R_DEFAULT, R_SOME, R_NONE, R_HWY_NO, R_HWY_UNK, R_HWY_OK, R_PARK, R_HIKE, R_UNKNOWN, R_FOREST_PRIV, R_RAIL, R_UNKNOWN_TRAIL, R_RESERVE, R_DIRTBIKE, R_OFSC = range(22)
 
 
 def to_xy(lon, lat):
@@ -176,7 +179,8 @@ def read_osm(z15_path):
                         for seg in clip_line(pts, ox, oy, ox + 4096, oy + 4096):
                             lines.append({"g": seg, "kind": k, "name": p.get("name") or "", "ref": str(p.get("ref") or ""),
                                           "bridge": bool(p.get("is_bridge")), "tunnel": bool(p.get("is_tunnel")),
-                                          "access": p.get("access"), "src": "osm", "kd": p.get("kind_detail")})
+                                          "access": p.get("access"), "src": "osm", "kd": p.get("kind_detail"),
+                                          "network": p.get("network") or ""})
             lay = t.get("pois")
             if lay:
                 for f in lay["features"]:
@@ -461,29 +465,44 @@ def load_rules(path):
 
 
 def highway_rule(ref, x, y):
-    """Return (cls, reason) for provincial highways by ref and location (approximate Schedule A stretches)."""
+    """Provincial highways per O. Reg. 316/03 (consolidated, last amended O. Reg. 176/22), verified on e-Laws.
+    s.2: ORVs may NOT use a provincial highway unless it is listed in Schedule B (or crossing directly).
+    Endpoints near Bancroft are taken from OSM junctions (Bay Lake Rd, Hybla Rd, Hwy 118, Hastings St)."""
     lon, lat = to_ll(x, y)
-    try:
-        num = int("".join(ch for ch in ref.split(";")[0] if ch.isdigit()) or "0")
-    except ValueError:
-        num = 0
-    if num >= 400 and num < 500:
+    nums = []
+    for part in ref.replace(",", ";").split(";"):
+        d = "".join(ch for ch in part if ch.isdigit())
+        if d:
+            nums.append(int(d))
+    if not nums:
         return NO, R_HWY_NO
-    if num == 62 and lat < 45.045:  # Hwy 7 (Madoc) north to ~Bay Lake Rd, Bancroft
-        return NO, R_HWY_NO
-    if num == 28 and lon < -77.90:  # Apsley (CR 504) to Faraday
-        return NO, R_HWY_NO
-    if num == 118 and lon < -78.50:  # Bracebridge to Eagle Lake Rd (Dysart)
-        return NO, R_HWY_NO
-    if num == 35:
-        return NO, R_HWY_NO
-    if num == 7:
-        return NO, R_HWY_NO
-    if num in (506, 509, 514, 515):
-        return ROAD, R_HWY_OK
-    if 500 <= num <= 899 or num >= 7000:
-        return ROAD, R_HWY_OK
-    return ROAD, R_HWY_UNK
+    ok = any(_hwy_allowed(n, lat, lon) for n in nums)  # concurrent stretches: listed under either number
+    return (ROAD, R_HWY_OK) if ok else (NO, R_HWY_NO)
+
+
+def _hwy_allowed(n, lat, lon):
+    if 500 <= n <= 899:                       # Sched. B item 1 (only where still provincial)
+        return True
+    if n in (118, 127):                       # Sched. B item 3: whole highway
+        return True
+    if n == 62:
+        return (44.511 <= lat < 45.0088       # B26: Hwy 7 (Madoc) to 300 m S of Bay Lake Rd
+                or 45.144 <= lat <= 45.232)   # B27: Hybla Rd to Hwy 127 (Maynooth)
+    if n == 28:
+        if lat < 44.75:                       # south of CR 504 (Apsley): not listed
+            return False
+        if lon <= -77.9725:                   # B16: CR 504 to Hwy 118 junction west of Bancroft
+            return True
+        return lon >= -77.844                 # B17: 880 m E of Hastings St to Hwy 41; town core not listed
+    if n == 35:
+        return lat >= 44.96                   # B18: north of Minden to Hwy 60 (B18.1 south stretch omitted: unverified geometry)
+    if n == 41:
+        return 44.93 <= lat < 45.50 or lat >= 45.55   # B19 Bon Echo N boundary to Foymount Rd; B20 N of Eganville
+    if n == 60:
+        return not (-78.93 <= lon <= -78.05)  # A29 Algonquin Park corridor prohibited; B21-B24 elsewhere
+    if n == 132:
+        return True                           # B46
+    return False                              # 7, 17, 37, 115, 121, unlisted 7000-series, 400-series: not listed
 
 
 # ---------------------------------------------------------------- main
@@ -567,8 +586,12 @@ def main():
 
     print("classifying…", file=sys.stderr)
     crown = PolyIndex(load_fc(os.path.join(lio, "crown_unpatented.geojson")))
-    parks = PolyIndex(load_fc(os.path.join(lio, "prov_parks.geojson")) + load_fc(os.path.join(lio, "cons_reserves.geojson")),
-                      label=lambda p: p.get("COMMON_SHORT_NAME") or p.get("PROTECTED_AREA_NAME_ENG") or "a protected area")
+    # O. Reg. 347/07 s.34: no ORVs in provincial parks. O. Reg. 319/07 s.13: conservation reserves allow ORVs
+    # on existing roads and trails unless the manager prohibits it.
+    parks = PolyIndex(load_fc(os.path.join(lio, "prov_parks.geojson")),
+                      label=lambda p: p.get("COMMON_SHORT_NAME") or p.get("PROTECTED_AREA_NAME_ENG") or "a provincial park")
+    reserves = PolyIndex(load_fc(os.path.join(lio, "cons_reserves.geojson")),
+                         label=lambda p: p.get("COMMON_SHORT_NAME") or p.get("PROTECTED_AREA_NAME_ENG") or "a conservation reserve")
     munis = PolyIndex(load_fc(os.path.join(lio, "municipalities.geojson")),
                       label=lambda p: (p.get("MUNICIPAL_NAME_SHORTFORM") or p.get("MUNICIPAL_NAME") or "").title())
     rules, rules_by = load_rules(os.path.join(here, "rules", "orv_rules.json"))
@@ -594,6 +617,7 @@ def main():
             mids_y.append(p[1])
     crown_hit = crown.which(mids_x, mids_y)
     park_hit = parks.which(mids_x, mids_y)
+    reserve_hit = reserves.which(mids_x, mids_y)
     muni_hit = munis.which(mids_x, mids_y)
 
     strings, string_id = [], {}
@@ -626,6 +650,8 @@ def main():
         park = next((parks.labels[p] for p in p3 if p >= 0), None) if sum(1 for p in p3 if p >= 0) >= 2 else None
         if park:
             flags |= F_PARK
+        r3 = reserve_hit[ei * 3: ei * 3 + 3]
+        reserve = reserves.labels[r3[1]] if r3[1] >= 0 else None
         mi = m3[1] if m3[1] >= 0 else next((m for m in m3 if m >= 0), -1)
         muni = muni_names[mi] if mi >= 0 else ""
         mid = samp[ei][1]
@@ -658,11 +684,26 @@ def main():
         cls, reason, note = FREE, R_CROWN, ""
         uses = (oprops or {}).get("PERMITTED_USES") or ""
         assoc = (oprops or {}).get("TRAIL_ASSOCIATION") or ""
-        motor_ok = "ATV" in uses or "Off-Road Motorcycle" in uses
+        atv_ok = "ATV" in uses
+        moto_only = "Off-Road Motorcycle" in uses and not atv_ok
+        tname = (oprops or {}).get("TRAIL_NAME") or ""
+        # EOTA manages the Trans Canada rail trail across Hastings and Central Frontenac Trailway as pass trails,
+        # even where the provincial layer lists only non-motorized uses (verified: EOTA site, 2021 EOTA-OFATV deal).
+        eota_pass = bool(oprops) and not atv_ok and ("Eastern Ontario Trails Alliance" in assoc or "Trailway" in tname or
+                                                    ("Trans Canada" in tname and to_ll(*mid)[1] < 44.75))
+        motor_ok = atv_ok or eota_pass
+        osm_name = ln["name"] or ""
+        is_ofsc = osm_name.upper().startswith("OFSC") or "snowmobile" in osm_name.lower()
         if park:
             cls, reason, note = NO, R_PARK, park
+        elif reserve and kind in (K_TRACK, K_PATH, K_FOREST, K_CLUB):
+            cls, reason, note = MAYBE, R_RESERVE, reserve
+        elif is_ofsc and kind in (K_TRACK, K_PATH, K_CLUB, K_FOREST):
+            cls, reason = NO, R_OFSC
         elif kind in (K_TRACK, K_PATH, K_CLUB) or (kind == K_FOREST and not mprops):
-            if oprops and motor_ok:
+            if oprops and moto_only:
+                cls, reason, note = NO, R_DIRTBIKE, tname or assoc or "club"
+            elif oprops and motor_ok:
                 flags |= F_CLUB
                 cls, reason, note = MAYBE, R_CLUB, assoc or "trail club"
             elif oprops and not motor_ok and kind == K_PATH:
@@ -684,7 +725,7 @@ def main():
                 cls, reason = MAYBE, R_UNKNOWN_TRAIL
         elif kind == K_FOREST:
             cls, reason, note = classify_forest(mprops, on_crown)
-        elif kind == K_HWY or (kind == K_MAJOR and ln["ref"] and is_prov_ref(ln["ref"])):
+        elif ln.get("network", "").startswith(("CA:ON:primary", "CA:ON:secondary")) or (kind == K_HWY and not ln.get("network")):
             cls, reason = highway_rule(ln["ref"], mid[0], mid[1])
             if reason == R_HWY_UNK:
                 flags |= F_LOWCONF
@@ -715,7 +756,15 @@ def main():
     poi_out = [p for p in poi_out if in_region(p["lat"], p["lon"], 5)]
 
     write_graph(os.path.join(out, "graph.bin"), [nodes[i] for i in used], keep, remap, strings)
-    write_display(os.path.join(out, "trails.geojson"), keep, strings)
+    systems, junctions = trail_systems(keep, nodes)
+    stats["trail_systems"] = len({v for v in systems if v > 0})
+    stats["junctions"] = len(junctions)
+    write_display(os.path.join(out, "trails.geojson"), keep, strings, systems)
+    with open(os.path.join(out, "junctions.geojson"), "w") as f:
+        for (x, y), kind, deg in junctions:
+            lon, lat = to_ll(x, y)
+            f.write(json.dumps({"type": "Feature", "geometry": {"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
+                                "properties": {"j": kind, "d": deg}}, separators=(",", ":")) + "\n")
     with open(os.path.join(out, "pois.json"), "w") as f:
         json.dump(poi_out, f, separators=(",", ":"))
     meta = {
@@ -750,11 +799,6 @@ SOURCES = [
 ]
 
 
-def is_prov_ref(ref):
-    d = "".join(ch for ch in ref.split(";")[0] if ch.isdigit())
-    return bool(d) and (int(d) < 200 or 500 <= int(d) <= 899)
-
-
 def classify_forest(p, on_crown):
     if p is None:
         return (FREE, R_CROWN, "") if on_crown else (MAYBE, R_UNKNOWN_TRAIL, "")
@@ -770,15 +814,37 @@ def classify_forest(p, on_crown):
     return MAYBE, R_FOREST_PRIV, ""
 
 
+def _load_8_03():
+    try:
+        d = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules", "provincial_law_verified.json")))
+        x = d["o_reg_8_03_municipalities_in_bbox"]
+        names = x.get("fully_or_mostly_in_bbox", []) + x.get("partly_in_bbox_edge", [])
+        out = set()
+        for n in names:
+            out.add(norm(n.split("(")[0]))
+            if "(now " in n:
+                out.add(norm(n.split("(now ")[1].rstrip(")")))
+        return out
+    except (OSError, KeyError, ValueError):
+        return set()
+
+
+O_REG_8_03 = _load_8_03()
+
+
 def muni_rule(muni, rules_by):
     m = rules_by.get(norm(muni))
     if not m:
+        if norm(muni) in O_REG_8_03:  # O. Reg. 316/03 s.4.1(2): roads open by default unless a by-law prohibits
+            return ROAD, R_DEFAULT, muni, True
         return MAYBE, R_UNKNOWN, muni or "This area", True
     roads, likely, conf = m.get("roads"), m.get("likely"), m.get("confidence")
     if roads == "all":
         return ROAD, R_BYLAW, muni, conf == "low"
     if roads == "some":
         return ROAD, R_SOME, muni, True
+    if roads in ("none_owned",):
+        return MAYBE, R_UNKNOWN, muni, True
     if roads == "none":
         return NO, R_NONE, muni, conf == "low"
     if likely == "all":
@@ -831,7 +897,58 @@ def write_graph(path, nodes_xy, edges, remap, strings):
     print("graph.bin", os.path.getsize(path), "bytes", file=sys.stderr)
 
 
-def write_display(path, edges, strings):
+OFFROAD = (K_TRACK, K_PATH, K_FOREST, K_CLUB)
+SYSTEM_COLOURS = 8
+
+
+def trail_systems(edges, nodes):
+    """Group connected off-road trails into 'systems' (what you can ride without touching a road) and colour
+    them so neighbouring systems differ. Also find junctions (trail meets trail) and access points (trail meets
+    a road you're allowed on): the places where you can hop from one system to another."""
+    parent = {}
+
+    def find(a):
+        while parent.setdefault(a, a) != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    ride = [e for e in edges if e["kind"] in OFFROAD and e["cls"] != NO]
+    for e in ride:
+        ra, rb = find(e["a"]), find(e["b"])
+        if ra != rb:
+            parent[ra] = rb
+    size, bbox = collections.Counter(), {}
+    for e in ride:
+        r = find(e["a"])
+        size[r] += e["len"]
+        xs = [p[0] for p in e["pts"]]; ys = [p[1] for p in e["pts"]]
+        b = bbox.get(r, [1e18, 1e18, -1e18, -1e18])
+        bbox[r] = [min(b[0], min(xs)), min(b[1], min(ys)), max(b[2], max(xs)), max(b[3], max(ys))]
+    colour = {}
+    big = [r for r, L in size.most_common() if L >= 2000]
+    for r in big:  # greedy colouring: avoid colours of systems within 3 km
+        b = bbox[r]
+        used = {colour[o] for o in colour
+                if not (bbox[o][0] > b[2] + 3000 or bbox[o][2] < b[0] - 3000 or bbox[o][1] > b[3] + 3000 or bbox[o][3] < b[1] - 3000)}
+        colour[r] = next((c for c in range(1, SYSTEM_COLOURS + 1) if c not in used), 1 + len(colour) % SYSTEM_COLOURS)
+    systems = [colour.get(find(e["a"]), 0) if (e["kind"] in OFFROAD and e["cls"] != NO) else 0 for e in edges]
+    # junctions & access points
+    inc = collections.defaultdict(list)
+    for e in edges:
+        inc[e["a"]].append(e); inc[e["b"]].append(e)
+    junctions = []
+    for n, es in inc.items():
+        trail = [e for e in es if e["kind"] in OFFROAD and e["cls"] != NO]
+        road = [e for e in es if e["kind"] not in OFFROAD and e["cls"] == ROAD]
+        if len(trail) >= 3 or (len(trail) >= 2 and len(es) >= 3 and not road):
+            junctions.append((nodes[n], "j", len(es)))
+        elif trail and road:
+            junctions.append((nodes[n], "a", len(es)))
+    return systems, junctions
+
+
+def write_display(path, edges, strings, systems=None):
     """Line-delimited GeoJSON for tippecanoe; per-zoom visibility is set by tile_filter.json."""
     with open(path, "w") as f:
         for i, e in enumerate(edges):
@@ -842,6 +959,8 @@ def write_display(path, edges, strings):
                 lon, lat = to_ll(x, y)
                 coords.append([round(lon, 6), round(lat, 6)])
             props = {"c": e["cls"], "k": e["kind"], "e": i, "r": e["reason"], "q": e["conf"], "f": e["flags"]}
+            if systems and systems[i]:
+                props["s"] = systems[i]
             if e["name"] >= 0:
                 props["n"] = strings[e["name"]]
             if e["note"] >= 0:

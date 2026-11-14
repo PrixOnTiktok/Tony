@@ -13,12 +13,19 @@ import kotlinx.coroutines.flow.StateFlow
  * GPS without Google Play Services: uses the platform fused provider (Android 12+), falling back to raw GPS.
  * Fast updates (1 s) while navigating, slower (3 s) while browsing to save battery.
  */
-class LocationRepo(ctx: Context) {
+class LocationRepo private constructor(ctx: Context) {
+    companion object {
+        @Volatile private var instance: LocationRepo? = null
+        /** One shared GPS feed for the map, navigation and ride recording. */
+        fun get(ctx: Context) = instance ?: synchronized(this) { instance ?: LocationRepo(ctx.applicationContext).also { instance = it } }
+    }
+
     private val lm = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location
     private var running = false
     private var fast = false
+    val isFast get() = running && fast
 
     private val listener = LocationListener { loc ->
         val prev = _location.value

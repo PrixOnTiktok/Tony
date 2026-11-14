@@ -5,6 +5,12 @@ import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ca.bancroft.trails.data.AppData
+import ca.bancroft.trails.data.MapStyle
+import ca.bancroft.trails.data.Ride
+import ca.bancroft.trails.data.RideRecorder
+import ca.bancroft.trails.data.RideStore
+import ca.bancroft.trails.location.RideService
+import ca.bancroft.trails.nav.Units
 import ca.bancroft.trails.data.Pin
 import ca.bancroft.trails.data.PinStore
 import ca.bancroft.trails.data.PinType
@@ -52,8 +58,13 @@ sealed interface Target {
         override val title get() = pin.name.ifBlank { pin.type.label }
     }
 
-    data class Point(override val lat: Double, override val lon: Double) : Target {
-        override val title get() = "Dropped point"
+    data class Point(override val lat: Double, override val lon: Double, val label: String = "Dropped point") : Target {
+        override val title get() = label
+    }
+
+    /** The rider's own position: coordinates, share, emergency call. */
+    data class Me(override val lat: Double, override val lon: Double, val accuracyM: Float, val altitudeM: Double?, val speedKmh: Double) : Target {
+        override val title get() = "My location"
     }
 }
 
@@ -64,12 +75,17 @@ sealed interface Mode {
     data class Search(val query: String) : Mode
     data class Plan(val dest: Target, val routes: Map<RouteMode, Route?>, val selected: RouteMode, val computing: Boolean) : Mode
     data class Navigating(val dest: Target, val route: Route, val state: NavState?) : Mode
+    data class Loop(val km: Int, val mode: RouteMode, val route: Route?, val computing: Boolean, val noGps: Boolean = false) : Mode
+    data object Rides : Mode
+    data class RideView(val ride: Ride) : Mode
 }
 
 class MapViewModel(app: Application) : AndroidViewModel(app) {
     val settings = Settings(app)
     private val pinStore = PinStore(app)
-    val locationRepo = LocationRepo(app)
+    val locationRepo = LocationRepo.get(app)
+    private val rideStore = RideStore(app)
+    val recording = RideRecorder.live
 
     private val _data = MutableStateFlow<AppData?>(null)
     val data: StateFlow<AppData?> = _data.asStateFlow()
@@ -89,6 +105,22 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _avoidMaybe = MutableStateFlow(settings.avoidMaybe)
     val avoidMaybe: StateFlow<Boolean> = _avoidMaybe.asStateFlow()
+
+    private val _mapStyle = MutableStateFlow(settings.mapStyle)
+    val mapStyle: StateFlow<MapStyle> = _mapStyle.asStateFlow()
+
+    private val _rides = MutableStateFlow(rideStore.list())
+    val rides: StateFlow<List<Ride>> = _rides.asStateFlow()
+
+    /** Track shown on the map: the live recording or a saved ride being viewed. */
+    private val _shownTrack = MutableStateFlow<List<Pair<Double, Double>>>(emptyList())
+    val shownTrack: StateFlow<List<Pair<Double, Double>>> = _shownTrack.asStateFlow()
+
+    private val _imperial = MutableStateFlow(settings.imperial.also { Units.imperial = it })
+    val imperial: StateFlow<Boolean> = _imperial.asStateFlow()
+
+    private val _fuelRange = MutableStateFlow(settings.fuelRangeKm)
+    val fuelRange: StateFlow<Int> = _fuelRange.asStateFlow()
 
     private val _voice = MutableStateFlow(settings.voice)
     val voice: StateFlow<Boolean> = _voice.asStateFlow()
@@ -113,6 +145,7 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     sealed interface CameraRequest {
         data class FlyTo(val lat: Double, val lon: Double, val zoom: Double?) : CameraRequest
         data class Fit(val route: Route) : CameraRequest
+        data class FitPoints(val pts: List<Pair<Double, Double>>) : CameraRequest
         data object FollowMe : CameraRequest
     }
 
@@ -124,7 +157,8 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
             is Mode.Browse -> return false
             is Mode.Navigating -> return true // stop needs an explicit hold
             is Mode.Plan -> _mode.value = Mode.Details(m.dest)
-            else -> _mode.value = Mode.Browse
+            is Mode.RideView -> { _shownTrack.value = emptyList(); _mode.value = Mode.Rides }
+            else -> { _shownTrack.value = emptyList(); _mode.value = Mode.Browse }
         }
         return true
     }
@@ -136,7 +170,77 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
 
     fun showNearby(category: String) { _mode.value = Mode.Nearby(category) }
     fun openSearch(q: String = "") { _mode.value = Mode.Search(q) }
-    fun close() { if (_mode.value !is Mode.Navigating) _mode.value = Mode.Browse }
+    fun close() { if (_mode.value !is Mode.Navigating) { _shownTrack.value = emptyList(); _mode.value = Mode.Browse } }
+
+    fun showMe() {
+        val l = locationRepo.location.value ?: return
+        select(Target.Me(l.latitude, l.longitude, l.accuracy, if (l.hasAltitude()) l.altitude else null, l.speed * 3.6))
+    }
+
+    // ---------- loops
+    fun openLoop() {
+        _mode.value = Mode.Loop(settings.loopKm, settings.routeMode.takeIf { it != RouteMode.FASTEST } ?: RouteMode.MOSTLY_TRAILS, null, false)
+        computeLoop()
+    }
+
+    fun setLoop(km: Int? = null, mode: RouteMode? = null) {
+        val m = _mode.value as? Mode.Loop ?: return
+        km?.let { settings.loopKm = it }
+        _mode.value = m.copy(km = km ?: m.km, mode = mode ?: m.mode)
+        computeLoop()
+    }
+
+    private fun computeLoop() {
+        val m = _mode.value as? Mode.Loop ?: return
+        val r = router ?: return
+        val loc = locationRepo.location.value
+        if (loc == null) { _mode.value = m.copy(route = null, computing = false, noGps = true); return }
+        _mode.value = m.copy(route = null, computing = true, noGps = false)
+        planJob?.cancel()
+        planJob = viewModelScope.launch {
+            val blocked = r.blockedEdges(_pins.value.filter { it.type == PinType.BLOCKED }.map { it.lat to it.lon })
+            val loop = withContext(Dispatchers.Default) { r.loop(loc.latitude, loc.longitude, m.km.toDouble(), m.mode, _avoidMaybe.value, blocked) }
+            val cur = _mode.value as? Mode.Loop ?: return@launch
+            _mode.value = cur.copy(route = loop, computing = false)
+            loop?.let { _camera.value = CameraRequest.Fit(it) }
+        }
+    }
+
+    fun startLoop() {
+        val m = _mode.value as? Mode.Loop ?: return
+        val route = m.route ?: return
+        startNavigation(Target.Point(route.lats.last(), route.lons.last(), "Start of loop"), route)
+    }
+
+    // ---------- map style, units, fuel
+    fun setMapStyle(s: MapStyle) { settings.mapStyle = s; _mapStyle.value = s }
+    fun setImperial(v: Boolean) { settings.imperial = v; Units.imperial = v; _imperial.value = v }
+    fun setFuelRange(km: Int) { settings.fuelRangeKm = km; _fuelRange.value = km }
+
+    // ---------- ride recording
+    fun startRecording() {
+        RideRecorder.start()
+        RideService.start(getApplication(), "Recording ride")
+    }
+
+    fun stopRecording(save: Boolean): Ride? {
+        val live = RideRecorder.stop()
+        if (_mode.value !is Mode.Navigating) RideService.stop(getApplication())
+        val ride = if (save && live != null) rideStore.save(live) else null
+        _rides.value = rideStore.list()
+        return ride
+    }
+
+    fun openRides() { _mode.value = Mode.Rides }
+    fun viewRide(r: Ride) {
+        _shownTrack.value = rideStore.points(r)
+        _mode.value = Mode.RideView(r)
+        _shownTrack.value.takeIf { it.size > 1 }?.let { pts ->
+            _camera.value = CameraRequest.FitPoints(pts)
+        }
+    }
+    fun deleteRide(r: Ride) { rideStore.delete(r); _rides.value = rideStore.list(); _shownTrack.value = emptyList(); _mode.value = Mode.Rides }
+    fun rideFile(r: Ride) = rideStore.file(r)
 
     fun flyTo(t: Target, zoom: Double? = 15.0) { _camera.value = CameraRequest.FlyTo(t.lat, t.lon, zoom) }
     fun followMe() { _camera.value = CameraRequest.FollowMe }
@@ -226,20 +330,29 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
     fun startNav() {
         val p = _mode.value as? Mode.Plan ?: return
         val route = p.routes[p.selected] ?: return
+        startNavigation(p.dest, route)
+    }
+
+    private fun startNavigation(dest: Target, route: Route) {
         navigator = Navigator(route)
-        _mode.value = Mode.Navigating(p.dest, route, null)
+        _mode.value = Mode.Navigating(dest, route, null)
         locationRepo.start(fastUpdates = true)
+        RideService.start(getApplication(), "Navigating to ${dest.title}")
         _camera.value = CameraRequest.FollowMe
     }
 
     fun stopNav() {
         navigator = null
         _mode.value = Mode.Browse
-        locationRepo.start(fastUpdates = false)
+        if (recording.value == null) { RideService.stop(getApplication()); locationRepo.start(fastUpdates = false) }
     }
+
+    /** Fast GPS while navigating or recording, slow while just browsing. */
+    fun wantFastGps() = _mode.value is Mode.Navigating || recording.value != null
 
     /** Called for every GPS fix. */
     fun onLocation(loc: Location) {
+        recording.value?.let { live -> _shownTrack.value = live.points.map { it.lat to it.lon } }
         val m = _mode.value as? Mode.Navigating ?: return
         val nav = navigator ?: return
         val st = nav.update(loc.latitude, loc.longitude)
@@ -249,11 +362,19 @@ class MapViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun reroute(dest: Target, loc: Location) {
         val r = router ?: return
+        val old = (_mode.value as? Mode.Navigating)?.route ?: return
+        val progress = (_mode.value as? Mode.Navigating)?.state?.progressIndex ?: 0
         rerouting = true
         viewModelScope.launch {
             val blocked = r.blockedEdges(_pins.value.filter { it.type == PinType.BLOCKED }.map { it.lat to it.lon })
             val route = withContext(Dispatchers.Default) {
-                r.route(loc.latitude, loc.longitude, dest.lat, dest.lon, settings.routeMode, _avoidMaybe.value, blocked)
+                if (old.isLoop) {
+                    // rejoin the loop ~800 m ahead instead of cutting straight home
+                    val target = old.cumDist[progress] + 800.0
+                    val j = old.cumDist.indexOfFirst { it >= target }.takeIf { it > 0 } ?: (old.lats.size - 1)
+                    val back = r.route(loc.latitude, loc.longitude, old.lats[j], old.lons[j], old.mode, _avoidMaybe.value, blocked)
+                    back?.let { r.concat(listOf(it, r.tail(old, j)), old.mode) }
+                } else r.route(loc.latitude, loc.longitude, dest.lat, dest.lon, settings.routeMode, _avoidMaybe.value, blocked)
             }
             if (route != null && _mode.value is Mode.Navigating) {
                 navigator = Navigator(route)

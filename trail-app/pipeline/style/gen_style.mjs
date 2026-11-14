@@ -41,6 +41,48 @@ function width(scale) {
   return ["interpolate", ["exponential", 1.5], ["zoom"], 8, 1.2 * scale, 10, 2 * scale, 14, 5 * scale, 17, 8 * scale];
 }
 
+// Colours for connected trail systems (network view). Distinct from the cyan route and from each other.
+const SYSTEMS = {
+  light: ["#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#C99700", "#A6761D", "#1F78B4"],
+  dark:  ["#4FD1A5", "#FF8C42", "#A9A4FF", "#FF6FB5", "#9BE15D", "#FFD23F", "#E0A458", "#5DADE2"],
+};
+
+function networkLayers(mode) {
+  const c = TRAIL[mode];
+  const pal = SYSTEMS[mode];
+  const match = ["match", ["get", "s"]];
+  pal.forEach((col, i) => match.push(i + 1, col));
+  match.push(mode === "dark" ? "#8A939C" : "#8C8C8C");
+  const src = { source: "trails", "source-layer": "trails" };
+  const hidden = { visibility: "none" };
+  return [
+    // dims the basemap so the network stands out
+    { id: "net_dim", type: "fill", source: "region", layout: hidden,
+      paint: { "fill-color": mode === "dark" ? "#0E1012" : "#FFFFFF", "fill-opacity": mode === "dark" ? 0.55 : 0.6 } },
+    { id: "net_road", type: "line", ...src, minzoom: 9, filter: ["==", ["get", "c"], 2],
+      layout: { ...hidden, "line-cap": "round", "line-join": "round" },
+      paint: { "line-color": c.road, "line-width": width(0.7), "line-opacity": 0.75 } },
+    { id: "net_casing", type: "line", ...src, filter: ["all", ["has", "s"]],
+      layout: { ...hidden, "line-cap": "round", "line-join": "round" },
+      paint: { "line-color": c.casing, "line-width": ["interpolate", ["exponential", 1.5], ["zoom"], 8, 3, 10, 5, 14, 10, 17, 14] } },
+    { id: "net_trail", type: "line", ...src, filter: ["all", ["has", "s"]],
+      layout: { ...hidden, "line-cap": "round", "line-join": "round" },
+      paint: { "line-color": match, "line-width": width(1.3) } },
+    { id: "net_maybe_mark", type: "line", ...src, filter: ["all", ["has", "s"], ["==", ["get", "c"], 1]],
+      layout: { ...hidden, "line-cap": "butt" },
+      paint: { "line-color": c.center, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.8, 16, 2], "line-dasharray": [2, 4] } },
+    { id: "net_junction", type: "circle", source: "trails", "source-layer": "junctions", minzoom: 11, layout: hidden,
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, ["match", ["get", "j"], "a", 3.5, 2.5], 16, ["match", ["get", "j"], "a", 8, 6]],
+        "circle-color": ["match", ["get", "j"], "a", c.road, mode === "dark" ? "#FFFFFF" : "#222222"],
+        "circle-stroke-color": mode === "dark" ? "#111316" : "#FFFFFF", "circle-stroke-width": 1.5 } },
+    { id: "net_label", type: "symbol", ...src, minzoom: 11, filter: ["all", ["has", "n"], ["has", "s"]],
+      layout: { ...hidden, "symbol-placement": "line", "text-field": ["get", "n"], "text-font": ["Noto Sans Medium"], "text-size": 13,
+        "symbol-spacing": 250 },
+      paint: { "text-color": c.label, "text-halo-color": c.halo, "text-halo-width": 2 } },
+  ];
+}
+
 function trailLayers(mode) {
   const c = TRAIL[mode];
   const src = { source: "trails", "source-layer": "trails" };
@@ -76,7 +118,8 @@ function trailLayers(mode) {
 function style(mode) {
   const base = layers("protomaps", flavor(mode), { lang: "en" }).filter((l) => l.id !== "pois");
   const firstLabel = base.findIndex((l) => l.id === "address_label");
-  const all = [...base.slice(0, firstLabel), ...trailLayers(mode), ...base.slice(firstLabel)];
+  const satellite = { id: "satellite", type: "raster", source: "satellite", layout: { visibility: "none" }, paint: { "raster-fade-duration": 150 } };
+  const all = [...base.slice(0, firstLabel), satellite, ...trailLayers(mode), ...networkLayers(mode), ...base.slice(firstLabel)];
   return {
     version: 8,
     name: `Bancroft ATV ${mode}`,
@@ -85,6 +128,12 @@ function style(mode) {
     sources: {
       protomaps: { type: "vector", url: "pmtiles://asset://basemap.pmtiles", attribution: "© OpenStreetMap contributors, Protomaps" },
       trails: { type: "vector", url: "pmtiles://asset://trails.pmtiles", attribution: "Ontario LIO (OGL-Ontario), OpenStreetMap" },
+      // online only: Esri World Imagery (shown when the rider picks Satellite and has signal / Wi-Fi)
+      satellite: { type: "raster", tileSize: 256, maxzoom: 19,
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+        attribution: "Imagery © Esri, Maxar, Earthstar Geographics" },
+      region: { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "Polygon",
+        coordinates: [[[-80.5, 43.5], [-75.5, 43.5], [-75.5, 46.7], [-80.5, 46.7], [-80.5, 43.5]]] } } },
     },
     layers: all,
   };

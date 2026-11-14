@@ -60,11 +60,23 @@ class Navigator(val route: Route) {
     }
 }
 
-fun formatDist(m: Double): String = when {
+/** Set from settings; false = km/m, true = miles/feet. */
+object Units { @Volatile var imperial = false }
+
+fun formatDist(m: Double): String = if (Units.imperial) {
+    val mi = m / 1609.344
+    when {
+        mi < 0.19 -> "${(Math.round(m * 3.28084 / 50.0) * 50).toInt()} ft"
+        mi < 9.95 -> "%.1f mi".format(mi)
+        else -> "${Math.round(mi)} mi"
+    }
+} else when {
     m < 950 -> "${(Math.round(m / 10.0) * 10).toInt()} m"
     m < 9950 -> "%.1f km".format(m / 1000)
     else -> "${Math.round(m / 1000)} km"
 }
+
+fun formatSpeed(kmh: Double): String = if (Units.imperial) "${Math.round(kmh / 1.609344)} mph" else "${Math.round(kmh)} km/h"
 
 fun formatTime(s: Double): String {
     val min = Math.round(s / 60.0).toInt()

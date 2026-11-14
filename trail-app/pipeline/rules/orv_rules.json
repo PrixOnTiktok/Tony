@@ -1,6 +1,6 @@
 {
   "researched": "2026-11-14",
-  "method_note": "Every government site (ontario.ca, canlii.org, all municipal sites) refused direct fetches from this sandbox. All findings come from web-search result summaries and snippets, not from reading the full by-law or regulation text. Segment endpoints in particular came from truncated snippets. Treat everything here as a lead to verify, and confirm the current text on e-Laws and each municipality's site before relying on it.",
+  "method_note": "v2 (2026-11-14). Read directly as primary text: O. Reg. 8/03 Table and O. Reg. 316/03 s.4.1 (e-Laws on ontario.ca); by-law PDFs for Bancroft (01-2004, 49-2015, 43-2020), Faraday (25-2015, 21-2024), Wollaston (05-2021), Tudor and Cashel (2015-22, 2023-34), Carlow/Mayo (21-2015); the Hastings Highlands, Highlands East and Limerick by-law listings and a Limerick council agenda. For faraday.ca, tudorandcashel.com, carlowmayo.ca and limerick.ca, the non-www pages were blocked, so files came from the www. wp-content and wp-json endpoints. Everything else (verified_primary=false) rests on web-search summaries and may be stale. Key legal point confirmed in 316/03 s.4.1(2)-(3): in a municipality named in the 8/03 Table, ATVs, MOHUVs, ROVs, ETVs AND off-road motorcycles that meet Part III may use municipal roads without a by-law, but any by-law prohibition or limit still applies. Outside 8/03 (towns and cities such as Bancroft, Kawartha Lakes), ATV/UTV/ROV need a permitting by-law, and ETVs/dirt bikes need a by-law that specifically names them. 8/03 Table names checked for this area: listed are Addington Highlands, Admaston/Bromley, Algonquin Highlands, Asphodel-Norwood, Bonnechere Valley, Brudenell Lynoch and Raglan, Carlow/Mayo, Central Frontenac, Centre Hastings, Dysart et al, Faraday, Galway-Cavendish and Harvey (now Trent Lakes), Greater Madawaska, Hastings Highlands, Havelock-Belmont-Methuen, Highlands East, Killaloe Hagarty and Richards, Lake of Bays, Limerick, Madawaska Valley, Madoc, Marmora and Lake, Minden Hills, North Algona-Wilberforce, North Frontenac, North Kawartha, South Algonquin, Stirling-Rawdon, Tudor and Cashel, Tweed, Tyendinaga, Wollaston. NOT listed: Bancroft, Kawartha Lakes. Earlier caveat still stands: confirm current text before relying on anything marked low.",
   "provincial": {
     "summary": "Framework: HTA s.191.8 plus O. Reg. 316/03 (Operation of Off-Road Vehicles on Highways). s.2: no ORV on any highway except as the regulation permits, as Part IV permits, or as ORV Act cl. 2(2)(a) permits (direct crossing). s.3: no ORV on any highway in Schedule A ('highways prohibited to all off-road vehicles'). Schedule A covers the 400-series and QEW, plus named segments of King's highways (some found in the bbox are listed under highways). s.4: Schedule B highways are closed except to ATVs, two-up ATVs, ROVs, MOHUVs, ETVs and off-road motorcycles that meet Part III. MTO summary: permitted ORVs may use Highways 500-899, many 7000-series highways and some low-traffic highways, but not 400-series, the QEW or sections of the Trans-Canada. Part III conditions when on a highway: ride on the shoulder in the direction of traffic, as close to the right edge as practicable. Use the travelled lane only if the shoulder is unsafe, obstructed or too narrow to keep all tires off the roadway. Never ride in the median. Speed limits are 20 km/h where the posted limit is 50 km/h or less, and 50 km/h where it is over 50 km/h; a by-law may set a lower one. Driver must be 16+ with a G2/M2 or higher licence. Vehicle must have a permit, a rear plate and insurance, and the rider an approved helmet (seatbelts where fitted). Headlights and taillights stay on. A single-rider ATV may carry no passenger; on-road passengers on two-up machines must be 8+. Highways inside provincial parks are open only if the park permits ORVs (Algonquin does not). Municipal roads: an ORV may use a municipal highway only if a s.191.8(3) by-law permits it. Exception since Jan 1, 2021 (O. Reg. 740/20): in municipalities listed in O. Reg. 8/03 (former townships where the 80 km/h default applies), ORVs that meet 316/03 are allowed on municipal roads by default unless a by-law prohibits or restricts them. Elsewhere (towns, cities), no by-law means no on-road riding. Municipal by-laws may also limit months, hours, vehicle types, speeds and specific roads. Unverified: whether King's highways that are in neither Schedule A nor B are open by default. Sources disagree, so those are marked 'unknown'. Also unverified: whether a municipality can restrict ORVs on provincial highways inside its boundaries.",
     "router_guidance": "Suggested logic: (1) Never route along a Schedule A segment, which includes all 400-series. (2) Provincial 500-899 secondary highways still under MTO: shoulder allowed. (3) Former provincial highways now downloaded to counties or municipalities (e.g. 503, 507, 504, 620, 648, 121) follow the owning municipality's by-law, so check OSM operator/ref tags. (4) Other King's highways: treat as unknown/avoid unless verified. (5) Apply each municipality's rule to its own roads, and the county by-law to county roads.",
@@ -211,140 +211,212 @@
       "osm_name_hint": "Bancroft",
       "tier": "lower",
       "roads": "all",
-      "conditions": "By-law 01-2004 permitted ATVs on all roads under Town jurisdiction, at 20 km/h where posted 50 or less and 50 km/h where posted over 50. Updated by 49-2015 and 43-2020; a later amendment (date unknown) added off-road motorcycles and ETVs. Hwy 28/62 inside town limits are provincial (see Schedule A: Hwy 62 south of Bay Lake Rd is prohibited). Bancroft is a town, so the O. Reg. 8/03 default does not apply.",
-      "bylaw": "01-2004, updated 49-2015 and 43-2020 (texts of the updates not read)",
-      "source": "https://bancroft.civicweb.net/document/59493/",
-      "source_alt": "https://www.mybancroftnow.com/?p=48767",
+      "conditions": "By-law 49-2015 (passed June 23, 2015; replaced the ATV-only 01-2004): 'Off-Road Vehicles shall be permitted on all roads and highways under the jurisdiction of the Town of Bancroft', covering ATVs incl. two-up, MOHUVs (UTVs) and ROVs (side-by-sides). Must meet O. Reg. 316/03 ss.7-15 equipment and ss.16-24 operating rules. Speed 20 km/h where posted 50 or less, 50 km/h where posted over 50. No season or hour limits in the text. By-law 43-2020 (Aug 11, 2020) amends 49-2015 by adding definitions of extreme terrain vehicles and off-road motorcycles; it adds no separate operative clause, but because 49-2015 permits 'Off-Road Vehicles' generally, the town treats ETVs and dirt bikes as included (local news reports council approving that). Hwy 28/62 in town are provincial, not covered by the by-law. Bancroft is a town and is NOT in O. Reg. 8/03, so only the by-law permits road riding. No newer ORV by-law found in Bancroft's 2021-2026 by-law folders.",
+      "bylaw": "49-2015, amended by 43-2020 (01-2004 was the original ATV-only by-law)",
+      "source": "https://bancroft.civicweb.net/document/59494/",
+      "source_alt": "https://bancroft.civicweb.net/document/73042/",
       "o_reg_8_03_listed": false,
-      "confidence": "medium"
+      "confidence": "high",
+      "sources": [
+        "https://bancroft.civicweb.net/document/59494/",
+        "https://bancroft.civicweb.net/document/73042/",
+        "https://bancroft.civicweb.net/document/59493/",
+        "https://bancroft.civicweb.net/filepro/documents/59492/",
+        "https://www.mybancroftnow.com/?p=48767",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Hastings Highlands",
       "osm_name_hint": "Hastings Highlands",
       "tier": "lower",
-      "roads": "unknown",
-      "likely": "all",
-      "conditions": "No ORV road by-law found. The municipality is listed in O. Reg. 8/03, so ORVs are allowed on municipal roads by default since Jan 1, 2021 unless a prohibiting by-law exists (none found). Includes Maynooth, Lake St. Peter, Birds Creek.",
-      "bylaw": "none found",
-      "source": "https://www.hastingshighlands.ca/",
+      "roads": "all",
+      "conditions": "No ORV by-law (permitting or prohibiting) is on the municipality's by-laws page (checked 2026-11-14; its traffic by-law 2020-009 was listed but could not be downloaded). Hastings Highlands IS in the O. Reg. 8/03 Table (confirmed on e-Laws), so under O. Reg. 316/03 s.4.1(2) ATVs, UTVs, side-by-sides, ETVs and off-road motorcycles that meet Part III may use municipal roads by default since Jan 1, 2021. Provincial 20/50 km/h limits apply. Includes Maynooth, Lake St. Peter, Birds Creek. Hwy 62/127/28 segments are provincial.",
+      "bylaw": "none found (default under O. Reg. 8/03 / 316/03 s.4.1(2))",
+      "source": "https://www.hastingshighlands.ca/municipal-services/bylaws-and-policies/",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "medium",
+      "sources": [
+        "https://www.hastingshighlands.ca/municipal-services/bylaws-and-policies/",
+        "https://www.ontario.ca/laws/regulation/030008",
+        "https://www.ontario.ca/laws/regulation/030316"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Faraday",
       "osm_name_hint": "Faraday",
       "tier": "lower",
-      "roads": "unknown",
-      "likely": "all",
-      "conditions": "By-law 25-2015 regulates ORVs on municipal highways; the operative road list was not seen. Listed in 8/03 (default allowed). Unopened road allowances need written council approval (By-law 21-2024).",
+      "roads": "all",
+      "conditions": "By-law 25-2015 (passed July 8, 2015) permits MOHUVs, ROVs, ATVs (incl. two-up) and 'Off-Road Vehicles' on all highways under township jurisdiction, with no road schedule, season or hour limits. Must meet O. Reg. 316/03 ss.7-15 (equipment), 16-18 (permit, insurance, licence), s.19 (helmet) and ss.20-24 (operation). Speed 20 km/h where posted 50 or less, 50 km/h where over 50. It does not name ETVs or off-road motorcycles, but Faraday is in O. Reg. 8/03, so those are allowed by default. Unopened road allowances need written council approval (By-law 21-2024, passed Apr 3, 2024). The township's site lists the PDF as 'ATV By-Law'.",
       "bylaw": "25-2015",
-      "source": "https://faraday.ca/council/bylaws-bylaw-enforcement/",
+      "source": "https://faraday.ca/wp-content/uploads/2020/07/2015-0025.pdf",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "high",
+      "source_alt": "https://faraday.ca/document/atv-by-law/",
+      "sources": [
+        "https://faraday.ca/wp-content/uploads/2020/07/2015-0025.pdf",
+        "https://faraday.ca/document/atv-by-law/",
+        "https://www.faraday.ca/wp-content/uploads/2024/04/21-2024-USE-OF-UNOPENED-ROAD-ALLOWANCE.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Wollaston",
       "osm_name_hint": "Wollaston",
       "tier": "lower",
-      "roads": "unknown",
-      "likely": "all",
-      "conditions": "By-law 2021-0005 (cited as 05-2021) regulates ORVs in the township. A trail access pass (OFATV, EOTA, KATVA or HATVA) is required on the township-owned Wollaston Rail Trail, whose lease to Coe Hill Riders runs to Feb 2029. Road provisions not seen. Listed in 8/03 (default allowed). Includes Coe Hill. Nellie Lunn Park: no motorized vehicles.",
-      "bylaw": "2021-0005",
-      "source": "https://wollaston.ca/bylaws/",
+      "roads": "all",
+      "conditions": "By-law 05-2021 (filed as 2021-0005, passed Jan 11, 2021) permits ATVs, ETVs, MOHUVs, off-road motorcycles and ROVs on highways under township jurisdiction, subject to O. Reg. 316/03 equipment and operating rules. Excluded: sidewalks and footpaths; municipal parks and beaches; private roads or driveways without the owner's consent; provincial highways; roads where passage is restricted under Municipal Act s.35; and unopened road allowances. No season, hour or township speed limits beyond the provincial ones. Repeals all earlier ORV by-laws. The Wollaston Rail Trail (township-owned multi-use trail) needs an OFATV, EOTA, KATVA or HATVA pass. Includes Coe Hill.",
+      "bylaw": "05-2021 (2021-0005)",
+      "source": "https://wollaston.ca/bfd_download/2021-0005-off-road-vehicles/",
       "source_alt": "https://www.bancroftthisweek.com/coe-hill-riders-looks-to-extend-land-use-agreement/",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "high",
+      "sources": [
+        "https://wollaston.ca/bfd_download/2021-0005-off-road-vehicles/",
+        "https://wollaston.ca/bfd_download/off-road-vehicle-by-law/",
+        "https://wollaston.ca/bylaws/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Limerick",
       "osm_name_hint": "Limerick",
       "tier": "lower",
-      "roads": "unknown",
-      "likely": "all",
-      "conditions": "No ORV road by-law found. Council has agreements with the Coe Hill ATV Club (By-law 2025-04 agreement) and a 2021 'By-law for Trails' was in progress. 8/03 status not verified (probably listed, as a township).",
-      "bylaw": "none found for roads",
+      "roads": "all",
+      "conditions": "No ORV road by-law appears in the township's online by-law and media library (searched 2026-11-14 for ATV, off-road, ORV, trail). Limerick IS in O. Reg. 8/03 (confirmed), so ORVs meeting Part III are allowed on municipal roads by default since 2021 unless a by-law prohibits them; none found. By-law 2025-04 (Feb 19, 2025) authorizes an agreement with the Coe Hill ATV Club (trail use, not road rules; the agreement text was not in the agenda extract). Note: limerick.ca's media library may not hold older by-laws, so an unlisted by-law can't be ruled out.",
+      "bylaw": "none found for roads (default under 8/03); 2025-04 = ATV club agreement",
       "source": "https://limerick.ca/wp-content/uploads/2025/04/Council-19-Feb-2025-Agenda-Pdf.pdf",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://limerick.ca/businesses-government/by-laws-policies/",
+        "https://limerick.ca/wp-content/uploads/2025/04/Council-19-Feb-2025-Agenda-Pdf.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Tudor and Cashel",
       "osm_name_hint": "Tudor and Cashel",
       "tier": "lower",
       "roads": "all",
-      "conditions": "By-law 2015-22 allows ATVs, ORVs and UTVs on municipal highways, subject to O. Reg. 316/03 equipment, permit, insurance, licence and helmet rules. Speed 20 km/h where posted 50 or less, 50 km/h where over 50. Later amendments unknown. Listed in 8/03.",
+      "conditions": "By-law 2015-22 (passed July 7, 2015) permits MOHUVs, ROVs, ATVs (incl. two-up) and ORVs on all highways under township jurisdiction, with no road schedule or hour limits. Same wording as Faraday 25-2015: O. Reg. 316/03 equipment, permit, insurance, licence, helmet and operation rules. Speed 20 km/h where posted 50 or less, 50 km/h where over 50. ETVs and dirt bikes are not named, but the township is in 8/03, so they are allowed by default. Unopened road allowances: no use without written council approval (Policy By-law 2023-34). No later ORV amendment found in the township's media library.",
       "bylaw": "2015-22",
       "source": "https://tudorandcashel.com/wp-content/uploads/2021/01/2015-22-By-law-to-allow-ATVs-and-ORVs-and-UTVs.pdf",
       "o_reg_8_03_listed": true,
-      "confidence": "medium"
+      "confidence": "high",
+      "sources": [
+        "https://tudorandcashel.com/wp-content/uploads/2021/01/2015-22-By-law-to-allow-ATVs-and-ORVs-and-UTVs.pdf",
+        "https://tudorandcashel.com/wp-content/uploads/2023/08/2023-34-Policy-for-Use-of-Unopened-Road-Allowance.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Carlow/Mayo",
       "osm_name_hint": "Carlow/Mayo",
       "tier": "lower",
-      "roads": "unknown",
-      "likely": "all",
-      "conditions": "The township lists an 'Off-Road Vehicles' by-law under its Roads category; contents and number not seen. 8/03 status not verified.",
-      "bylaw": "exists, number not found",
-      "source": "https://carlowmayo.ca/departments/by-laws-by-law-enforcement/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "roads": "all",
+      "conditions": "By-law 21-2015 (passed July 14, 2015) amends By-law 28-2004. It permits MOHUVs, ROVs, ATVs and ORVs on all highways under township jurisdiction, under the same O. Reg. 316/03 conditions and the same 20/50 km/h limits as Faraday and Tudor and Cashel. No road schedule or hour limits. The township is in 8/03, so ETVs and dirt bikes are allowed by default.",
+      "bylaw": "21-2015 (amending 28-2004)",
+      "source": "https://carlowmayo.ca/wp-content/uploads/2023/01/Off-Road-Vehicles-21-2015.pdf",
+      "o_reg_8_03_listed": true,
+      "confidence": "high",
+      "sources": [
+        "https://carlowmayo.ca/wp-content/uploads/2023/01/Off-Road-Vehicles-21-2015.pdf",
+        "https://carlowmayo.ca/departments/by-laws-by-law-enforcement/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": true
     },
     {
       "name": "Marmora and Lake",
       "osm_name_hint": "Marmora and Lake",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "ATV By-law 2004-10, amended by 2015-31; contents not seen. Crowe Valley CA barricaded the EOTA trail ramp into Callaghan's Rapids CA (2022). 'Municipality' status means it may not be in 8/03.",
-      "bylaw": "2004-10 as amended by 2015-31",
+      "conditions": "An ATV by-law (2004-10 as amended by 2015-31) was reported in the earlier pass but not confirmed this time; a 2026 search snippet of marmoraandlake.ca/bylaw showed no ATV entry. Marmora and Lake IS in O. Reg. 8/03 (confirmed), so ORVs are allowed on its roads by default unless a by-law prohibits or limits them. Crowe Valley CA barricaded the EOTA trail ramp into Callaghan's Rapids CA (2022).",
+      "bylaw": "2004-10 as amended by 2015-31 (unconfirmed)",
       "source": "https://marmoraandlake.ca/bylaw",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://marmoraandlake.ca/bylaw",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Madoc (Township)",
       "osm_name_hint": "Madoc",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Nothing found. Probably listed in 8/03 as a township, but not verified.",
+      "conditions": "No ORV by-law found. 'Madoc' IS in the O. Reg. 8/03 Table (the township; Madoc village is in Centre Hastings), so ORVs are allowed on township roads by default unless prohibited.",
       "bylaw": "none found",
-      "source": "",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "source": "https://www.ontario.ca/laws/regulation/030008",
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Centre Hastings",
       "osm_name_hint": "Centre Hastings",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "No ORV by-law among the commonly requested by-laws. The municipal trail network (22 km) is promoted for ATVs. Includes Madoc village (Hwy 62/7).",
+      "conditions": "No ORV by-law found. Centre Hastings IS in O. Reg. 8/03 (confirmed), so ORVs are allowed on municipal roads by default unless prohibited. A by-law limiting the Madoc village core is possible but none was found. The municipal trail network (22 km) is promoted for ATVs.",
       "bylaw": "none found",
       "source": "https://centrehastings.com/our-municipality/by-laws/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://centrehastings.com/our-municipality/by-laws/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Tweed",
       "osm_name_hint": "Tweed",
       "tier": "lower",
       "roads": "unknown",
-      "likely": "some",
-      "conditions": "By-law 2017-16 regulates ORVs on municipal highways; routes and hours not seen.",
-      "bylaw": "2017-16",
+      "likely": "all",
+      "conditions": "Earlier pass: By-law 2017-16 regulates ORVs on municipal highways. An old forum post cites By-law 2004-14 for ATVs on Tweed roads. Neither text was seen. Tweed IS in O. Reg. 8/03 (confirmed), so the default is open unless the by-law restricts. Any by-law restrictions (for example in Tweed village) are unknown.",
+      "bylaw": "2017-16 (earlier 2004-14); texts not seen",
       "source": "https://tweed.ca/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://tweed.ca/",
+        "https://ontariohighwaytrafficact.com/post28294.html",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Highlands East",
       "osm_name_hint": "Highlands East",
       "tier": "lower",
       "roads": "all",
-      "conditions": "By-law 2020-67: municipal roads open to ORVs under O. Reg. 316/03 and the ORV Act, with sections 7-15 (equipment) and 16-24 (operation) applying. Speed 20/50 km/h. Off-road motorcycles and Argo-type vehicles were added in 2020. A newer version may exist (one listing dated Jan 2024 is marked 'pending'). Includes Wilberforce, Gooderham, Cardiff, Tory Hill.",
+      "conditions": "By-law 2020-67: municipal roads open to ORVs under O. Reg. 316/03 and the ORV Act, with ss.7-15 (equipment) and 16-24 (operation) applying. Speed 20/50 km/h. Off-road motorcycles and Argo-type vehicles were added in 2020. The municipal by-laws page (checked 2026-11-14) still links an 'Off Road Vehicle By-law' (civicweb doc 422407), but that PDF host is blocked here, so the text was not re-read. Highlands East IS in O. Reg. 8/03 (confirmed), so roads are open by default anyway. Includes Wilberforce, Gooderham, Cardiff, Tory Hill.",
       "bylaw": "2020-67",
       "source": "https://highlandseast.civicweb.net/document/422407/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "medium"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://www.highlandseast.ca/municipal-services/by-laws/",
+        "https://highlandseast.civicweb.net/filepro/documents/364733/?preview=422407",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Dysart et al",
@@ -352,11 +424,17 @@
       "tier": "lower",
       "roads": "unknown",
       "likely": "all",
-      "conditions": "No ORV road by-law found in search. A 2019 article describes Haliburton County municipalities as permitting ORVs on roads by by-law. Haliburton County Rail Trail is for HATVA/KATVA permit holders only, May 1-Nov 30.",
+      "conditions": "No ORV road by-law found (only snowmobile By-law 2020-11 and Head Lake Park By-law 2023-04). Dysart et al IS in O. Reg. 8/03 (confirmed), so the default allows ORVs on municipal roads unless prohibited. Haliburton County roads follow the County rules (see County of Haliburton). The Haliburton County Rail Trail is permit-only (HATVA/KATVA), May 1 - Nov 30; a 2016 Minden Times story said ORVs were banned from it, so check the current status.",
       "bylaw": "none found",
       "source": "https://www.dysartetal.ca/explore-and-play/parks-and-outdoor-spaces/multi-use-and-motorized-trails/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://www.dysartetal.ca/explore-and-play/parks-and-outdoor-spaces/multi-use-and-motorized-trails/",
+        "https://www.dysartetal.ca/municipal-government/by-law-enforcement/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Minden Hills",
@@ -364,11 +442,17 @@
       "tier": "lower",
       "roads": "unknown",
       "likely": "all",
-      "conditions": "No ORV by-law on the township's by-law lists. The township funded a HATVA trail link into Minden. Probably listed in 8/03 (township), so the default would allow. Not verified.",
-      "bylaw": "none found",
+      "conditions": "A Highlander article (Dec 30, 2020) reports Minden Hills moving to allow more ORV types (ETVs, dirt bikes), which implies an ORV road by-law exists; number not found. Minden Hills IS in O. Reg. 8/03 (confirmed), so roads are open by default. The township funded a HATVA trail link into Minden.",
+      "bylaw": "exists per 2020 news; number not found",
       "source": "https://www.mindenhills.ca/explore-discover/parks-and-trails/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://thehighlander.ca/2020/12/30/minden-hills-to-allow-more-off-road-vehicles/",
+        "https://www.mindenhills.ca/explore-discover/parks-and-trails/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Algonquin Highlands",
@@ -379,18 +463,31 @@
       "bylaw": "2020-73",
       "source": "https://algonquinhighlands.civicweb.net/document/384676/",
       "o_reg_8_03_listed": true,
-      "confidence": "medium"
+      "confidence": "medium",
+      "sources": [
+        "https://algonquinhighlands.civicweb.net/document/384676/",
+        "https://algonquinhighlands-001-ca.govstack.com/media/oswnqsbh/off-road-vehicles-by-law-2020-73-accessible.pdf",
+        "https://www.ysf-fsj.ca/by-law-2020-73.php",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Madawaska Valley",
       "osm_name_hint": "Madawaska Valley",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "No ORV road by-law found. An MOU and land use agreement with the Renfrew County ATV Club cover the municipally owned rail trail (former railway, open to ATVs). County of Renfrew roads are covered by County By-law 91-24. Includes Barry's Bay, Combermere.",
+      "conditions": "No ORV road by-law found. Madawaska Valley IS in O. Reg. 8/03 (confirmed), so the default allows ORVs on township roads unless prohibited. An MOU and land use agreement with the Renfrew County ATV Club cover the municipally owned rail trail. County of Renfrew roads: see County. Includes Barry's Bay, Combermere.",
       "bylaw": "none found",
       "source": "https://www.mybarrysbaynow.com/28114/news/madawaska-valley-and-renfrew-county-atv-club-sign-memorandum-of-understanding/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.mybarrysbaynow.com/28114/news/madawaska-valley-and-renfrew-county-atv-club-sign-memorandum-of-understanding/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "South Algonquin",
@@ -398,22 +495,34 @@
       "tier": "lower",
       "roads": "unknown",
       "likely": "all",
-      "conditions": "By-law 2023-760 regulates ATVs, ETVs and off-road motorcycles on municipal highways under O. Reg. 316/03; road schedule not seen. A township newsletter advises not riding roads posted over 50 km/h. By-law 2023-777 bans ATVs on sidewalks, parks and township property without CAO consent. Includes Whitney, Madawaska.",
+      "conditions": "By-law 2023-760 (passed July 5, 2023) regulates ATVs, ETVs and off-road motorcycles on municipal highways by applying O. Reg. 316/03 (per a search summary of the PDF; no road schedule reported). A township newsletter advises not riding roads posted over 50 km/h. By-law 2023-777 bans ATVs on sidewalks, parks and township property without CAO consent. South Algonquin IS in O. Reg. 8/03 (confirmed). Includes Whitney, Madawaska.",
       "bylaw": "2023-760",
       "source": "https://www.southalgonquin.ca/wp-content/uploads/2023/07/2023-760-All-Terrain-Vehicle-By-Law.pdf",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://www.southalgonquin.ca/wp-content/uploads/2023/07/2023-760-All-Terrain-Vehicle-By-Law.pdf",
+        "https://www.southalgonquin.ca/wp-content/uploads/2023/12/2023-777-Parking-on-Roads-By-Law.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Killaloe, Hagarty and Richards",
       "osm_name_hint": "Killaloe, Hagarty and Richards",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Nothing found. Renfrew County roads: see County By-law 91-24.",
+      "conditions": "No ORV by-law found (only By-law 19-2025 on unopened road allowances, which needs checking before riding allowances). The township IS in O. Reg. 8/03 (confirmed), so roads are open by default unless prohibited. County of Renfrew roads: see County.",
       "bylaw": "none found",
       "source": "https://www.killaloe-hagarty-richards.ca/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.killaloe-hagarty-richards.ca/media/1110",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Bonnechere Valley",
@@ -421,22 +530,33 @@
       "tier": "lower",
       "roads": "unknown",
       "likely": "all",
-      "conditions": "By-law 2020-049 regulates ATVs on municipal highways; roads and hours not seen. The ATV club has a railbed agreement. Listed in 8/03. Includes Eganville.",
+      "conditions": "By-law 2020-049 'regulates the operation of all-terrain vehicles on municipal highways' (title confirmed on the township's by-law page via search); roads and hours not seen. The ATV club has a railbed agreement. Listed in O. Reg. 8/03 (confirmed). Includes Eganville. Don't confuse it with Tay Valley's own By-law 2020-049.",
       "bylaw": "2020-049",
       "source": "https://www.bonnecherevalleytwp.com/council-and-staff/by-laws/",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "low",
+      "sources": [
+        "https://www.bonnecherevalleytwp.com/council-and-staff/by-laws/by-law-enforcement/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Brudenell, Lyndoch and Raglan",
       "osm_name_hint": "Brudenell, Lyndoch and Raglan",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Nothing found (only By-law 2023-04 on road service levels).",
+      "conditions": "No ORV by-law found. The township IS in O. Reg. 8/03 (the Table spells it 'Brudenell, Lynoch and Raglan'), so roads are open by default unless prohibited.",
       "bylaw": "none found",
       "source": "https://blrtownship.ca/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://blrtownship.ca/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Greater Madawaska",
@@ -444,44 +564,65 @@
       "tier": "lower",
       "roads": "unknown",
       "likely": "all",
-      "conditions": "By-law 71-2020 regulates ORVs on municipal roads (citing s.4.1 of 316/03); road list not seen. Includes Calabogie, Griffith.",
+      "conditions": "By-law 71-2020 regulates ORVs on municipal roads (citing s.4.1 of 316/03); road list not seen. Listed in O. Reg. 8/03 (confirmed), so the default is open where the by-law does not restrict. Seasonally maintained roads are covered by By-law 33-2025. Includes Calabogie, Griffith.",
       "bylaw": "71-2020",
       "source": "https://www.greatermadawaska.com/en/township-office/By-Laws/71-2020-By-Law-Off-Road-Vehicles.pdf",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://www.greatermadawaska.com/en/township-office/By-Laws/71-2020-By-Law-Off-Road-Vehicles.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "North Algona Wilberforce",
       "osm_name_hint": "North Algona Wilberforce",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Nothing found.",
+      "conditions": "No ORV by-law found. The township IS in O. Reg. 8/03 (listed as 'North Algona-Wilberforce'), so roads are open by default unless prohibited. County of Renfrew roads: see County.",
       "bylaw": "none found",
-      "source": "",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "source": "https://www.ontario.ca/laws/regulation/030008",
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Addington Highlands",
       "osm_name_hint": "Addington Highlands",
       "tier": "lower",
       "roads": "some",
-      "conditions": "2004 by-law (reported in Frontenac News; number not found) allowed ATVs on township roads and road portions listed in a schedule, tied to signage of seasonally maintained roads. Current version unknown. Listed in 8/03, so the default may allow more. Lennox & Addington County roads are covered by County By-laws 3316/15 and 3326/16 (certain county roads). Includes Denbigh, Cloyne, Flinton, Northbrook.",
+      "conditions": "2004 by-law (Frontenac News; number not found) allowed ATVs on township roads and road portions listed in a schedule. Current version unknown. Addington Highlands IS in O. Reg. 8/03 (confirmed), so since 2021 ORVs are allowed on all township roads by default unless a by-law prohibits; whether the old schedule still restricts anything is unknown. L&A County roads: County By-law 3316/15 as amended by 3326/16 and 3493/21 now permits ORVs on all County highways EXCEPT the roads in Schedule A (map updated Nov 2022). Includes Denbigh, Cloyne, Flinton, Northbrook.",
       "bylaw": "2004 by-law (number not found)",
       "source": "https://fn.nfshost.com/2002-2004-archive/76-2004-archive/7540-atv-bylaw-in-ah",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "low",
+      "sources": [
+        "https://fn.nfshost.com/2002-2004-archive/76-2004-archive/7540-atv-bylaw-in-ah",
+        "https://lennox-addington.on.ca/traffic-roads-bridges/operation-off-road-vehicles",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "North Frontenac",
       "osm_name_hint": "North Frontenac",
       "tier": "lower",
       "roads": "some",
-      "conditions": "2005 by-law: 4-wheeled ATVs on township roads or portions listed in a schedule, 6:00 a.m. to 11:00 p.m. The township sold road and trail permits around 2008-09. A 2005 article said ATVs could then ride all roads in Frontenac County. A 2022 review of recreational vehicles may have changed this. Current status unknown.",
+      "conditions": "2005 by-law: 4-wheeled ATVs on township roads or portions listed in a schedule, 6:00 a.m. to 11:00 p.m. Permits sold around 2008-09. North Frontenac IS in O. Reg. 8/03 (confirmed), so the default since 2021 is open unless restricted, though the 2005 hours/schedule may still apply if that by-law is in force. No 2022 replacement found.",
       "bylaw": "2005 by-law (number not found)",
       "source": "https://frontenacnews.ca/2005-news-archive/item/7977-atv-s-now-legal-on-nf-roads",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://frontenacnews.ca/2005-news-archive/item/7977-atv-s-now-legal-on-nf-roads",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Central Frontenac",
@@ -491,52 +632,87 @@
       "conditions": "2006 by-law: licensed, insured, single-seat 4-wheel ATVs on all municipal roads. Current version unknown (may since include more vehicle types). The K&P Trail is a Frontenac County trail (By-law 2022-0033).",
       "bylaw": "2006 by-law (number not found)",
       "source": "https://frontenacnews.ca/2006-archives/item/7032-atv-bylaw",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "sources": [
+        "https://frontenacnews.ca/2006-archives/item/7032-atv-bylaw",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Havelock-Belmont-Methuen",
       "osm_name_hint": "Havelock-Belmont-Methuen",
       "tier": "lower",
       "roads": "all",
-      "conditions": "ATV access to township roadways is prohibited Dec 1 - Mar 31, enforced by AMP By-law 2024-024. Otherwise riders are welcome on township roads following township by-laws and the HTA. Banned year-round on sidewalks, driveways, private land, unopened road allowances, Mathison Conservation Area and municipal parks. Peterborough County roads in HBM (e.g. parts of CR 6, CR 30) follow the County schedule.",
-      "bylaw": "AMP By-law 2024-024 (seasonal prohibition); underlying ORV by-law number not found",
+      "conditions": "Off-Road Vehicles By-law 2024-024 (the township's ORV by-law, not only an AMP by-law as the earlier pass said) governs township roads. Township notice: ATV/ORV access to township roadways is prohibited Dec 1 - Mar 31; otherwise riders are welcome on township roads following township by-laws and the HTA. Banned year-round on sidewalks, driveways, private land, unopened road allowances, Mathison Conservation Area and municipal parks. HBM IS in O. Reg. 8/03 (confirmed). Peterborough County roads in HBM: 11 listed sections only (County schedule).",
+      "bylaw": "2024-024 (Off-Road Vehicles By-law)",
       "source": "https://hbmtwp.ca/news/posts/hbm-roadways-orv-atv-access-is-prohibited",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "medium"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://hbmtwp.ca/news/posts/hbm-roadways-orv-atv-access-is-prohibited",
+        "https://hbmtwp-004-ca.govstack.com/media/dztbznki/2024-024-off-road-vehicle-by-law-signed.pdf",
+        "https://www.ptbocounty.ca/recreation-culture-lifestyle/active-living/snowmobiles-and-off-road-vehicles/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "North Kawartha",
       "osm_name_hint": "North Kawartha",
       "tier": "lower",
       "roads": "all",
-      "conditions": "ATV By-law 2021-0026 with Schedule A road map allows ATVs on township roads; it rescinds 2017-109. A later 'ORV by-law and repeal ATV by-law' document exists (date and number not seen). Peterborough County roads in North Kawartha are NOT open (no county authorization there). Hwy 28 north of CR 504 is Schedule A. Includes Apsley.",
+      "conditions": "ATV By-law 2021-0026 with Schedule A road map allows ATVs on township roads and rescinds 2017-109. A separate 'ORV by-law and repeal ATV by-law' PDF exists (number and date not seen), and the township page still cites 2021-0026. An older 2016-35a 'ORV schedule of permitted road' also exists. CONTRADICTION on county roads: the township page says the County has no by-law opening County roads in North Kawartha, but Peterborough County amendments list NK sections (2023-21 lists CR 504; 2023-47 lists CR 46). Treat County roads in NK as unknown and check orv_map_oct2023. Hwy 28 north of CR 504 is Schedule A. North Kawartha IS in O. Reg. 8/03 (confirmed). Includes Apsley.",
       "bylaw": "2021-0026 (possibly superseded by a newer ORV by-law)",
       "source": "https://www.northkawartha.ca/living-here/atv-and-orv-information/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "medium"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://www.northkawartha.ca/living-here/atv-and-orv-information/",
+        "https://northkawartha.ca/media/ujcjntrx/by-law_2021-0026-atv-bylaw.pdf",
+        "https://northkawartha.ca/media/b3rhltqb/orv-by-law-and-repeal-atv-by-law.pdf",
+        "https://www.ptbocounty.ca/media/5yll3g2i/2022-61_2023-21-merged-orv-by-law-schedule.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Trent Lakes",
       "osm_name_hint": "Trent Lakes",
       "tier": "lower",
-      "roads": "some",
-      "conditions": "The municipality has an Off Road Vehicle by-law page (contents not read). A 2019 club article says Trent Lakes permits ORVs on roads by by-law. The Peterborough County schedule permits listed segments of CR 36, CR 37, CR 503 and CR 507 in Trent Lakes.",
+      "roads": "all",
+      "conditions": "The Peterborough County ORV page links a 'Municipality of Trent Lakes - Off Road Vehicle Bylaw' (number not seen). A 2021 KATVA map says ATVs, side-by-sides and dirt bikes are allowed on all municipal roads in Trent Lakes, with passengers 8+. The O. Reg. 8/03 Table lists Trent Lakes' former name 'Galway-Cavendish and Harvey' (renamed 2013), so the default probably applies, but that is unverified. County roads in Trent Lakes: only listed segments of CR 36, 37, 503, 507.",
       "bylaw": "exists, number not found",
       "source": "https://www.ptbocounty.ca/recreation-culture-lifestyle/active-living/snowmobiles-and-off-road-vehicles/",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "o_reg_8_03_listed": "former name Galway-Cavendish and Harvey is listed",
+      "confidence": "medium",
+      "sources": [
+        "https://www.ptbocounty.ca/recreation-culture-lifestyle/active-living/snowmobiles-and-off-road-vehicles/",
+        "https://lindsaydistrictchamberofcommerce.wildapricot.org/resources/Documents/KATVA-MAP-2021.pdf",
+        "https://issuu.com/slitherproductions/docs/atotk_august_2019_issuu/s/130718",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "City of Kawartha Lakes",
       "osm_name_hint": "Kawartha Lakes",
       "tier": "single",
       "roads": "some",
-      "conditions": "ATVs and side-by-sides only on roads the City has designated (yellow ATV-symbol signs). No ATVs on any Lindsay streets. Dirt bikes not permitted on any City road. Designated routes come from the task-force pilot (2021-2024), now approved. City, so no 8/03 default.",
+      "conditions": "ATVs and side-by-sides only on roads the City has designated (yellow ATV-symbol signs). The ATV pilot was made permanent at the Mar 19, 2024 council meeting. No ATVs on Lindsay streets. Dirt bikes not permitted on any City road. Pilot-era terms (may have changed): 7:00 a.m. - 9:30 p.m., KATVA (or affiliate) membership, G2/M2, plate, insurance. Municipal trails closed until May 1 (OPP 2026). Not in O. Reg. 8/03 (confirmed), so there is no default access.",
       "bylaw": "number not found",
       "source": "https://www.kawartha411.ca/2026/04/01/city-of-kawartha-lakes-opp-encourages-safe-and-legal-off-road-vehicle-use-ahead-of-trail-openings/",
       "o_reg_8_03_listed": false,
-      "confidence": "medium"
+      "confidence": "medium",
+      "sources": [
+        "https://www.kawartha411.ca/2026/04/01/city-of-kawartha-lakes-opp-encourages-safe-and-legal-off-road-vehicle-use-ahead-of-trail-openings/",
+        "https://www.kawartha411.ca/2025/05/26/opp-reminding-residents-about-rules-for-atvs-on-local-roads/",
+        "https://www.thestandardnewspaper.ca/post/kawartha-lakes-council-votes-to-make-atv-pilot-project-a-permanent-fixture-of-the-municipality",
+        "https://www.pressreader.com/canada/the-peterborough-examiner/20240322/281565180754080",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Admaston/Bromley",
@@ -548,7 +724,12 @@
       "bylaw": "none found",
       "source": "https://admastonbromley.com/municipal-bylaws",
       "o_reg_8_03_listed": true,
-      "confidence": "low"
+      "confidence": "low",
+      "sources": [
+        "https://admastonbromley.com/municipal-bylaws",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Lake of Bays",
@@ -558,91 +739,139 @@
       "conditions": "By-law 2016-041: ORVs permitted on all municipal highways EXCEPT the roads in Schedule A (the snippet was cut off after 'East Walker Lake Drive'; get the full list from the PDF). Operating conditions are in the by-law.",
       "bylaw": "2016-041",
       "source": "https://www.lakeofbays.on.ca/media/ioabxobi/by-law-2016-041-orv-by-law.pdf",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "medium"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://www.lakeofbays.on.ca/media/ioabxobi/by-law-2016-041-orv-by-law.pdf",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Stirling-Rawdon",
       "osm_name_hint": "Stirling-Rawdon",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Nothing found.",
+      "conditions": "No ORV by-law found. Stirling-Rawdon IS in O. Reg. 8/03 (confirmed), so roads are open by default unless prohibited.",
       "bylaw": "none found",
-      "source": "",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "source": "https://www.ontario.ca/laws/regulation/030008",
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Tyendinaga",
       "osm_name_hint": "Tyendinaga",
       "tier": "lower",
       "roads": "unknown",
-      "conditions": "Only the northern edge is inside the bbox (lat 44.16+). Not researched.",
+      "conditions": "Only the northern edge is in the bbox. Not researched for a by-law. Tyendinaga IS in O. Reg. 8/03 (confirmed), so roads are open by default unless prohibited.",
       "bylaw": "not researched",
-      "source": "",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "low"
+      "source": "https://www.ontario.ca/laws/regulation/030008",
+      "o_reg_8_03_listed": true,
+      "confidence": "low",
+      "likely": "all",
+      "sources": [
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "Asphodel-Norwood",
       "osm_name_hint": "Asphodel-Norwood",
       "tier": "lower",
       "roads": "some",
-      "conditions": "Found incidentally; inside the bbox. By-law 2022-56: ORVs on municipal roads only to link riders to approved trails; not permitted 9:00 p.m. to 7:00 a.m.",
+      "conditions": "By-law 2022-56: ORVs on municipal roads only to link riders to approved trails; not permitted 9:00 p.m. to 7:00 a.m. Asphodel-Norwood is in O. Reg. 8/03 (confirmed), but per 316/03 s.4.1(3) the by-law's restrictions still apply.",
       "bylaw": "2022-56",
       "source": "https://www.antownship.ca/media/wcjhnbdi/2022-56.pdf",
-      "o_reg_8_03_listed": "unknown",
-      "confidence": "medium"
+      "o_reg_8_03_listed": true,
+      "confidence": "medium",
+      "sources": [
+        "https://www.antownship.ca/media/wcjhnbdi/2022-56.pdf",
+        "https://antownship.ca/explore-discover/atv-and-orv-use/",
+        "https://www.ontario.ca/laws/regulation/030008"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Peterborough (county roads)",
       "osm_name_hint": "Peterborough County",
       "tier": "upper",
       "roads": "some",
-      "conditions": "ORV By-law 2022-61, Schedule A replaced by 2023-21 / 2023-47 (2023-47a). Only the listed County Road sections are open (e.g. CR 36, 37, 503, 507 in Trent Lakes; CR 6, 30 in HBM). None in North Kawartha. Reviewed every two years. Map: orv_map_oct2023.pdf.",
+      "conditions": "ORV By-law 2022-61, Schedule A replaced by 2023-21 and then 2023-47 (2023-47a). Only the listed County Road sections are open (e.g. CR 36, 37, 503, 507 in Trent Lakes; 11 sections in HBM incl. CR 6 and 30). CONTRADICTION: the earlier pass said none in North Kawartha, but 2023-21 lists CR 504 sections and 2023-47 lists CR 46 in NK; the NK township page says none. Use orv_map_oct2023 to settle it. Reviewed every two years.",
       "bylaw": "2022-61 as amended (2023-21, 2023-47)",
       "source": "https://www.ptbocounty.ca/media/amid15si/2023-4747a_merged.pdf",
-      "confidence": "medium"
+      "confidence": "medium",
+      "sources": [
+        "https://www.ptbocounty.ca/media/amid15si/2023-4747a_merged.pdf",
+        "https://www.ptbocounty.ca/media/5yll3g2i/2022-61_2023-21-merged-orv-by-law-schedule.pdf",
+        "https://www.ptbocounty.ca/media/zj3hyx1q/orv_map_oct2023.pdf"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Haliburton (county roads)",
       "osm_name_hint": "Haliburton County",
       "tier": "upper",
-      "roads": "unknown",
-      "conditions": "No county ORV by-law text found. A 2015 local news item said riders could use public road shoulders in Haliburton County from July 1 (2015 provincial change). County By-law 3709 appeared in searches about Schedule A but its contents are unknown. County roads include CR 21, 503, 648, 121 and others.",
-      "bylaw": "unknown (3709?)",
+      "roads": "all",
+      "conditions": "Minden Times (c. Sept 2020): ATVs, two-ups, side-by-sides and UTVs were already permitted on Haliburton County roads, and the county added ETVs (Argos) and off-road motorcycles. By-law number not found (3709 unconfirmed). County roads include CR 21, 503, 648, 121 and others. The OPP note that township by-laws don't open county roads applies here; it is the county by-law that opens them.",
+      "bylaw": "number not found (3709?)",
       "source": "https://www.myhaliburtonnow.com/7122/news/atv-and-orv-riders-to-be-able-to-ride-on-shoulders-of-public-roads/",
-      "confidence": "low"
+      "confidence": "medium",
+      "sources": [
+        "https://mindentimes.ca/news/more-types-of-off-road-vehicles-permitted-on-county-roadways/",
+        "https://www.myhaliburtonnow.com/7122/news/atv-and-orv-riders-to-be-able-to-ride-on-shoulders-of-public-roads/",
+        "https://www.haliburtoncounty.ca/en/county-office/bylaws.aspx"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Renfrew (county roads)",
       "osm_name_hint": "Renfrew County",
       "tier": "upper",
       "roads": "all",
-      "conditions": "By-law 91-24: ORVs may operate on County of Renfrew roads if they meet and are operated per O. Reg. 316/03. Earlier 7-21 (amended 56-23) may have listed designated routes; check whether 91-24 replaced them. Some towns (Petawawa, Arnprior) designate routes only.",
+      "conditions": "By-law 91-24 'to regulate the operation of off-road vehicles on County of Renfrew roads' (title confirmed). Earlier pass: ORVs may use County roads if they meet O. Reg. 316/03. CONTRADICTION: Arnprior and the County by-law listing still cite 7-21 as amended by 56-23. 91-24 is presumably the newer one, but whether it replaced 7-21 is unconfirmed. Some towns (Petawawa, Arnprior) designate routes only.",
       "bylaw": "91-24 (earlier 7-21, 56-23)",
       "source": "https://www.countyofrenfrew.on.ca/en/county-government/resources/Documents/91-24---Off-Road-Vehicles.pdf",
-      "confidence": "medium"
+      "confidence": "medium",
+      "sources": [
+        "https://www.countyofrenfrew.on.ca/en/county-government/resources/Documents/91-24---Off-Road-Vehicles.pdf",
+        "https://renfrew.ic12.esolg.ca/en/living-here/resources/Documents/56-23-Amend-7-21-Regulate-ORV-on-CRoads.pdf",
+        "https://www.arnprior.ca/recreation-and-culture/parks-beaches-trails-and-outdoor-rinks/off-road-vehicles/"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Lennox and Addington (county roads)",
       "osm_name_hint": "Lennox and Addington",
       "tier": "upper",
-      "roads": "some",
-      "conditions": "County ORV by-law covers County roads in Addington Highlands, Loyalist, Greater Napanee and Stone Mills. Amendment 3326/16 added vehicle types 'on certain County roads'.",
-      "bylaw": "3316/15, amended 3326/16",
+      "roads": "all",
+      "conditions": "County ORV By-law 3316/15, amended by 3326/16 and 3493/21: ORVs permitted on all County highways in Addington Highlands, Loyalist, Greater Napanee and Stone Mills EXCEPT the sections listed in Schedule A (restricted-sections map updated Nov 2022).",
+      "bylaw": "3316/15, amended 3326/16 and 3493/21",
       "source": "https://lennox-addington.on.ca/traffic-roads-bridges/operation-off-road-vehicles",
-      "confidence": "medium"
+      "confidence": "medium",
+      "sources": [
+        "https://lennox-addington.on.ca/traffic-roads-bridges/operation-off-road-vehicles"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Hastings (county roads)",
       "osm_name_hint": "Hastings County",
       "tier": "upper",
-      "roads": "unknown",
-      "conditions": "No county ORV by-law found. Hastings County may not operate a county road network (roads are lower-tier), but this is unverified. Use the lower-tier rules.",
+      "roads": "none_owned",
+      "conditions": "Hastings County appears to have no county road system: a 2020 Frontenac News column comparing counties says all comparators have county road systems 'except for Hastings County'. Numbered 'Hastings County Roads' (e.g. 62, 620) are owned by the lower tiers, so the router should apply the lower-tier municipality's rule. No county ORV by-law found. The county civicweb portal was reachable, but its search is JS-only and returned nothing usable.",
       "bylaw": "none found",
-      "source": "",
-      "confidence": "low"
+      "source": "https://www.frontenacnews.ca/editorials/item/13720-regional-roads-presentation-fizzles",
+      "confidence": "medium",
+      "sources": [
+        "https://www.frontenacnews.ca/editorials/item/13720-regional-roads-presentation-fizzles",
+        "https://hastingscounty.civicweb.net/Portal/"
+      ],
+      "verified_primary": false
     },
     {
       "name": "County of Frontenac",
@@ -652,7 +881,11 @@
       "conditions": "Frontenac County is not known to own roads. The K&P Trail (County) allows ORVs with valid ORV Act permits under By-law 2022-0033; dirt bikes may be restricted (unverified forum claim).",
       "bylaw": "2022-0033 (K&P Trail)",
       "source": "https://www.frontenaccounty.ca/wp-content/uploads/2025/10/By-law-No.-2022-0033-to-Regulate-and-Govern-the-Use-of-the-Frontenac-KP-Trail.docx",
-      "confidence": "low"
+      "confidence": "low",
+      "verified_primary": false,
+      "sources": [
+        "https://www.frontenaccounty.ca/wp-content/uploads/2025/10/By-law-No.-2022-0033-to-Regulate-and-Govern-the-Use-of-the-Frontenac-KP-Trail.docx"
+      ]
     }
   ],
   "permit_trail_systems": [

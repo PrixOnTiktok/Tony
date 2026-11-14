@@ -65,7 +65,20 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.filled.SignalWifiOff
+import androidx.compose.material.icons.filled.WbTwilight
+import ca.bancroft.trails.data.MapStyle
+import ca.bancroft.trails.data.RideRecorder
+import ca.bancroft.trails.data.Sun
 import ca.bancroft.trails.map.MapController
+import androidx.compose.ui.graphics.Color
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import ca.bancroft.trails.nav.formatDist
 import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
@@ -83,6 +96,11 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     val layers by vm.layers.collectAsState()
     val location by vm.locationRepo.location.collectAsState()
     val cameraReq by vm.camera.collectAsState()
+    val mapStyle by vm.mapStyle.collectAsState()
+    val track by vm.shownTrack.collectAsState()
+    val recording by vm.recording.collectAsState()
+    var online by remember { mutableStateOf(isOnline(ctx)) }
+    var confirmStopRec by remember { mutableStateOf(false) }
 
     var controller by remember { mutableStateOf<MapController?>(null) }
     var styleReady by remember { mutableStateOf(false) }
@@ -98,7 +116,23 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     var pinDraft by remember { mutableStateOf<Target?>(null) }
 
     val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { res ->
-        hasPermission = res.values.any { it }
+        hasPermission = hasLocationPermission(ctx) || res.values.any { it }
+    }
+    fun askLocation() = permLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+    val notifLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    fun askNotifications() {
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+    // network state, for the satellite layer
+    DisposableEffect(Unit) {
+        val cm = ctx.getSystemService(ConnectivityManager::class.java)
+        val cb = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) { online = true }
+            override fun onLost(network: Network) { online = isOnline(ctx) }
+        }
+        runCatching { cm.registerDefaultNetworkCallback(cb) }
+        onDispose { runCatching { cm.unregisterNetworkCallback(cb) } }
     }
 
     // ---- MapView with lifecycle
@@ -177,6 +211,8 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     // feed content to the map
     LaunchedEffect(styleReady, data, layers) { if (styleReady) data?.let { controller?.setPois(it.pois, layers) } }
     LaunchedEffect(styleReady, pins) { if (styleReady) controller?.setPins(pins) }
+    LaunchedEffect(styleReady, mapStyle) { if (styleReady) controller?.setMapStyle(mapStyle) }
+    LaunchedEffect(styleReady, track) { if (styleReady) controller?.setTrack(track) }
     LaunchedEffect(styleReady, mode) {
         val c = controller ?: return@LaunchedEffect
         if (!styleReady) return@LaunchedEffect
@@ -184,14 +220,15 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
             is Mode.Plan -> { c.setRoutes(m.routes, m.selected); c.setDest(m.dest) }
             is Mode.Navigating -> { c.setRoutes(mapOf(m.route.mode to m.route), m.route.mode); c.setDest(m.dest) }
             is Mode.Details -> { c.setRoutes(emptyMap(), null); c.setDest(null); if (m.target !is Target.Trail) c.setSelection(null) }
+            is Mode.Loop -> { c.setRoutes(m.route?.let { mapOf(m.mode to it) } ?: emptyMap(), m.mode); c.setDest(null); c.setSelection(null) }
             else -> { c.setRoutes(emptyMap(), null); c.setDest(null); c.setSelection(null) }
         }
     }
     // location
-    LaunchedEffect(hasPermission, styleReady) {
+    LaunchedEffect(hasPermission, styleReady, mode is Mode.Navigating, recording != null) {
         if (hasPermission) {
-            vm.locationRepo.start(fastUpdates = vm.mode.value is Mode.Navigating)
-            if (styleReady) controller?.enableLocation()
+            vm.locationRepo.start(fastUpdates = vm.wantFastGps())
+            if (styleReady) controller?.enableLocation { vm.showMe() }
         }
     }
     LaunchedEffect(location) {
@@ -207,6 +244,7 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
         when (req) {
             is MapViewModel.CameraRequest.FlyTo -> { following = false; c.flyTo(req.lat, req.lon, req.zoom) }
             is MapViewModel.CameraRequest.Fit -> { following = false; c.fit(req.route, topPx, panelPx) }
+            is MapViewModel.CameraRequest.FitPoints -> { following = false; c.fitPoints(req.pts, topPx, panelPx) }
             MapViewModel.CameraRequest.FollowMe -> { following = true; c.follow(vm.mode.value is Mode.Navigating, panelPx, topPx) }
         }
         vm.consumeCamera()
@@ -251,7 +289,11 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                 NavBanner(navigating, dark)
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    StatusChip(data != null, data?.meta?.osmDate)
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        StatusChip(data != null, data?.meta?.osmDate, mapStyle, online)
+                        recording?.let { RecChip(it) { confirmStopRec = true } }
+                        SunsetChip(location)
+                    }
                     Spacer(Modifier.weight(1f))
                     AnimatedVisibility(bearing != 0f, enter = fadeIn(), exit = fadeOut()) {
                         RoundButton(onClick = { controller?.resetNorth() }, size = 48) {
@@ -269,12 +311,15 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
         ) {
             Column(Modifier.padding(end = 16.dp, bottom = 12.dp), verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.End) {
                 if (navigating == null) {
-                    RoundButton(onClick = { showLayers = true }, size = 56) { Icon(Icons.Filled.Layers, "Map layers") }
+                    RoundButton(onClick = { showLayers = true }, size = 56) { Icon(Icons.Filled.Layers, "Map style and layers") }
                 }
                 RoundButton(
                     onClick = {
-                        if (!hasPermission) permLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
-                        else vm.followMe()
+                        when {
+                            !hasPermission -> askLocation()
+                            following && navigating == null -> vm.showMe()
+                            else -> vm.followMe()
+                        }
                     },
                     size = 64, primary = following,
                 ) {
@@ -289,14 +334,20 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
                     label = "panel",
                 ) { m ->
                     when (m) {
-                        is Mode.Browse -> BrowsePanel(vm, onSettings = { showSettings = true }, onLegend = { showLegend = true })
+                        is Mode.Browse -> BrowsePanel(vm, recording != null, onSettings = { showSettings = true }, onLegend = { showLegend = true },
+                            onLoop = { if (!hasPermission) askLocation() else vm.openLoop() },
+                            onRecord = {
+                                if (recording != null) confirmStopRec = true
+                                else if (!hasPermission) askLocation() else { askNotifications(); vm.startRecording() }
+                            })
                         is Mode.Details -> DetailsPanel(vm, m.target, location, onSavePin = { pinDraft = it })
+                        is Mode.Loop -> LoopPanel(vm, m, onStart = { askNotifications(); vm.startLoop() })
+                        is Mode.Rides -> RidesPanel(vm)
+                        is Mode.RideView -> RideViewPanel(vm, m.ride)
                         is Mode.Nearby -> NearbyPanel(vm, m.category, location)
                         is Mode.Search -> SearchPanel(vm)
-                        is Mode.Plan -> PlanPanel(vm, m, hasLocation = location != null, onNeedPermission = {
-                            permLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
-                        })
-                        is Mode.Navigating -> NavBottomBar(vm, m, onRecenter = { vm.followMe() }, following = following)
+                        is Mode.Plan -> PlanPanel(vm, m, hasLocation = location != null, onNeedPermission = { askLocation() }, onStart = { askNotifications(); vm.startNav() })
+                        is Mode.Navigating -> NavBottomBar(vm, m, onRecenter = { vm.followMe() }, following = following, speedKmh = (location?.speed ?: 0f) * 3.6)
                     }
                 }
             }
@@ -313,7 +364,11 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
         }
     }
 
-    if (showLayers) LayersSheet(vm, onDismiss = { showLayers = false })
+    if (showLayers) LayersSheet(vm, online, onDismiss = { showLayers = false })
+    if (confirmStopRec) StopRecordingDialog(recording, onDismiss = { confirmStopRec = false }, onStop = { save ->
+        confirmStopRec = false
+        vm.stopRecording(save)?.let { vm.viewRide(it) }
+    })
     if (showSettings) SettingsSheet(vm, onDismiss = { showSettings = false }, onLegend = { showSettings = false; showLegend = true })
     if (showLegend) LegendSheet(vm, dark, onDismiss = { showLegend = false })
     pinDraft?.let { t -> PinDialog(t, onDismiss = { pinDraft = null }, onSave = { type, name, note ->
@@ -321,19 +376,63 @@ fun MapScreen(vm: MapViewModel, dark: Boolean, speak: (String) -> Unit) {
     }) }
     if (showIntro) IntroDialog(onDone = {
         vm.settings.seenIntro = true; showIntro = false
-        if (!hasPermission) permLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+        if (!hasPermission) askLocation()
     })
 }
 
 @Composable
-private fun StatusChip(ready: Boolean, osmDate: String?) {
+private fun StatusChip(ready: Boolean, osmDate: String?, style: MapStyle, online: Boolean) {
+    val satNoSignal = style == MapStyle.SATELLITE && !online
     Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Outlined.CloudOff, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
+            Icon(if (satNoSignal) Icons.Filled.SignalWifiOff else Icons.Outlined.CloudOff, null, Modifier.size(16.dp),
+                tint = if (satNoSignal) Color(0xFFB26A00) else MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(6.dp))
-            Text(if (ready) "Offline · data ${osmDate ?: ""}" else "Offline", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+            val text = when {
+                satNoSignal -> "Satellite needs signal · showing saved"
+                style == MapStyle.SATELLITE -> "Satellite · trails offline"
+                style == MapStyle.NETWORK -> "Trail network view"
+                ready -> "Works offline · data ${osmDate ?: ""}"
+                else -> "Works offline"
+            }
+            Text(text, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
         }
     }
+}
+
+@Composable
+private fun RecChip(live: RideRecorder.Live, onClick: () -> Unit) {
+    Surface(onClick = onClick, shape = RoundedCornerShape(50), color = Color(0xFFB3261E), contentColor = Color.White, shadowElevation = 3.dp) {
+        Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.FiberManualRecord, null, Modifier.size(14.dp))
+            Spacer(Modifier.width(6.dp))
+            val mins = ((System.currentTimeMillis() - live.start) / 60000).toInt()
+            Text("Recording · ${formatDist(live.distanceM)} · ${mins / 60}:${"%02d".format(mins % 60)}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+/** Shows up in the last 90 minutes before sunset so you're not caught out after dark. */
+@Composable
+private fun SunsetChip(loc: android.location.Location?) {
+    val lat = loc?.latitude ?: 45.0575; val lon = loc?.longitude ?: -77.8553
+    val sunset = Sun.sunset(lat, lon) ?: return
+    val left = (sunset - System.currentTimeMillis()) / 60000
+    if (left !in 0..90) return
+    Surface(shape = RoundedCornerShape(50), color = Color(0xFF3E2723), contentColor = Color(0xFFFFCC80), shadowElevation = 3.dp) {
+        Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.WbTwilight, null, Modifier.size(16.dp))
+            Spacer(Modifier.width(6.dp))
+            Text("Sunset in $left min (${SimpleDateFormat("h:mm a", Locale.CANADA).format(Date(sunset))})",
+                style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+private fun isOnline(ctx: Context): Boolean {
+    val cm = ctx.getSystemService(ConnectivityManager::class.java) ?: return false
+    val caps = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+    return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
 
 @Composable

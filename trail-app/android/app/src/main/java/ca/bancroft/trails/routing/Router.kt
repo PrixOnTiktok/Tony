@@ -28,6 +28,7 @@ data class Route(
     val maneuvers: List<Maneuver>,
     val edges: IntArray,               // edges used (for highlighting / info)
     val warnings: List<String>,
+    val isLoop: Boolean = false,
 )
 
 /** A* router over the bundled network with ATV-specific cost profiles. */
@@ -69,11 +70,99 @@ class Router(private val g: Graph) {
         return f
     }
 
+    /** Edges already used by earlier legs of a loop; re-riding them costs more so the loop comes back another way. */
+    private var reused: Set<Int> = emptySet()
+
     private fun edgeCost(e: Int, lenM: Double, mode: RouteMode, avoidMaybe: Boolean, blocked: Set<Int>): Double {
         var c = lenM / (edgeSpeed(e) / 3.6) * factor(e, mode, avoidMaybe)
         if ((g.eFlags[e] and Flag.GATE) != 0) c += 180.0
         if (e in blocked) c += 1e6
+        if (e in reused) c *= 6.0
         return c
+    }
+
+    /**
+     * A loop of roughly [targetKm] that starts and ends at the rider: tries 8 directions, rides out through two
+     * waypoints and back while avoiding the trails already used, and keeps the loop closest to the wanted length
+     * with the least backtracking (and the most trail, in the trail modes).
+     */
+    fun loop(lat: Double, lon: Double, targetKm: Double, mode: RouteMode, avoidMaybe: Boolean, blocked: Set<Int> = emptySet()): Route? {
+        val baseSide = targetKm * 1000.0 / 3.0 / 1.35 // straight-line side of a triangle; trails wander ~35 %
+        var best: Route? = null; var bestScore = Double.MAX_VALUE
+        for (scale in listOf(0.75, 1.0, 1.25)) for (dir in 0 until 8) for (turn in listOf(70.0, -70.0)) {
+            val side = baseSide * scale
+            val b1 = dir * 45.0
+            val (la1, lo1) = offset(lat, lon, b1, side)
+            val (la2, lo2) = offset(la1, lo1, b1 + turn * 1.7, side)
+            val legs = ArrayList<Route>()
+            val used = HashSet<Int>()
+            var ok = true
+            for ((a, b) in listOf((lat to lon) to (la1 to lo1), (la1 to lo1) to (la2 to lo2), (la2 to lo2) to (lat to lon))) {
+                reused = used
+                val r = route(a.first, a.second, b.first, b.second, mode, avoidMaybe, blocked)
+                reused = emptySet()
+                if (r == null || r.distanceM < 200) { ok = false; break }
+                legs.add(r); used.addAll(r.edges.toList())
+            }
+            if (!ok) continue
+            val loop = concat(legs, mode)
+            val counts = HashMap<Int, Int>()
+            loop.edges.forEach { counts[it] = (counts[it] ?: 0) + 1 }
+            val reuse = counts.values.count { it > 1 }.toDouble() / counts.size.coerceAtLeast(1)
+            val score = kotlin.math.abs(loop.distanceM / 1000.0 - targetKm) / targetKm + 1.5 * reuse +
+                (if (mode == RouteMode.FASTEST) 0.0 else 0.4 * (1 - loop.trailShare)) +
+                (if (loop.kmByCls[Cls.NO] > 0.05) 1.0 else 0.0) + (if (avoidMaybe) 0.0 else 0.15 * loop.kmByCls[Cls.MAYBE] / (loop.distanceM / 1000.0 + 0.1))
+            if (score < bestScore) { bestScore = score; best = loop }
+        }
+        return best
+    }
+
+    private fun offset(lat: Double, lon: Double, bearingDeg: Double, m: Double): Pair<Double, Double> {
+        val br = Math.toRadians(bearingDeg)
+        return (lat + m * kotlin.math.cos(br) / 110540.0) to (lon + m * kotlin.math.sin(br) / (111320.0 * cos(Math.toRadians(lat))))
+    }
+
+    /** The rest of [r] from point [from] on (used to rejoin a loop after a detour). Class split is approximate. */
+    fun tail(r: Route, from: Int): Route {
+        val i0 = from.coerceIn(0, r.lats.size - 2)
+        val la = r.lats.copyOfRange(i0, r.lats.size); val lo = r.lons.copyOfRange(i0, r.lons.size)
+        val base = r.cumDist[i0]
+        val cum = DoubleArray(la.size) { r.cumDist[i0 + it] - base }
+        val f = if (r.distanceM > 0) cum.last() / r.distanceM else 0.0
+        val man = r.maneuvers.filter { it.pointIndex >= i0 && it.turn != Turn.START }
+            .map { it.copy(pointIndex = it.pointIndex - i0, distFromStart = it.distFromStart - base) }
+        return r.copy(lats = la, lons = lo, cumDist = cum, distanceM = cum.last(), timeS = r.timeS * f,
+            kmByCls = DoubleArray(4) { r.kmByCls[it] * f }, maneuvers = man)
+    }
+
+    /** Join consecutive legs into one route (waypoints become "continue" points, not arrivals). */
+    fun concat(legs: List<Route>, mode: RouteMode): Route {
+        val la = ArrayList<Double>(); val lo = ArrayList<Double>(); val man = ArrayList<Maneuver>()
+        val kmByCls = DoubleArray(4); var dist = 0.0; var time = 0.0; var offroad = 0.0; var gates = 0
+        val edges = ArrayList<Int>()
+        for ((li, r) in legs.withIndex()) {
+            val base = maxOf(0, la.size - 1)
+            for (i in r.lats.indices) { if (i == 0 && la.isNotEmpty()) continue; la.add(r.lats[i]); lo.add(r.lons[i]) }
+            for (m in r.maneuvers) {
+                if (m.turn == Turn.START && li > 0) continue
+                if (m.turn == Turn.ARRIVE && li < legs.size - 1) continue
+                man.add(m.copy(pointIndex = base + m.pointIndex, distFromStart = dist + m.distFromStart,
+                    text = if (m.turn == Turn.ARRIVE) "Back where you started" else m.text))
+            }
+            for (c in 0..3) kmByCls[c] += r.kmByCls[c]
+            offroad += r.trailShare * r.distanceM; dist += r.distanceM; time += r.timeS; gates += r.gates
+            edges.addAll(r.edges.toList())
+        }
+        val laA = la.toDoubleArray(); val loA = lo.toDoubleArray()
+        val cum = DoubleArray(laA.size)
+        for (i in 1 until laA.size) cum[i] = cum[i - 1] + hypot((loA[i] - loA[i - 1]) * 111320.0 * cos(Math.toRadians(laA[i])), (laA[i] - laA[i - 1]) * 110540.0)
+        val fixed = man.map { it.copy(distFromStart = cum[it.pointIndex.coerceIn(0, cum.size - 1)]) }
+        val warnings = buildList {
+            if (kmByCls[Cls.NO] > 0.05) add("%.1f km where ATVs aren't allowed. No legal way around was found.".format(kmByCls[Cls.NO]))
+            if (kmByCls[Cls.MAYBE] > 0.05) add("%.1f km on \"maybe\" trails: a pass or permission might be needed.".format(kmByCls[Cls.MAYBE]))
+            if (gates > 0) add("$gates gate${if (gates > 1) "s" else ""} on forest roads, may be closed.")
+        }
+        return Route(mode, laA, loA, cum, cum.last(), time, kmByCls, if (dist > 0) offroad / dist else 0.0, gates, fixed, edges.toIntArray(), warnings, isLoop = true)
     }
 
     /** Edges near the rider's "blocked" pins. */

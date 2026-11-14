@@ -40,6 +40,7 @@ import ca.bancroft.trails.nav.Navigator
 import ca.bancroft.trails.routing.Router
 import ca.bancroft.trails.ui.BrowsePanel
 import ca.bancroft.trails.ui.DetailsPanel
+import ca.bancroft.trails.ui.LoopPanel
 import ca.bancroft.trails.ui.MapViewModel
 import ca.bancroft.trails.ui.Mode
 import ca.bancroft.trails.ui.NavBanner
@@ -109,14 +110,60 @@ class ScreenshotTest {
     @Test fun browse() {
         val vm = vm()
         captureRoboImage(File(out, "1_browse.png").path) {
-            Phone("bg_browse.png", false, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, {}, {}) }
+            Phone("bg_browse.png", false, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun networkView() {
+        val vm = vm()
+        captureRoboImage(File(out, "7_trail_network.png").path) {
+            Phone("bg_network.png", false, top = { NetChip() }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun satellite() {
+        val vm = vm()
+        captureRoboImage(File(out, "8_satellite.png").path) {
+            Phone("bg_satellite.png", false, top = { SatChip() }) { BrowsePanel(vm, true, {}, {}, {}, {}) }
+        }
+    }
+
+    @Test fun loop() {
+        val vm = vm()
+        val r = Router(vm.data.value!!.graph).loop(45.0575, -77.8553, 30.0, RouteMode.MOSTLY_TRAILS, false)
+        captureRoboImage(File(out, "9_loop.png").path) {
+            Phone("bg_loop.png", false, fabs = false) { LoopPanel(vm, Mode.Loop(30, RouteMode.MOSTLY_TRAILS, r, false)) {} }
+        }
+    }
+
+    @Test fun myLocation() {
+        val vm = vm()
+        captureRoboImage(File(out, "10_my_location.png").path) {
+            Phone("bg_browse.png", false, fabs = false) {
+                DetailsPanel(vm, Target.Me(45.0575, -77.8553, 6f, 330.0, 0.0), null) {}
+            }
+        }
+    }
+
+    @Composable private fun NetChip() = Pill("Trail network view")
+    @Composable private fun SatChip() = Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Pill("Satellite · trails offline")
+        Surface(shape = RoundedCornerShape(50), color = androidx.compose.ui.graphics.Color(0xFFB3261E), contentColor = androidx.compose.ui.graphics.Color.White) {
+            Text("Recording · 12.4 km · 0:48", Modifier.padding(horizontal = 12.dp, vertical = 7.dp), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        }
+    }
+
+    @Composable
+    private fun Pill(t: String) {
+        Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f), shadowElevation = 3.dp) {
+            Text(t, Modifier.padding(horizontal = 12.dp, vertical = 7.dp), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
         }
     }
 
     @Test fun browseDark() {
         val vm = vm()
         captureRoboImage(File(out, "6_browse_dark.png").path) {
-            Phone("bg_browse_dark.png", true, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, {}, {}) }
+            Phone("bg_browse_dark.png", true, top = { Chip(vm.data.value!!.meta.osmDate) }) { BrowsePanel(vm, false, {}, {}, {}, {}) }
         }
     }
 
@@ -145,7 +192,7 @@ class ScreenshotTest {
         val dest = Target.Place(vm.data.value!!.pois.first { it.name.contains("Coe Hill") || it.cat == "food" })
         val m = Mode.Plan(dest, routes(vm), RouteMode.MOSTLY_TRAILS, computing = false)
         captureRoboImage(File(out, "4_route_plan.png").path) {
-            Phone("bg_plan.png", false, fabs = false) { PlanPanel(vm, m, hasLocation = true) {} }
+            Phone("bg_plan.png", false, fabs = false) { PlanPanel(vm, m, hasLocation = true, onNeedPermission = {}, onStart = {}) }
         }
     }
 

@@ -17,5 +17,9 @@ class RouteExport {
             val coords = rt.lats.indices.joinToString(",") { "[${rt.lons[it]},${rt.lats[it]}]" }
             File(out, "${m.name}.geojson").writeText("""{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[$coords]}}""")
         }
+        r.loop(45.0575, -77.8553, 30.0, RouteMode.MOSTLY_TRAILS, false)?.let { rt ->
+            val coords = rt.lats.indices.joinToString(",") { "[${rt.lons[it]},${rt.lats[it]}]" }
+            File(out, "LOOP.geojson").writeText("""{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[$coords]}}""")
+        }
     }
 }

@@ -62,6 +62,26 @@ class RouterTest {
     @Test fun bancroftToWeslemkoon() = trip("Bancroft→Weslemkoon", bancroft, weslemkoon)
     @Test fun bancroftToMaynooth() = trip("Bancroft→Maynooth", bancroft, maynooth)
 
+    @Test fun loops() {
+        for ((name, start) in listOf("Bancroft" to bancroft, "Coe Hill" to coeHill)) for (km in listOf(20, 50)) {
+            val t0 = System.currentTimeMillis()
+            val l = r.loop(start.first, start.second, km.toDouble(), RouteMode.MOSTLY_TRAILS, false)
+            assertNotNull("$name loop $km", l); l!!
+            val back = ca.bancroft.trails.ui.MapViewModel.distM(l.lats.last(), l.lons.last(), l.lats[0], l.lons[0])
+            val counts = HashMap<Int, Int>(); l.edges.forEach { counts[it] = (counts[it] ?: 0) + 1 }
+            val reuse = counts.values.count { it > 1 }.toDouble() / counts.size
+            println("loop $name $km km -> ${formatDist(l.distanceM)} ${formatTime(l.timeS)} offroad=${(l.trailShare * 100).toInt()}% reuse=${(reuse * 100).toInt()}% " +
+                "gap=${back.toInt()} m in ${System.currentTimeMillis() - t0} ms")
+            assertTrue("ends near start", back < 50)
+            assertTrue("roughly the asked length", l.distanceM / 1000 in km * 0.5..km * 1.8)
+            // navigator over a loop must not "arrive" at the start
+            val nav = Navigator(l)
+            var st = nav.update(l.lats[0], l.lons[0])
+            for (i in l.lats.indices step 4) st = nav.update(l.lats[i], l.lons[i])
+            assertTrue(nav.update(l.lats.last(), l.lons.last()).arrived)
+        }
+    }
+
     @Test fun avoidMaybeReducesMaybe() {
         val a = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, false)!!
         val b = r.route(bancroft.first, bancroft.second, weslemkoon.first, weslemkoon.second, RouteMode.TRAILS_ONLY, true)!!

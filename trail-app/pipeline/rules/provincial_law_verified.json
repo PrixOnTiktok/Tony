@@ -1,0 +1,551 @@
+{
+ "default_rule": {
+  "summary": "Provincial (King's) highways are CLOSED to ORVs by default. O. Reg. 316/03 s.2: an ORV shall not be driven on any highway except as specified in Part II, permitted by Part IV, or crossing under ORVA s.2(2)(a). Schedule B lists the PERMITTED provincial highways (s.4(2)); Schedule A lists highways prohibited to all ORVs (s.3). An unlisted King's highway is prohibited (crossing only).",
+  "verbatim": {
+   "s2": "An off-road vehicle shall not be driven on any highway except, (a) as specified in this Part; (b) as permitted by Part IV; or (c) as permitted by clause 2 (2) (a) of the Off-Road Vehicles Act.",
+   "s3": "Except as permitted by section 28, no off-road vehicle shall be driven on a highway listed in Schedule A.",
+   "s4": "(1) Subject to subsection (2), no off-road vehicle shall be driven on a highway listed in Schedule B. (2) All-terrain vehicles, extreme terrain vehicles, multi-purpose off-highway utility vehicles, off-road motorcycles and recreational off-highway vehicles may be driven on a highway listed in Schedule B if the requirements of Part III are met.",
+   "s4_1_1": "An off-road vehicle shall not be driven on a highway or part of a highway that is under the jurisdiction of a municipality unless ... a by-law made by the council of the municipality under subsection 191.8 (3) of the Act permits the operation ... [ATV/UTV/ROV]; [XTV/ORM: by-law must specifically permit that class]; [by-law time limits apply]; The requirements of Part III are met.",
+   "s4_1_2": "Despite subsection (1), if the requirements of Part III are met, a vehicle described in paragraph 1 or 2 of subsection (1) may be driven on a highway or part of a highway that is under the jurisdiction of a municipality if the name of the municipality appears in the Table to Ontario Regulation 8/03 (Local Municipalities Where 80 Kilometres Per Hour Speed Limit Applies) made under the Act.",
+   "s4_1_3": "For greater certainty, an off-road vehicle driven on a highway in accordance with subsection (2) is subject to any applicable prohibition or limitation set out in a by-law made by the council of the local municipality under subsection 191.8 (3) of the Act.",
+   "HTA_191_8_1": "No person shall drive an off-road vehicle on a highway except in accordance with the regulations and any applicable municipal by-laws."
+  },
+  "sources": [
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+   "https://www.ontario.ca/laws/statute/90h08 s.191.8",
+   "https://www.ontario.ca/page/driving-road-vehicle-orv",
+   "https://www.ontario.ca/laws/regulation/r20740 (O. Reg. 740/20, in force 2021-01-01, added s.4.1(2)-(3))"
+  ],
+  "contradictions": [
+   "ontario.ca guidance lists 'highways with low traffic volumes' as permitted; that is a description, not a legal test. Only Schedule B governs."
+  ]
+ },
+ "conditions": {
+  "vehicle_types": "Schedule B/s.4.1 permit: all-terrain vehicles (s.1 def: four wheels, handlebars, straddle seat, designed for 'a driver only and no passengers' [single-rider] or driver + one passenger with straddle seat behind and separate passenger footrests [two-up]), extreme terrain vehicles (6/8 wheels), multi-purpose off-highway utility vehicles (UTV), off-road motorcycles, recreational off-highway vehicles (ROV, <=1,000 cc). XTV/ORM on municipal roads need a by-law specifically permitting that class (s.4.1(1)2), but 8/03-listed municipalities allow 'paragraph 1 or 2' vehicles i.e. all five.",
+  "speed_s22": "not greater than (a) 20 km/h if the posted limit is not greater than 50 km/h; (b) 50 km/h if the posted limit is greater than 50 km/h. Municipal by-laws may set lower (HTA 191.8(3)(c)).",
+  "position_s24": "s.24(1) 'driven on the shoulder of the highway in the same direction as the traffic using the same side of the highway'; s.24(2) roadway allowed if no shoulder, shoulder obstructed, or shoulder not wide enough for all tires off roadway; s.24(3) roadway at level railway crossings; s.24(4)/(5) as close to right edge as practicable; s.24(7) not in median; s.24(8)-(9) not in construction zones/closed highways; s.24(10) no passing motor vehicles on same shoulder/roadway (may pass another ORV on shoulder, s.24(11)).",
+  "hours": "No provincial hour restriction. Lamps: s.13(2) front white and rear red lamps 'must be lit at all times' on highway (off-road motorcycles only at night/poor visibility, s.13(2.1)). Municipal by-laws may restrict times (s.4.1(1)3).",
+  "permit_plate_s16": "ORVA s.5 permit and number plate displayed.",
+  "insurance_s17": "insured per Compulsory Automobile Insurance Act s.2 and ORVA s.15.",
+  "licence_s18": "valid Class A, B, C, D, E, F, G, G2, M or M2 licence (so minimum age effectively 16; G1/M1 not allowed). G2/M2 under-20 passenger limits midnight-5 a.m. (s.18(2)-(3)).",
+  "helmet_s19": "driver and every passenger wear helmet complying with ORVA s.19.",
+  "seatbelts_s19_1": "UTV, ROV and XTV with belts: driver and passengers belted.",
+  "passengers": "s.19.2 ATV passenger only if vehicle designed for driver+passenger and passenger straddles seat behind driver facing forward, feet on separate passenger footrests (so NO passengers on single-rider ATVs); s.19.3 no passenger under age eight on any ORV; s.19.4 no riders on trailer; s.19.5 no passengers on off-road motorcycles.",
+  "equipment": "s.7-15: weight/width limits (UTV/XTV <=1,814 kg, ROV <=1,700 kg, width <=2.03 m), ANSI/COHV standard labels for post-2001 vehicles, brakes, lamps, reflectors, windshield, mirrors (UTV/ROV/XTV).",
+  "environment_s23": "no harm to environment, fish habitat; no driving in watercourses on highway that harms fish habitat.",
+  "sources": [
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+   "https://www.ontario.ca/page/driving-road-vehicle-orv"
+  ],
+  "contradictions": [
+   "ontario.ca guidance says headlights/tail lights 'mandatory at night and in bad weather'; the regulation s.13(2) requires them lit 'at all times' on a highway (except off-road motorcycles). Follow the regulation."
+  ]
+ },
+ "highways": [
+  {
+   "ref": "62",
+   "schedule": "B item 26",
+   "from": "its intersection with the King's Highway known as No. 7 in the Township of Madoc, in the County of Hastings",
+   "to": "a point situate 300 metres measured southerly from the centre line of the highway known as Bay Lake Road in the Town of Bancroft, in the County of Hastings",
+   "status": "allowed",
+   "approx_coords_hint": "Madoc ~44.50N,-77.47 north to ~45.04N (just S of Bay Lake Rd, Bancroft)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)",
+    "https://www.ontario.ca/laws/regulation/030316/v5 (pre-2015 version)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 62 lying between a point situate at its intersection with the King’s Highway known as No. 7 in the Township of Madoc, in the County of Hastings, and a point situate 300 metres measured southerly from the centre line of the highway known as Bay Lake Road in the Town of Bancroft, in the County of Hastings."
+  },
+  {
+   "ref": "62",
+   "schedule": "none (default)",
+   "from": "300 m south of Bay Lake Road, Bancroft",
+   "to": "Hybla Road, Hastings Highlands",
+   "status": "prohibited",
+   "approx_coords_hint": "~45.04N (Bancroft) north to Hybla Rd (~45.18N approx; verify geometry)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "62",
+   "schedule": "B item 27",
+   "from": "its intersection with the highway known as Hybla Road in the Municipality of Hastings Highlands, in the County of Hastings",
+   "to": "its intersection with the King's Highway known as No.127 in the Municipality of Hastings Highlands, in the County of Hastings",
+   "status": "allowed",
+   "approx_coords_hint": "Hybla Rd north to Maynooth (~45.23N,-77.94)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)",
+    "https://www.ontario.ca/laws/regulation/030316/v5 (pre-2015 version)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 62 lying between a point situate at its intersection with the highway known as Hybla Road in the Municipality of Hastings Highlands, in the County of Hastings, and a point situate at its intersection with the King’s Highway known as No.127 in the Municipality of Hastings Highlands, in the County of Hastings."
+  },
+  {
+   "ref": "62",
+   "schedule": "none (default)",
+   "from": "Hwy 7 (Madoc)",
+   "to": "south (toward Belleville)",
+   "status": "prohibited",
+   "approx_coords_hint": "lat < ~44.50 on Hwy 62",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "28",
+   "schedule": "B item 16",
+   "from": "its intersection with the highway known as Peterborough County Road 504 in the Township of North Kawartha, in the County of Peterborough",
+   "to": "its intersection with the King's Highway known as No. 118 in the Town of Bancroft, in the County of Hastings",
+   "status": "allowed",
+   "approx_coords_hint": "Apsley (~44.75N,-78.10) NE to Hwy 118 junction at W edge of Bancroft (~45.05N,-77.9)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)",
+    "https://www.ontario.ca/laws/regulation/030316/v5 (pre-2015 version)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 28 lying between a point situate at its intersection with the highway known as Peterborough County Road 504 in the Township of North Kawartha, in the County of Peterborough, and a point situate at its intersection with the King’s Highway known as No. 118 in the Town of Bancroft, in the County of Hastings."
+  },
+  {
+   "ref": "28",
+   "schedule": "none (default)",
+   "from": "Hwy 118 junction (Bancroft)",
+   "to": "880 m east of Hastings Street, Bancroft",
+   "status": "prohibited",
+   "approx_coords_hint": "Bancroft town core section of Hwy 28",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "28",
+   "schedule": "B item 17",
+   "from": "a point situate 880 metres measured easterly from the centre line of the highway known as Hastings Street in the Town of Bancroft, in the County of Hastings",
+   "to": "its intersection with the King's Highway known as No. 41 in the Township of Addington Highlands, in the County of Lennox and Addington",
+   "status": "allowed",
+   "approx_coords_hint": "E of Bancroft (~-77.84) to Denbigh/Hwy 41 (~45.13N,-77.27)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)",
+    "https://www.ontario.ca/laws/regulation/030316/v5 (pre-2015 version)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 28 lying between a point situate 880 metres measured easterly from the centre line of the highway known as Hastings Street in the Town of Bancroft, in the County of Hastings, and a point situate at its intersection with the King’s Highway known as No. 41 in the Township of Addington Highlands, in the County of Lennox and Addington."
+  },
+  {
+   "ref": "28",
+   "schedule": "none (default)",
+   "from": "Peterborough County Road 504 (Apsley)",
+   "to": "south toward Burleigh Falls / Peterborough",
+   "status": "prohibited",
+   "approx_coords_hint": "Hwy 28 lat < ~44.75",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "118",
+   "schedule": "B item 3 (whole highway) + items 42, 43",
+   "from": "entire highway (item 3: \"That part of the King's Highway known as Nos. 94, 105, 118, 124, 125, 127, 130 and 141.\")",
+   "to": "entire highway",
+   "status": "allowed",
+   "approx_coords_hint": "Bracebridge (~-79.3, outside bbox) to Hwy 28 near Bancroft; all of it",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": [
+    "That part of the King’s Highway known as Nos. 94, 105, 118, 124, 125, 127, 130 and 141.",
+    "That part of the King’s Highway known as No. 118 lying between a point situate at its intersection with the highway known as Haliburton Lake Road 14 in the Municipality of Dysart et al, in the County of Haliburton, and a point situate at its intersection with the King’s Highway known as No. 11 in the Town of Bracebridge, in the District of Muskoka.",
+    "That part of the King’s Highway known as No. 118 lying between a point situate at its intersection with a point 500 metres measured easterly from the centre line of the highway known as Fred Jones Road in the Municipality of Dysart et al, in the County of Haliburton, and a point situate at its intersection with the King’s Highway known as No. 28 in the Township of Faraday, in the County of Hastings."
+   ],
+   "note": "Item 3 lists all of 118, making items 42 (Haliburton Lake Road 14 [older text: 'Haliburton Road 14 (also known as Eagle Lake Road)'] to Hwy 11 Bracebridge) and 43 (500 m E of Fred Jones Road to Hwy 28 Faraday) redundant; the apparent gap near Haliburton village is covered by item 3. Internal redundancy in the reg, not a contradiction in effect."
+  },
+  {
+   "ref": "127",
+   "schedule": "B item 3",
+   "from": "entire highway",
+   "to": "entire highway",
+   "status": "allowed",
+   "approx_coords_hint": "Maynooth (Hwy 62) north to Hwy 60",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)",
+    "https://www.ontario.ca/laws/regulation/030316/v5 (pre-2015 version)"
+   ],
+   "verbatim": "That part of the King’s Highway known as Nos. 94, 105, 118, 124, 125, 127, 130 and 141."
+  },
+  {
+   "ref": "35",
+   "schedule": "B item 18",
+   "from": "a point situate 200 metres measured northerly from its intersection with the centre line of the roadway known as Horseshoe Lake Road in the Township of Minden Hills, in the County of Haliburton",
+   "to": "its intersection with the King's Highway known as No. 60 in the Township of Lake of Bays, in the District of Muskoka",
+   "status": "allowed",
+   "approx_coords_hint": "N of Minden (~44.95N,-78.72) to Dwight/Hwy 60 (~45.33N,-79.0)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 35 lying between a point situate 200 metres measured northerly from its intersection with the centre line of the roadway known as Horseshoe Lake Road in the Township of Minden Hills, in the County of Haliburton, and a point situate at its intersection with the King’s Highway known as No. 60 in the Township of Lake of Bays, in the District of Muskoka."
+  },
+  {
+   "ref": "35",
+   "schedule": "B item 18.1",
+   "from": "its southern most intersection with the roadway known as Haliburton County Road 121 in the Township of Minden Hills, in the County of Haliburton",
+   "to": "a point situate 4300 metres measured southerly from its intersection with the roadway known as Deep Bay Road in the Township of Minden Hills, in the County of Haliburton",
+   "status": "allowed",
+   "approx_coords_hint": "S of Minden, between CR 121 junction and ~4.3 km S of Deep Bay Rd",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 35 lying between a point situate at its southern most intersection with the roadway known as Haliburton County Road 121 in the Township of Minden Hills, in the County of Haliburton, and a point situate 4300 metres measured southerly from its intersection with the roadway known as Deep Bay Road in the Township of Minden Hills, in the County of Haliburton."
+  },
+  {
+   "ref": "35",
+   "schedule": "none (default) / A item 25",
+   "from": "rest of Hwy 35 (Minden town section; Kinmount–Lindsay); A25: where contiguous with Hwy 115",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "everything on 35 outside B 18/18.1; A25 is in Clarington (south of bbox)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 35 where that highway is contiguous with the King’s Highway known as No. 115.",
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "7",
+   "schedule": "none (default) + A item 14",
+   "from": "entire Hwy 7 within bbox (Peterborough–Havelock–Marmora–Madoc–Kaladar)",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "all of Hwy 7 in bbox",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/page/driving-road-vehicle-orv (says ORVs cannot use 'sections of the Trans-Canada Highway'; Hwy 7 is a TCH route)"
+   ],
+   "verbatim": "That part of the King’s Highway known as Nos. 7 and 115 lying between a point situate at its intersection with the west junction of the King’s Highway known as No. 7 in the Township of Cavan Monaghan and a point situate at its intersection with the east junction of the King’s Highway known as No. 7 in the City of Peterborough.",
+   "note": "Not in Schedule B, so default prohibition. A14 explicitly prohibits Nos. 7 and 115 between W junction of 7 (Cavan Monaghan) and E junction of 7 (Peterborough). A11 (Ottawa–Beckwith) is east of bbox."
+  },
+  {
+   "ref": "115",
+   "schedule": "A item 32",
+   "from": "its intersection with the King's Highway known as Nos. 35 and 115 in the Municipality of Clarington",
+   "to": "its intersection with the King's Highway known as No. 7 in the Township of Cavan Monaghan",
+   "status": "prohibited",
+   "approx_coords_hint": "Peterborough approach, lat 44.16-44.25",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 115 lying between a point situate at its intersection with the King’s Highway known as Nos. 35 and 115 in the Municipality of Clarington and a point situate at its intersection with the King’s Highway known as No. 7 in the Township of Cavan Monaghan."
+  },
+  {
+   "ref": "37",
+   "schedule": "none (default)",
+   "from": "entire",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "Belleville–Tweed–Actinolite",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "121",
+   "schedule": "none (default)",
+   "from": "entire",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "Kinmount–Minden–Haliburton",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "41",
+   "schedule": "B item 19",
+   "from": "a point situate at the Frontenac and the Lennox and Addington County Boundary (Bon Echo Provincial Park North Boundary) in the Township of Addington Highlands, in the County of Lennox and Addington",
+   "to": "its intersection with the highway known as Renfrew County Road 512 (also known as Foymount Road) in the Township of Bonnechere Valley, in the County of Renfrew",
+   "status": "allowed",
+   "approx_coords_hint": "N of Bon Echo (~44.93N,-77.2) through Denbigh/Griffith to Foymount Rd (S of Eganville)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 41 lying between a point situate at the Frontenac and the Lennox and Addington County Boundary (Bon Echo Provincial Park North Boundary) in the Township of Addington Highlands, in the County of Lennox and Addington, and a point situate at its intersection with the highway known as Renfrew County Road 512 (also known as Foymount Road) in the Township of Bonnechere Valley, in the County of Renfrew."
+  },
+  {
+   "ref": "41",
+   "schedule": "B item 20",
+   "from": "a point situate 800 metres measured northerly from the centre line of its southern most intersection with the King's Highways known as No. 60 (also known as Bonnechere Street) in the Township of Bonnechere Valley, in the County of Renfrew",
+   "to": "its intersection with the King's Highway known as No.17 in the Township of Laurentian Valley, in the County of Renfrew",
+   "status": "allowed",
+   "approx_coords_hint": "N of Eganville (~45.55N,-77.1) to Hwy 17 near Pembroke",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 41 lying between a point situate 800 metres measured northerly from the centre line of its southern most intersection with the King’s Highways known as No. 60 (also known as Bonnechere Street) in the Township of Bonnechere Valley, in the County of Renfrew, and a point situate at its intersection with the King’s Highway known as No.17 in the Township of Laurentian Valley, in the County of Renfrew."
+  },
+  {
+   "ref": "41",
+   "schedule": "none (default)",
+   "from": "south of Bon Echo N boundary (to Kaladar/Hwy 7) and the Eganville section between Foymount Rd and 800 m N of Hwy 60",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "Hwy 41 lat < ~44.93; Eganville core",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "60",
+   "schedule": "A item 29",
+   "from": "a point situate 300 metres measured southerly from the middle of the Headstone Creek Bridge (at the east entrance of Algonquin Provincial Park) in the District of Nipissing",
+   "to": "its intersection with the northern boundary of the Township of Algonquin Highlands (being the westerly boundary of Algonquin Park), in the County of Haliburton",
+   "status": "prohibited",
+   "approx_coords_hint": "Algonquin Park Hwy 60 corridor (~-78.05 east gate to ~-78.93 west gate)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 lying between a point situate 300 metres measured southerly from the middle of the Headstone Creek Bridge (at the east entrance of Algonquin Provincial Park) in the District of Nipissing and a point situate at its intersection with the northern boundary of the Township of Algonquin Highlands (being the westerly boundary of Algonquin Park), in the County of Haliburton."
+  },
+  {
+   "ref": "60",
+   "schedule": "B item 23",
+   "from": "a point situate 500 metres measured westerly from the centre line of its western most intersection with County Road No. 62 in the Township of Madawaska Valley, in the County of Renfrew",
+   "to": "a point situate 300 metres measured southerly from the middle of the Headstone Creek Bridge (at the east entrance of Algonquin Provincial Park) in the District of Nipissing",
+   "status": "allowed",
+   "approx_coords_hint": "W of Barry's Bay through Madawaska/Whitney to park east gate",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/laws/regulation/030316/v9 (historical consolidation, same text)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 lying between a point situate 500 metres measured westerly from the centre line of its western most intersection with County Road No. 62 in the Township of Madawaska Valley, in the County of Renfrew, and a point situate 300 metres measured southerly from the middle of the Headstone Creek Bridge (at the east entrance of Algonquin Provincial Park) in the District of Nipissing."
+  },
+  {
+   "ref": "60",
+   "schedule": "B item 22",
+   "from": "a point situate 800 metres measured northerly from its intersection with the roadway known as Bridge Street in the Township of Bonnechere Valley",
+   "to": "a point situate 800 metres measured easterly from its intersection with the roadway known as Renfrew County Road 62 South in the Township of Madawaska Valley",
+   "status": "allowed",
+   "approx_coords_hint": "Eganville to E of Barry's Bay",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 in the County of Renfrew lying between a point situate 800 metres measured northerly from its intersection with the roadway known as Bridge Street in the Township of Bonnechere Valley and a point situate 800 metres measured easterly from its intersection with the roadway known as Renfrew County Road 62 South in the Township of Madawaska Valley."
+  },
+  {
+   "ref": "60",
+   "schedule": "B item 21",
+   "from": "its intersection with the highway known as Cotieville Road in the Township of Horton, in the County of Renfrew",
+   "to": "a point measured 500 metres westerly from the centre line of the highway known as Ott Road in the Township of Bonnechere Valley",
+   "status": "allowed",
+   "approx_coords_hint": "W of Renfrew toward Douglas/Eganville",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 lying between a point situate at its intersection with the highway known as Cotieville Road in the Township of Horton, in the County of Renfrew, and a point situate at its intersection with a point measured 500 metres westerly from the centre line of the highway known as Ott Road in the Township of Bonnechere Valley, in the County of Renfrew."
+  },
+  {
+   "ref": "60",
+   "schedule": "B item 24",
+   "from": "its intersection with the northern boundary of the Township of Algonquin Highlands (being the western boundary of Algonquin Park) in the County of Haliburton",
+   "to": "a point situate 1000 metres measured westerly from its intersection with the centre line of the roadway known as Hidden Valley Road in the Town of Huntsville",
+   "status": "allowed",
+   "approx_coords_hint": "park west gate to Huntsville (mostly near/west of -79.0)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 lying between a point situate at its intersection with the northern boundary of the Township of Algonquin Highlands (being the western boundary of Algonquin Park) in the County of Haliburton, and a point situate 1000 metres measured westerly from its intersection with the centre line of the roadway known as Hidden Valley Road in the Town of Huntsville, in the District of Muskoka."
+  },
+  {
+   "ref": "60",
+   "schedule": "A item 28",
+   "from": "its intersection with the centre line of the King's Highway known as No. 11 in the geographic township of Chaffey",
+   "to": "1000 m W of Hidden Valley Road, Huntsville",
+   "status": "prohibited",
+   "approx_coords_hint": "Huntsville, at/beyond W edge of bbox",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 60 lying between a point situate at its intersection with the centre line of the King’s Highway known as No. 11 in the geographic township of Chaffey and a point situate 1000 metres measured westerly from its intersection with the centre line of the roadway known as Hidden Valley Road in the Town of Huntsville, in the District of Muskoka."
+  },
+  {
+   "ref": "60",
+   "schedule": "none (default)",
+   "from": "gaps: Renfrew–Cotieville Rd; Ott Rd–Bridge St (Eganville); Barry's Bay core between B22 and B23",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "short urban gaps",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "132",
+   "schedule": "B item 46",
+   "from": "a point situate at 1.5 kilometres measured west of the centre line of the highway known as Renfrew County Road 33 (also known as Lochiel Avenue) in the Town of Renfew in the County of Renfrew",
+   "to": "its intersection with the King's Highway known as No. 41 in the Township of Bonnechere Valley",
+   "status": "allowed",
+   "approx_coords_hint": "Renfrew (~-76.7) west to Hwy 41",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)"
+   ],
+   "verbatim": "That part of the King’s Highway known as No. 132 lying between a point situate at 1.5 kilometres measured west of the centre line of the highway known as Renfrew County Road 33 (also known as Lochiel Avenue) in the Town of Renfew in the County of Renfrew and a point situate at its intersection with the King’s Highway known as No. 41 in the Township of Bonnechere Valley in the County of Renfrew."
+  },
+  {
+   "ref": "17",
+   "schedule": "none (default)",
+   "from": "entire (Pembroke/Petawawa area)",
+   "to": "",
+   "status": "prohibited",
+   "approx_coords_hint": "Hwy 17 in Renfrew County",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/page/driving-road-vehicle-orv ('sections of the Trans-Canada Highway')"
+   ],
+   "note": "O. Reg. 316/03 s.2 general prohibition: highway is in neither Schedule A nor Schedule B, so ORVs are not permitted (crossing only, ORVA s.2(2)(a))"
+  },
+  {
+   "ref": "500-899",
+   "schedule": "B item 1",
+   "from": "All of the Secondary and Tertiary highways known as and numbered 500 to 899 (exception: part of 587 in Sleeping Giant PP, Thunder Bay)",
+   "to": "",
+   "status": "allowed",
+   "approx_coords_hint": "any provincially-owned 5xx/6xx/7xx/8xx in bbox",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/page/driving-road-vehicle-orv"
+   ],
+   "verbatim": "All of the Secondary and Tertiary highways known as and numbered 500 to 899, but not including that part of the Secondary highway known as No. 587 south of a point situate 3.6 km southerly from its intersection with the highway known as Pass Lake Cross Road in the Municipality of Shuniah, in the District of Thunder Bay, being within the boundary of Sleeping Giant Provincial Park.",
+   "note": "Applies only to highways still under provincial jurisdiction. Most former secondary highways in Hastings/Haliburton/Peterborough/Renfrew were downloaded to counties in 1997-98 and are now county roads (e.g. 'Hastings County Road 620'); those fall under s.4.1 municipal rules, not Schedule B. Check OSM ownership/ref tags."
+  },
+  {
+   "ref": "7000-series",
+   "schedule": "B item 2 (named list only)",
+   "from": "Only the specific 7000-series numbers listed (7036, 7037, 7041, 7042, 7044, 7140, 7151, 7162, 7182, 7188, 7279, 7285-7298, 7909, 7910), all in Sudbury/Parry Sound/Timiskaming/Nipissing areas",
+   "to": "",
+   "status": "restricted",
+   "approx_coords_hint": "none known inside bbox; other 7000-series = default prohibited (and 7087, 7274, 7902, 7908 are Schedule A, outside bbox)",
+   "sources": [
+    "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22)",
+    "https://www.ontario.ca/page/driving-road-vehicle-orv ('many 7000-series highways')"
+   ],
+   "note": "Guidance says 'many', not all."
+  }
+ ],
+ "o_reg_8_03_municipalities_in_bbox": {
+  "note": "Table names as printed (2003, never amended). Renamed since: 'Galway-Cavendish and Harvey' = Trent Lakes (2013); 'Smith-Ennismore-Lakefield' = Selwyn (2013); 'Cavan-Millbrook-North Monaghan' = Cavan Monaghan. Whether s.4.1(2) applies under new names is not addressed in the text - flag as uncertain. NOT listed (by-law required): Town of Bancroft, City of Kawartha Lakes, Trent Hills, Peterborough, Belleville, Quinte West, Greater Napanee, Deseronto, Huntsville, Bracebridge, Pembroke, Petawawa, Renfrew, Arnprior, Deep River. Each listed municipality may still prohibit by by-law (s.4.1(3)).",
+  "fully_or_mostly_in_bbox": [
+   "Addington Highlands",
+   "Admaston/Bromley",
+   "Algonquin Highlands",
+   "Asphodel-Norwood",
+   "Bonnechere Valley",
+   "Brudenell, Lynoch and Raglan",
+   "Carlow/Mayo",
+   "Central Frontenac",
+   "Centre Hastings",
+   "Douro-Dummer",
+   "Dysart et al",
+   "Faraday",
+   "Galway-Cavendish and Harvey (now Trent Lakes)",
+   "Greater Madawaska",
+   "Hastings Highlands",
+   "Havelock-Belmont-Methuen",
+   "Highlands East",
+   "Horton",
+   "Killaloe, Hagarty and Richards",
+   "Laurentian Valley",
+   "Limerick",
+   "Madawaska Valley",
+   "Madoc",
+   "Marmora and Lake",
+   "Minden Hills",
+   "North Algona-Wilberforce",
+   "North Frontenac",
+   "North Kawartha",
+   "Otonabee-South Monaghan",
+   "Smith-Ennismore-Lakefield (now Selwyn)",
+   "South Algonquin",
+   "Stirling-Rawdon",
+   "Stone Mills",
+   "Tudor and Cashel",
+   "Tweed",
+   "Tyendinaga",
+   "Whitewater Region",
+   "Wollaston"
+  ],
+  "partly_in_bbox_edge": [
+   "Alnwick-Haldimand",
+   "Cavan-Millbrook-North Monaghan (now Cavan Monaghan)",
+   "Head, Clara and Maria",
+   "Lake of Bays",
+   "Lanark Highlands",
+   "Loyalist",
+   "McNab-Braeside",
+   "South Frontenac",
+   "Brock"
+  ],
+  "sources": [
+   "https://www.ontario.ca/laws/regulation/030008 (no amendments since 2003)",
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22) s.4.1(2)",
+   "https://www.ontario.ca/page/driving-road-vehicle-orv"
+  ]
+ },
+ "crossing": {
+  "rule": "ORVA R.S.O. 1990 c. O.4 s.2(2): 'Despite subsection (1), and section 7, subsection 32 (1) and subsections 62 (1), (3) to (26) and (28) to (32) of the Highway Traffic Act, a holder of a driver's licence issued under section 32 of the Highway Traffic Act who is not contravening any provision of this Act may drive an off-road vehicle, (a) directly across a highway; ...' O. Reg. 316/03 s.26: 'Part III of this Regulation does not apply to a person who drives an off-road vehicle directly across a highway pursuant to clause 2 (2) (a) of the Off-Road Vehicles Act.' s.2(2) does not apply to motorcycles with sidecar, farm tractors, etc. (s.2(3)). Schedule A highways: s.3 prohibits driving 'on' them; crossing permission in ORVA s.2(2)(a) is 'despite' HTA provisions, but s.3 of the reg has no crossing carve-out - treat 400-series/expressway crossings as not permitted except at road crossings (uncertain).",
+  "requirements": "Driver's licence (any class), ORVA permit/plate (ORVA s.3), insurance (ORVA s.15), helmet (ORVA s.19), no ORVA contravention. Ontario guidance adds 'driver is at least 16 years old'.",
+  "sources": [
+   "https://www.ontario.ca/laws/statute/90o04 s.2",
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22) s.26",
+   "https://www.ontario.ca/page/driving-road-vehicle-orv"
+  ]
+ },
+ "parks": {
+  "provincial_parks": "O. Reg. 347/07 (Provincial Parks: General Provisions) s.34: 'No person shall operate an all-terrain vehicle in a provincial park except in an area operated by the superintendent for that purpose or in another area pursuant to a written authorization of the superintendent...' (ATV defined broadly to include any ORV under the ORVA). Also s.23(1) park permit required to take an ATV into a park; s.25(1) vehicles only on designated roadways. Hwy 60 through Algonquin additionally Schedule A item 29 of O. Reg. 316/03. O. Reg. 316/03 s.5 allows ORVs on highways within parks/conservation reserves 'unless ... prohibited by the road authority or is otherwise prohibited by law' - O. Reg. 347/07 s.34 is such a prohibition for park roads.",
+  "conservation_reserves": "O. Reg. 319/07 (Conservation Reserves: General Provisions) s.13(1): no motor vehicle except (b) a motor vehicle or ATV operated '(i) on an existing road or trail', (ii) off-trail for direct retrieval of legally harvested game, (iii) with written authorization; (c) ATV on frozen water. s.13(2) manager may prohibit on designated roads/trails. So ORVs ARE generally allowed on existing roads/trails in conservation reserves unless posted.",
+  "sources": [
+   "https://www.ontario.ca/laws/regulation/070347 s.34",
+   "https://www.ontario.ca/laws/regulation/070319 s.13",
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22) s.5",
+   "https://www.ontario.ca/laws/statute/06p12"
+  ]
+ },
+ "crown_land": {
+  "rule": "O. Reg. 316/03 s.5: 'An off-road vehicle may be driven on a highway or part of a highway that is on Crown land administered under the Public Lands Act ... unless the operation of the off-road vehicle on the highway or part of the highway is prohibited by the road authority or is otherwise prohibited by law.' Part III conditions (plate, insurance, licence, helmet, speeds) still apply on such roads. Public Lands Act R.S.O. 1990 c. P.43: s.28(1) Ministry may give notice (signs/media) prohibiting or controlling use of public lands or roads under the Minister's jurisdiction, offence s.28(3); s.52(1) district manager may close a road to the public or classes of the public (barricades, signs, internet notice), offence s.52(5); s.54(1) private forest roads not open to the public unless agreement. O. Reg. 239/13 concerns work permits and does not regulate ORV travel (checked: no vehicle provisions).",
+  "contradictions": [
+   "ontario.ca guidance says on Crown land 'ride in designated areas only' and 'must always have the land owner's permission'; the law (s.5 + Public Lands Act) is permissive on Crown land roads unless closed/posted. The guidance is more restrictive than the statute text; app should present Crown roads as 'generally open unless posted/closed (PLA s.28/s.52)'."
+  ],
+  "sources": [
+   "https://www.ontario.ca/laws/regulation/030316 (consolidated from 2024-01-01, last amendment O. Reg. 176/22) s.5",
+   "https://www.ontario.ca/laws/statute/90p43 ss.28, 52, 54",
+   "https://www.ontario.ca/laws/regulation/130239",
+   "https://www.ontario.ca/page/driving-road-vehicle-orv"
+  ]
+ },
+ "corrections_to_app": [
+  "CRITICAL: App inverts Schedule B. Schedule B = PERMITTED highways (s.4(2)), not prohibited. Hwy 62 Hwy 7 (Madoc) -> 300 m S of Bay Lake Rd (app lat<45.045 'prohibited') is ALLOWED (B26).",
+  "Hwy 62: section from 300 m S of Bay Lake Rd through Bancroft to Hybla Rd is PROHIBITED (unlisted); Hybla Rd -> Hwy 127 (Maynooth) ALLOWED (B27); south of Hwy 7 prohibited.",
+  "Hwy 28: CR 504 (Apsley) -> Hwy 118 junction at Bancroft is ALLOWED (B16), not prohibited (app lon<-77.90 is wrong). The 'to a point in Faraday' wording belongs to Hwy 118 item B43. Bancroft core (118 jct -> 880 m E of Hastings St) PROHIBITED; 880 m E of Hastings St -> Hwy 41 (Denbigh) ALLOWED (B17); south of CR 504 PROHIBITED.",
+  "Hwy 118: ENTIRE highway ALLOWED (B3 lists No. 118 wholly; B42/B43 also). App's 'prohibited Bracebridge to Eagle Lake Rd (lon<-78.50)' is wrong - Eagle Lake Rd wording comes from pre-2015 B42 which was a PERMITTED segment.",
+  "Hwy 35: NOT all prohibited. ALLOWED B18 (200 m N of Horseshoe Lake Rd, Minden Hills -> Hwy 60, Lake of Bays) and B18.1 (S-most CR 121 jct -> 4300 m S of Deep Bay Rd). Rest prohibited by default.",
+  "Hwy 7: all prohibited in bbox is CORRECT (unlisted; A14 near Peterborough).",
+  "Hwy 60 through Algonquin Park prohibited is CORRECT (A29: 300 m S of Headstone Creek Bridge to Algonquin Highlands N boundary). But Hwy 60 outside the park in bbox is mostly ALLOWED (B21-B24: Renfrew County Horton -> Eganville -> Barry's Bay -> park east gate; park west gate -> Huntsville).",
+  "Hwy 127: ALLOWED entire (B3). Hwy 41: ALLOWED Bon Echo N boundary -> Foymount Rd (B19) and N of Eganville -> Hwy 17 (B20); else prohibited. Hwy 132: ALLOWED 1.5 km W of Lochiel Ave Renfrew -> Hwy 41 (B46). Hwys 37, 121, 17, 115 and Hwy 62 S of Madoc: PROHIBITED.",
+  "500-899: allowed is correct for provincial highways (B1), but most 5xx/6xx in bbox are now COUNTY roads (downloaded) and follow s.4.1 municipal rules (by-law or O. Reg. 8/03 listing).",
+  "7000-series: NOT blanket open. Only the specific numbers in B2 (all outside bbox). Any other 7000-series = prohibited by default.",
+  "'Other King's highways unconfirmed, shoulder only' is WRONG: unlisted King's highways are PROHIBITED (s.2). Shoulder rule (s.24) applies only where operation is permitted.",
+  "Municipal roads: in O. Reg. 8/03-listed municipalities (e.g. Faraday, Hastings Highlands, Wollaston, Limerick, Tudor and Cashel, Carlow/Mayo, Highlands East, Dysart et al, Minden Hills, North Kawartha, Madawaska Valley, South Algonquin...) roads are open by default since 2021-01-01 unless a by-law prohibits; Town of Bancroft is NOT listed - requires its own by-law.",
+  "Single-rider ATVs: may use permitted highways (s.1 def includes 'driver only and no passengers'), but must carry NO passenger (s.19.2)."
+ ]
+}

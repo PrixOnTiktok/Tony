@@ -4,9 +4,13 @@ An Android app (built for the Pixel 11 Pro, works on any Android 12+ phone) for 
 within **100 km of Bancroft, Ontario**. No account, no subscription, **no signal needed**: the map,
 every trail, gas/food/places and the router are all inside the app.
 
-| Browse | Trail info | Route options | Navigating |
+| Browse | Trail network | Satellite | Plan a loop |
 |---|---|---|---|
-| ![](docs/screenshots/1_browse.png) | ![](docs/screenshots/2_trail_details.png) | ![](docs/screenshots/4_route_plan.png) | ![](docs/screenshots/5_navigating.png) |
+| ![](docs/screenshots/1_browse.png) | ![](docs/screenshots/7_trail_network.png) | ![](docs/screenshots/8_satellite.png) | ![](docs/screenshots/9_loop.png) |
+
+| Trail info | Route options | Navigating (dark) | My location |
+|---|---|---|---|
+| ![](docs/screenshots/2_trail_details.png) | ![](docs/screenshots/4_route_plan.png) | ![](docs/screenshots/5_navigating.png) | ![](docs/screenshots/10_my_location.png) |
 
 ## What it does
 - **Colour-coded trails**:
@@ -22,7 +26,21 @@ every trail, gas/food/places and the router are all inside the app.
 - **Turn-by-turn** with voice and vibration, re-routes when you leave the route, keeps the screen on while
   riding, and needs a 1-second hold to stop, so a bump can't cancel it.
 - **Gas, food, places to see** (lookouts, waterfalls, campgrounds, parking, gates), with a "nearby" list.
+- **Three map views**:
+  - **Standard**: offline map with colour-coded trails.
+  - **Satellite**: photos over Wi-Fi or data, cached once viewed. Trails stay on top and keep working offline.
+  - **Trail network**: a simplified view where each colour is a connected trail system. Blue roads show how systems
+    link together, white dots are junctions, and blue dots are where trails meet a legal road.
+- **Plan a loop**: pick 10–80 km. It rides out and comes back a different way, avoiding re-riding trails, and if you
+  leave the loop it brings you back onto it.
+- **Record rides**: keeps recording with the screen off. Saved rides list with distance, time and max speed, and
+  each ride can be shared as GPX.
 - **Your own pins**: parking, good trail, blocked (routes avoid it), food stop, notes. Saved on the phone.
+- **Safety & quality of life**:
+  - "My location" card with coordinates, nearest trail or road, a one-tap share and a 911 button.
+  - Sunset warning in the last 90 minutes of daylight.
+  - Tank-range check on routes and loops.
+  - Speed shown while navigating; km or miles.
 - Light / dark / auto theme. Big controls in thumb reach, usable with gloves.
 
 ## Install on your phone
@@ -45,6 +63,9 @@ every trail, gas/food/places and the router are all inside the app.
 Each segment gets a confidence (how many independent sources agree). Club systems (EOTA, OFATV clubs, HATVA…)
 are flagged **maybe**. **OFSC snowmobile trails are never ATV trails.** Websites like EOTA, QuadON, Trailforks, onX,
 Gaia and Backroad Mapbooks were used only to check results; their data isn't copied ([survey](docs/sources_survey.md)).
+
+Every rule was re-verified against primary sources (Ontario e-Laws, township by-law PDFs, EOTA, OFSC) for v2;
+see [docs/verification.md](docs/verification.md).
 
 > ⚠️ This is a best guess from public data, not legal advice. Posted signs, gates and landowners always win.
 > Many township road rules could only be confirmed from summaries; they're marked low-confidence in the app.
@@ -74,4 +95,4 @@ That key is only for sideloading; make a private key before ever publishing to t
 ## Known limits / next ideas
 - OSM `atv=*` / `snowmobile=*` tags aren't in the basemap extract; with direct OSM access (Overpass) the
   classifier could use them. The network here blocked Overpass/Geofabrik.
-- Later: ride recording (GPX), fuel-range warnings, updating data from inside the app.
+- Later: updating data from inside the app, multi-stop routes.

@@ -50,6 +50,8 @@ enum class RouteMode(val label: String, val short: String) {
 
 enum class ThemeMode { AUTO, LIGHT, DARK }
 
+enum class MapStyle(val label: String) { STANDARD("Standard"), SATELLITE("Satellite"), NETWORK("Trail network") }
+
 /** Small persisted settings. */
 class Settings(ctx: Context) {
     private val p = ctx.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -86,6 +88,19 @@ class Settings(ctx: Context) {
     var lastZoom: Double
         get() = p.getFloat("lastZoom", 11f).toDouble()
         set(v) = p.edit().putFloat("lastZoom", v.toFloat()).apply()
+    var mapStyle: MapStyle
+        get() = runCatching { MapStyle.valueOf(p.getString("mapStyle", null)!!) }.getOrDefault(MapStyle.STANDARD)
+        set(v) = p.edit().putString("mapStyle", v.name).apply()
+    /** Tank range in km; 0 = don't check. */
+    var fuelRangeKm: Int
+        get() = p.getInt("fuelRangeKm", 0)
+        set(v) = p.edit().putInt("fuelRangeKm", v).apply()
+    var imperial: Boolean
+        get() = p.getBoolean("imperial", false)
+        set(v) = p.edit().putBoolean("imperial", v).apply()
+    var loopKm: Int
+        get() = p.getInt("loopKm", 30)
+        set(v) = p.edit().putInt("loopKm", v).apply()
     var seenIntro: Boolean
         get() = p.getBoolean("seenIntro", false)
         set(v) = p.edit().putBoolean("seenIntro", v).apply()

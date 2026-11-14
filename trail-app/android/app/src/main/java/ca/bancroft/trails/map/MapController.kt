@@ -10,6 +10,7 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.location.Location
+import ca.bancroft.trails.data.MapStyle
 import ca.bancroft.trails.data.Pin
 import ca.bancroft.trails.data.PinType
 import ca.bancroft.trails.data.Poi
@@ -32,6 +33,7 @@ import org.maplibre.android.style.expressions.Expression.get
 import org.maplibre.android.style.expressions.Expression.literal
 import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.Property
+import org.maplibre.android.style.layers.PropertyFactory.visibility
 import org.maplibre.android.style.layers.PropertyFactory.iconAllowOverlap
 import org.maplibre.android.style.layers.PropertyFactory.iconIgnorePlacement
 import org.maplibre.android.style.layers.PropertyFactory.iconImage
@@ -52,6 +54,7 @@ import org.maplibre.android.style.layers.PropertyFactory.textMaxWidth
 import org.maplibre.android.style.layers.PropertyFactory.textOffset
 import org.maplibre.android.style.layers.PropertyFactory.textOptional
 import org.maplibre.android.style.layers.PropertyFactory.textSize
+import org.maplibre.android.style.layers.PropertyFactory.lineDasharray
 import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.geojson.Feature
@@ -73,6 +76,8 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
     private var selectedMode: RouteMode? = null
     private var dest: Target? = null
     private var selection: Target? = null
+    private var mapStyle = MapStyle.STANDARD
+    private var track: List<Pair<Double, Double>> = emptyList()
 
     fun loadStyle(dark: Boolean, onReady: () -> Unit) {
         if (style != null && this.dark == dark) { onReady(); return }
@@ -125,6 +130,7 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         s.addSource(GeoJsonSource("pins"))
         s.addSource(GeoJsonSource("dest"))
         s.addSource(GeoJsonSource("selection"))
+        s.addSource(GeoJsonSource("track"))
 
         addBelow(LineLayer("selection-line", "selection").withProperties(
             lineColor(if (dark) "#FFFFFF" else "#111111"), lineOpacity(0.35f),
@@ -141,6 +147,12 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         addBelow(LineLayer("route-line", "route").withProperties(
             lineColor("#00B3FF"),
             lineWidth(Expression.interpolate(Expression.linear(), Expression.zoom(), Expression.stop(8, 3.5), Expression.stop(16, 8))),
+            lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
+
+        addBelow(LineLayer("track-casing", "track").withProperties(
+            lineColor(if (dark) "#000000" else "#FFFFFF"), lineWidth(7f), lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
+        addBelow(LineLayer("track-line", "track").withProperties(
+            lineColor(if (dark) "#F5F5F5" else "#263238"), lineWidth(3.5f), lineDasharray(arrayOf(1.5f, 1.2f)),
             lineCap(Property.LINE_CAP_ROUND), lineJoin(Property.LINE_JOIN_ROUND)))
 
         val labelColor = if (dark) "#E6E9EC" else "#2B2B2B"
@@ -160,6 +172,33 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
 
     private fun applyAll() {
         setPois(pois, layers); setPins(pins); setRoutes(routes, selectedMode); setDest(dest); setSelection(selection)
+        setMapStyle(mapStyle); setTrack(track)
+    }
+
+    /** Standard map, satellite photos (needs signal), or the simplified trail-network view. */
+    fun setMapStyle(m: MapStyle) {
+        mapStyle = m
+        val s = style ?: return
+        fun vis(id: String, on: Boolean) { s.getLayer(id)?.setProperties(visibility(if (on) Property.VISIBLE else Property.NONE)) }
+        val net = m == MapStyle.NETWORK
+        vis("satellite", m == MapStyle.SATELLITE)
+        for (id in listOf("trail_casing", "trail_maybe", "trail_free", "trail_label", "trail_road_casing", "trail_road_center")) vis(id, !net)
+        for (id in listOf("net_dim", "net_road", "net_casing", "net_trail", "net_maybe_mark", "net_junction", "net_label")) vis(id, net)
+    }
+
+    fun setTrack(pts: List<Pair<Double, Double>>) {
+        track = pts
+        style?.getSourceAs<GeoJsonSource>("track")?.setGeoJson(FeatureCollection.fromFeatures(
+            if (pts.size < 2) emptyList() else listOf(Feature.fromGeometry(LineString.fromLngLats(pts.map { Point.fromLngLat(it.second, it.first) })))))
+    }
+
+    fun fitPoints(pts: List<Pair<Double, Double>>, topPx: Int, bottomPx: Int) {
+        stopFollow()
+        if (pts.size < 2) return
+        val b = LatLngBounds.Builder()
+        pts.forEach { b.include(LatLng(it.first, it.second)) }
+        val pad = (40 * density).toInt()
+        runCatching { map.animateCamera(CameraUpdateFactory.newLatLngBounds(b.build(), pad, topPx + pad, pad, bottomPx + pad), 700) }
     }
 
     fun setPois(list: List<Poi>, l: MapViewModel.Layers) {
@@ -233,14 +272,14 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
         }
         map.queryRenderedFeatures(box, "poi-icons").firstOrNull()?.let { return Hit.PoiHit(it) }
         val tr = RectF(pt.x - r * 0.7f, pt.y - r * 0.7f, pt.x + r * 0.7f, pt.y + r * 0.7f)
-        val trails = map.queryRenderedFeatures(tr, "trail_free", "trail_maybe", "trail_no", "trail_road_casing")
+        val trails = map.queryRenderedFeatures(tr, "trail_free", "trail_maybe", "trail_no", "trail_road_casing", "net_trail", "net_road")
         // prefer off-road classes over roads when overlapping
         return trails.minByOrNull { (it.getNumberProperty("c")?.toInt() ?: 9).let { c -> if (c == 2) 5 else c } }?.let { Hit.TrailHit(it) }
     }
 
     // ------------------------------------------------------------------ camera & location
     @SuppressLint("MissingPermission")
-    fun enableLocation() {
+    fun enableLocation(onPuckClick: () -> Unit = {}) {
         val s = style ?: return
         val lc = map.locationComponent
         if (!lc.isLocationComponentActivated) {
@@ -252,6 +291,7 @@ class MapController(private val ctx: Context, val map: MapLibreMap) {
                 .build()
             lc.activateLocationComponent(LocationComponentActivationOptions.builder(ctx, s)
                 .locationComponentOptions(opts).useDefaultLocationEngine(false).build())
+            lc.addOnLocationClickListener { onPuckClick() }
         }
         lc.isLocationComponentEnabled = true
         lc.renderMode = RenderMode.COMPASS

@@ -14,8 +14,8 @@ echo "== basemap ($BUILD)"
 "$PM" extract "https://build.protomaps.com/$BUILD.pmtiles" "$ASSETS/basemap.pmtiles" --region="$HERE/region.geojson" --maxzoom=14
 "$PM" extract "https://build.protomaps.com/$BUILD.pmtiles" "$WORK/tiles/z15.pmtiles" --region="$HERE/region.geojson" --minzoom=15 --maxzoom=15
 echo "== classify + graph"; python3 "$HERE/build_data.py" "$WORK" "$WORK/out"
-tippecanoe -q -o "$ASSETS/trails.pmtiles" -l trails -Z7 -z14 --force --no-feature-limit --no-tile-size-limit --simplification=4 \
-  -j "$(cat "$HERE/tile_filter.json")" "$WORK/out/trails.geojson"
+tippecanoe -q -o "$ASSETS/trails.pmtiles" -Z7 -z14 --force --no-feature-limit --no-tile-size-limit --simplification=4 \
+  -j "$(cat "$HERE/tile_filter.json")" -L trails:"$WORK/out/trails.geojson" -L junctions:"$WORK/out/junctions.geojson"
 cp "$WORK/out/graph.bin" "$WORK/out/pois.json" "$WORK/out/meta.json" "$ASSETS/"
 echo "== styles, fonts, sprites"
 (cd "$HERE/style" && npm install --silent && node gen_style.mjs "$ASSETS/style")

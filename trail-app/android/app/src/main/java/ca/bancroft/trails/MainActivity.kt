@@ -25,6 +25,8 @@ class TrailApp : Application() {
     override fun onCreate() {
         super.onCreate()
         MapLibre.getInstance(this) // no API key or network needed: everything is bundled
+        // keep satellite tiles you've looked at (online) available later with no signal
+        runCatching { org.maplibre.android.offline.OfflineManager.getInstance(this).setMaximumAmbientCacheSize(400L * 1024 * 1024, null) }
     }
 }
 
